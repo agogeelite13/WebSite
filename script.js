@@ -408,13 +408,16 @@ const initAuth = () => {
     const adminAforoProgress = document.getElementById('adminAforoProgress');
     const openIntelBtn = document.getElementById('openIntelBtn');
     const closeIntelBtn = document.getElementById('closeIntelBtn');
-    const intelBoard = document.getElementById('intelBoard');
-    const intelMapImg = document.getElementById('intelMapImg');
+    // Supabase Configuration
+    const supabaseUrl = 'https://vekyfzeiijhgjazwkdlk.supabase.co';
+    const supabaseKey = 'sb_publishable_bYKU5Yd3oKbnYC5uT2CNJg_oTOTQp_x';
+    const supabase = window.supabase?.createClient(supabaseUrl, supabaseKey);
 
-    // State
+    // State (Temporary Local Cache, but primary source is DB)
     let currentUser = JSON.parse(localStorage.getItem('agogeUser')) || null;
-    let enrollments = JSON.parse(localStorage.getItem('agogeEnrollments')) || {}; // { dateStr: [emails] }
-    let clans = JSON.parse(localStorage.getItem('agogeClans')) || [];
+    let enrollments = {};
+    let clans = [];
+    let currentVotes = {};
 
     // Helper: Get Next Sunday String
     const getNextSunday = () => {
@@ -429,6 +432,69 @@ const initAuth = () => {
         const d = new Date();
         d.setDate(d.getDate() + (7 - d.getDay()) % 7);
         return d.toISOString().split('T')[0];
+    };
+
+    // SUPABASE SERVICE LAYER
+    const api = {
+        async getUsers() {
+            const { data, error } = await supabase.from('users').select('*');
+            return data || [];
+        },
+        async saveUser(user) {
+            const { error } = await supabase.from('users').upsert(user);
+            return !error;
+        },
+        async getEnrollments() {
+            const { data, error } = await supabase.from('enrollments').select('*');
+            // Transform list to the expected object format { date: [emails] }
+            const transformed = {};
+            data?.forEach(e => {
+                if (!transformed[e.sun_key]) transformed[e.sun_key] = [];
+                transformed[e.sun_key].push(e.is_guest ? e.guest_name : e.user_email);
+            });
+            return transformed;
+        },
+        async enroll(sunKey, email, gear) {
+            const { error } = await supabase.from('enrollments').insert({
+                sun_key: sunKey,
+                user_email: email,
+                gear: gear
+            });
+            return !error;
+        },
+        async unenroll(sunKey, email) {
+            const { error } = await supabase.from('enrollments').delete().match({ sun_key: sunKey, user_email: email });
+            return !error;
+        },
+        async getClans() {
+            const { data, error } = await supabase.from('clans').select('*');
+            return data || [];
+        },
+        async createClan(name, leaderEmail) {
+            const { error } = await supabase.from('clans').insert({ name, leader_email: leaderEmail });
+            return !error;
+        },
+        async getVotes(sunKey) {
+            const { data, error } = await supabase.from('votes').select('*').eq('sun_key', sunKey);
+            const votesObj = {};
+            data?.forEach(v => votesObj[v.user_email] = v.mode);
+            return votesObj;
+        },
+        async castVote(sunKey, email, mode) {
+            const { error } = await supabase.from('votes').upsert({ sun_key: sunKey, user_email: email, mode });
+            return !error;
+        }
+    };
+
+    // Global refresh from DB
+    const refreshData = async () => {
+        const [dbEnrollments, dbClans] = await Promise.all([
+            api.getEnrollments(),
+            api.getClans()
+        ]);
+        enrollments = dbEnrollments;
+        clans = dbClans;
+        updateUI();
     };
 
     const ADMIN_EMAIL = 'admin@agoge.elite';
@@ -533,9 +599,9 @@ const initAuth = () => {
     closeIntelBtn?.addEventListener('click', closeIntelMode);
 
     // VOTING LOGIC
-    const renderVoting = () => {
+    const renderVoting = async () => {
         const sunKey = getNextSundayKey();
-        const votes = JSON.parse(localStorage.getItem(`agogeVotes_${sunKey}`) || '{}');
+        const votes = await api.getVotes(sunKey);
         const userVote = votes[currentUser?.email];
         const votingResults = document.getElementById('votingResults');
         const votingOptions = document.getElementById('votingOptions');
@@ -545,7 +611,6 @@ const initAuth = () => {
             votingOptions?.classList.add('hidden');
             votingResults?.classList.remove('hidden');
 
-            // Calculate totals
             const totals = {};
             Object.values(votes).forEach(v => totals[v] = (totals[v] || 0) + 1);
             const totalCount = Object.values(votes).length;
@@ -575,13 +640,13 @@ const initAuth = () => {
     };
 
     document.querySelectorAll('.vote-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', async () => {
             if (!currentUser) return;
             const sunKey = getNextSundayKey();
-            const votes = JSON.parse(localStorage.getItem(`agogeVotes_${sunKey}`) || '{}');
-            votes[currentUser.email] = btn.dataset.mode;
-            localStorage.setItem(`agogeVotes_${sunKey}`, JSON.stringify(votes));
-            renderVoting();
+            const success = await api.castVote(sunKey, currentUser.email, btn.dataset.mode);
+            if (success) {
+                renderVoting();
+            }
         });
     });
 
@@ -687,16 +752,19 @@ const initAuth = () => {
         `).join('');
     };
 
-    const updateAdminDashboard = () => {
+    const updateAdminDashboard = async () => {
         if (!adminUserList || !adminEnrollList) return;
 
-        const allUsers = JSON.parse(localStorage.getItem('agoge_users') || '[]');
+        const allUsers = await api.getUsers();
         const sunKey = getNextSundayKey();
-        const enrolledEmails = enrollments[sunKey] || [];
+
+        // Refresh local cache of enrollments
+        enrollments = await api.getEnrollments();
+        const enrolledIdentifiers = enrollments[sunKey] || [];
 
         // Capacity Aforo Logic (20 slots)
         const maxAforo = 20;
-        const currentCount = enrolledEmails.length;
+        const currentCount = enrolledIdentifiers.length;
         if (adminAforoCount) adminAforoCount.textContent = `${currentCount} / ${maxAforo}`;
         if (adminAforoProgress) adminAforoProgress.style.width = `${(currentCount / maxAforo) * 100}%`;
 
@@ -708,26 +776,26 @@ const initAuth = () => {
                     <span class="admin-item__sub">${u.email} — ${u.clan || 'sin clan'}</span>
                 </div>
                 <div class="admin-item__actions">
-                    <button class="btn btn--primary btn--xs" onclick="adminEnrollUser('${u.email}')" ${enrolledEmails.includes(u.email) ? 'disabled' : ''}>
-                        ${enrolledEmails.includes(u.email) ? 'INSCRITO' : 'INSCRIBIR'}
+                    <button class="btn btn--primary btn--xs" onclick="adminEnrollUser('${u.email}')" ${enrolledIdentifiers.includes(u.email) ? 'disabled' : ''}>
+                        ${enrolledIdentifiers.includes(u.email) ? 'INSCRITO' : 'INSCRIBIR'}
                     </button>
                 </div>
             </div>
         `).join('') || '<p style="padding:15px; color:#666; font-size:0.8rem;">No hay usuarios registrados.</p>';
 
         // Enrollment List (including guests)
-        adminEnrollList.innerHTML = enrolledEmails.map(email => {
-            const isGuest = !email.includes('@');
-            const u = isGuest ? { name: email, gear: (enrollments[`${sunKey}_gear`] || {})[email] || 'unknown' } : (allUsers.find(user => user.email === email) || { name: email });
+        adminEnrollList.innerHTML = enrolledIdentifiers.map(id => {
+            const isGuest = !id.includes('@');
+            const u = isGuest ? { name: id, gear: (enrollments[`${sunKey}_gear`] || {})[id] || 'unknown' } : (allUsers.find(user => user.email === id) || { name: id });
             const gearMap = { 'own': 'PROPIA', 'complete': 'COMPLETO', 'replica': 'RÉPLICA', 'basic': 'BÁSICO' };
             const gearStr = u?.gear ? `<span style="color:var(--bronze); font-size:0.7em;">(${gearMap[u.gear] || 'N/A'})</span>` : '';
             return `
                 <div class="admin-item">
                     <div class="admin-item__info">
                         <span class="admin-item__name">${u.callsign || u.name} ${gearStr}</span>
-                        <span class="admin-item__sub">${isGuest ? 'INVITADO' : email}</span>
+                        <span class="admin-item__sub">${isGuest ? 'INVITADO' : id}</span>
                     </div>
-                    <button class="btn btn--outline btn--xs" onclick="adminUnenrollUser('${email}')">BORRAR</button>
+                    <button class="btn btn--outline btn--xs" onclick="adminUnenrollUser('${id}')">BORRAR</button>
                 </div>
             `;
         }).join('') || '<p style="padding:15px; color:#666; font-size:0.8rem;">Nadie inscrito todavía.</p>';
@@ -757,7 +825,7 @@ const initAuth = () => {
     });
 
     // Events: Auth Logic
-    registerForm?.addEventListener('submit', (e) => {
+    registerForm?.addEventListener('submit', async (e) => {
         e.preventDefault();
         const name = document.getElementById('regName').value;
         const callsign = document.getElementById('regCallsign').value;
@@ -765,36 +833,39 @@ const initAuth = () => {
         const email = document.getElementById('regEmail').value;
         const pass = document.getElementById('regPass').value;
 
-        const users = JSON.parse(localStorage.getItem('agoge_users') || '[]');
+        const users = await api.getUsers();
         if (users.find(u => u.email === email)) {
             alert('Este email ya está registrado.');
             return;
         }
 
-        const newUser = { name, callsign, specialty, email, pass, exp: 0 };
-        users.push(newUser);
-        localStorage.setItem('agoge_users', JSON.stringify(users));
+        const newUser = { name, callsign, specialty, email, password: pass, exp: 0 };
+        const saved = await api.saveUser(newUser);
 
-        currentUser = newUser;
-        localStorage.setItem('agogeUser', JSON.stringify(currentUser));
-        updateUI();
-        closeModal();
+        if (saved) {
+            currentUser = newUser;
+            localStorage.setItem('agogeUser', JSON.stringify(currentUser));
+            updateUI();
+            closeModal();
+            refreshData(); // Sync everything
+        } else {
+            alert('Error al conectar con la base de datos.');
+        }
     });
 
     // Handle Login
-    loginForm?.addEventListener('submit', (e) => {
+    loginForm?.addEventListener('submit', async (e) => {
         e.preventDefault();
         const email = document.getElementById('loginEmail').value;
         const pass = document.getElementById('loginPass').value;
 
-        const users = JSON.parse(localStorage.getItem('agoge_users') || '[]');
-
         // Mock Admin check
         let user;
         if (email === ADMIN_EMAIL && pass === ADMIN_PASS) {
-            user = { name: 'Administrador', email: ADMIN_EMAIL };
+            user = { name: 'Administrador', email: ADMIN_EMAIL, callsign: 'ADMIN' };
         } else {
-            user = users.find(u => u.email === email && u.pass === pass);
+            const users = await api.getUsers();
+            user = users.find(u => u.email === email && u.password === pass);
         }
 
         if (user) {
@@ -802,15 +873,17 @@ const initAuth = () => {
             const scan = document.getElementById('scanOverlay');
             if (scan) {
                 scan.classList.add('is-active');
-                setTimeout(() => {
+                setTimeout(async () => {
                     scan.classList.remove('is-active');
                     localStorage.setItem('agogeUser', JSON.stringify(user));
                     currentUser = user;
+                    await refreshData();
                     updateUI();
                 }, 2500);
             } else {
                 localStorage.setItem('agogeUser', JSON.stringify(user));
                 currentUser = user;
+                await refreshData();
                 updateUI();
             }
         } else {
@@ -936,7 +1009,7 @@ const initAuth = () => {
     });
 
     // Events: Enrollment
-    enrollBtn?.addEventListener('click', () => {
+    enrollBtn?.addEventListener('click', async () => {
         if (!currentUser) return;
         if (!rulesWaiver || !rulesWaiver.checked) {
             alert('Debes aceptar la normativa de seguridad antes de inscribirte.');
@@ -945,59 +1018,55 @@ const initAuth = () => {
 
         const sunKey = getNextSundayKey();
         const maxAforo = 20;
-        if (!enrollments[sunKey]) enrollments[sunKey] = [];
 
-        // BUG FIX: Double Enrollment check
-        if (enrollments[sunKey].includes(currentUser.email)) {
+        // Refresh local cache first to get real-time status
+        enrollments = await api.getEnrollments();
+        const list = enrollments[sunKey] || [];
+
+        if (list.includes(currentUser.email)) {
             alert('Ya estás inscrito para esta misión.');
             return;
         }
 
-        if (enrollments[sunKey].length >= maxAforo) {
+        if (list.length >= maxAforo) {
             alert('AFORO COMPLETO: No quedan plazas para esta misión. Inténtalo de nuevo la próxima semana.');
             return;
         }
 
-        // Enrollment Logic
-        enrollments[sunKey].push(currentUser.email);
-        localStorage.setItem('agogeEnrollments', JSON.stringify(enrollments));
+        // Enrollment Logic via API
+        const success = await api.enroll(sunKey, currentUser.email, currentUser.gear || 'own');
 
-        // Clan Multiplier Logic
-        let xpGained = 1;
-        let socialXpGained = 1;
-        if (currentUser.clan) {
-            const clanMembers = JSON.parse(localStorage.getItem('agoge_users') || [])
-                .filter(u => u.clan === currentUser.clan && enrollments[sunKey].includes(u.email));
+        if (success) {
+            // Clan Multiplier Logic
+            let xpGained = 1;
+            let socialXpGained = 1;
+            if (currentUser.clan) {
+                const allUsers = await api.getUsers();
+                const clanMembersInMission = allUsers.filter(u => u.clan === currentUser.clan && list.includes(u.email));
 
-            if (clanMembers.length >= 2) {
-                xpGained = 1.5; // Multiplier for playing together
-                socialXpGained = 2; // Social level boost
-                console.log(`[CLAN BOOST] Multiplier x1.5 applied for ${currentUser.clan}`);
+                if (clanMembersInMission.length >= 1) { // 1 existing + 1 joining = 2
+                    xpGained = 1.5;
+                    socialXpGained = 2;
+                }
             }
+
+            // Experience & Mission Log Gain
+            currentUser.exp = (currentUser.exp || 0) + xpGained;
+            currentUser.socialLevel = (currentUser.socialLevel || 0) + socialXpGained;
+
+            if (!currentUser.missionHistory) currentUser.missionHistory = [];
+            if (!currentUser.missionHistory.includes(sunKey)) {
+                currentUser.missionHistory.unshift(sunKey);
+            }
+
+            // Persist User Changes to DB
+            await api.saveUser(currentUser);
+            localStorage.setItem('agogeUser', JSON.stringify(currentUser));
+
+            await refreshData();
+        } else {
+            alert('Error al procesar la inscripción.');
         }
-
-        // Experience & Mission Log Gain
-        currentUser.exp = (currentUser.exp || 0) + xpGained;
-        currentUser.socialLevel = (currentUser.socialLevel || 0) + socialXpGained;
-
-        if (!currentUser.missionHistory) currentUser.missionHistory = [];
-        if (!currentUser.missionHistory.includes(sunKey)) {
-            currentUser.missionHistory.unshift(sunKey);
-        }
-
-        localStorage.setItem('agogeUser', JSON.stringify(currentUser));
-
-        // Update in global list
-        const users = JSON.parse(localStorage.getItem('agoge_users') || '[]');
-        const uIdx = users.findIndex(u => u.email === currentUser.email);
-        if (uIdx !== -1) {
-            users[uIdx].exp = currentUser.exp;
-            users[uIdx].socialLevel = currentUser.socialLevel;
-            users[uIdx].missionHistory = currentUser.missionHistory;
-            localStorage.setItem('agoge_users', JSON.stringify(users));
-        }
-
-        updateUI();
     });
 
     // CLAN LOGIC
@@ -1035,116 +1104,96 @@ const initAuth = () => {
         }
     };
 
-    const createClan = () => {
+    const createClan = async () => {
         const name = prompt('Nombre de tu nueva Fuerza de Tareas (Clan):');
         if (!name) return;
+
+        // Refresh clans from DB
+        clans = await api.getClans();
         if (clans.some(c => c.name.toLowerCase() === name.toLowerCase())) {
             alert('Ese nombre ya está en uso por otra unidad.');
             return;
         }
-        const newClan = { name, level: 1, members: [currentUser.email] };
-        clans.push(newClan);
-        localStorage.setItem('agogeClans', JSON.stringify(clans));
 
-        currentUser.clan = name;
-        localStorage.setItem('agogeUser', JSON.stringify(currentUser));
-
-        const users = JSON.parse(localStorage.getItem('agoge_users') || '[]');
-        const uIdx = users.findIndex(u => u.email === currentUser.email);
-        if (uIdx !== -1) {
-            users[uIdx].clan = name;
-            localStorage.setItem('agoge_users', JSON.stringify(users));
+        const success = await api.createClan(name, currentUser.email);
+        if (success) {
+            currentUser.clan = name;
+            await api.saveUser(currentUser);
+            localStorage.setItem('agogeUser', JSON.stringify(currentUser));
+            await refreshData();
+        } else {
+            alert('Error al crear el clan.');
         }
-        updateProfileView();
     };
 
-    const joinClan = () => {
+    const joinClan = async () => {
         const name = prompt('Ingresa el nombre del Clan al que deseas unirte:');
         if (!name) return;
+
+        clans = await api.getClans();
         const clan = clans.find(c => c.name.toLowerCase() === name.toLowerCase());
         if (!clan) {
             alert('Esa fuerza de tareas no existe en nuestros registros.');
             return;
         }
-        clan.members.push(currentUser.email);
-        localStorage.setItem('agogeClans', JSON.stringify(clans));
 
         currentUser.clan = clan.name;
+        await api.saveUser(currentUser);
         localStorage.setItem('agogeUser', JSON.stringify(currentUser));
-
-        const users = JSON.parse(localStorage.getItem('agoge_users') || '[]');
-        const uIdx = users.findIndex(u => u.email === currentUser.email);
-        if (uIdx !== -1) {
-            users[uIdx].clan = clan.name;
-            localStorage.setItem('agoge_users', JSON.stringify(users));
-        }
-        updateProfileView();
+        await refreshData();
     };
 
-    const leaveClan = () => {
-        if (!confirm('¿Seguro que deseas abandonar tu unidad?')) return;
+    const leaveClan = async () => {
+        if (!confirm('¿Estás seguro de que deseas abandonar tu clan actual?')) return;
         currentUser.clan = null;
+        await api.saveUser(currentUser);
         localStorage.setItem('agogeUser', JSON.stringify(currentUser));
-        const users = JSON.parse(localStorage.getItem('agoge_users') || '[]');
-        const uIdx = users.findIndex(u => u.email === currentUser.email);
-        if (uIdx !== -1) {
-            users[uIdx].clan = null;
-            localStorage.setItem('agoge_users', JSON.stringify(users));
-        }
-        updateProfileView();
+        await refreshData();
     };
 
     // ADMIN MANUAL TOOLS
-    window.adminEnrollUser = (email) => {
+    window.adminEnrollUser = async (email) => {
         const sunKey = getNextSundayKey();
-        if (!enrollments[sunKey]) enrollments[sunKey] = [];
-        if (!enrollments[sunKey].includes(email)) {
-            enrollments[sunKey].push(email);
-            localStorage.setItem('agogeEnrollments', JSON.stringify(enrollments));
-            updateAdminDashboard();
-            updateUI();
-        }
+        const success = await api.enroll(sunKey, email, 'own');
+        if (success) await refreshData();
     };
 
-    window.adminUnenrollUser = (email) => {
+    window.adminUnenrollUser = async (email) => {
         const sunKey = getNextSundayKey();
-        if (enrollments[sunKey]) {
-            enrollments[sunKey] = enrollments[sunKey].filter(e => e !== email);
-            localStorage.setItem('agogeEnrollments', JSON.stringify(enrollments));
-            updateAdminDashboard();
-            updateUI();
-        }
+        const success = await api.unenroll(sunKey, email);
+        if (success) await refreshData();
     };
 
     const addManualBtn = document.getElementById('addManualBtn');
-    addManualBtn?.addEventListener('click', () => {
+    addManualBtn?.addEventListener('click', async () => {
         const nameInput = document.getElementById('manualNameInput');
         const gearSelect = document.getElementById('manualGearSelect');
         const value = nameInput.value.trim();
         if (!value) return;
 
         const sunKey = getNextSundayKey();
-        if (!enrollments[sunKey]) enrollments[sunKey] = [];
 
-        // If it's a guest name (not email)
-        if (!enrollments[sunKey].includes(value)) {
-            enrollments[sunKey].push(value);
-            // Store gear for guests separately
-            if (!enrollments[`${sunKey}_gear`]) enrollments[`${sunKey}_gear`] = {};
-            enrollments[`${sunKey}_gear`][value] = gearSelect.value;
+        // Manual guest enrollment (simplified for now as the table supports it)
+        const { error } = await supabase.from('enrollments').insert({
+            sun_key: sunKey,
+            guest_name: value,
+            is_guest: true,
+            gear: gearSelect.value
+        });
 
-            localStorage.setItem('agogeEnrollments', JSON.stringify(enrollments));
+        if (!error) {
             nameInput.value = '';
-            updateAdminDashboard();
-            updateUI();
+            await refreshData();
+        } else {
+            alert('Error al añadir invitado.');
         }
     });
 
-    const renderClanLeaderboard = () => {
+    const renderClanLeaderboard = async () => {
         const leaderboardBody = document.getElementById('clanLeaderboardBody');
         if (!leaderboardBody) return;
 
-        const allUsers = JSON.parse(localStorage.getItem('agoge_users') || '[]');
+        const allUsers = await api.getUsers();
 
         const clanStats = clans.map(clan => {
             const members = allUsers.filter(u => u.clan === clan.name);
@@ -1171,12 +1220,15 @@ const initAuth = () => {
             </tr>
         `).join('');
     };
+
+    // Initial Refresh
+    refreshData();
 };
 
 /* =============================================
    INIT
    ============================================= */
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     initScrollProgress();
     initStickyHeader();
     initHamburger();
