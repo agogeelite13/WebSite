@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGOGE ELITE – Campo CQB Airsoft | Valladolid</title>
+    <meta name="description"
+        content="Campo de airsoft CQB indoor en Valladolid. Partidas organizadas, alquiler de equipación y nave privada. Disciplina, estrategia y realismo táctico.">
+    <meta name="robots" content="index, follow">
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="AGOGE ELITE – Campo CQB Airsoft | Valladolid">
+    <meta property="og:description"
+        content="El campo CQB indoor más serio de Valladolid. Partidas, alquiler y entrenamiento táctico.">
+    <meta property="og:image" content="https://www.agogeelite.com/og-image.jpg">
+    <meta property="og:locale" content="es_ES">
+    <meta name="twitter:card" content="summary_large_image">
+    <!-- Favicon -->
+    <link rel="icon" href="logo.jpg">
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Oswald:wght@400;600;700&family=Inter:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+    <div class="top-bar">
+        <div class="container top-bar__inner">
+            <span class="top-bar__status"><span class="status-dot"></span> SISTEMA ACTIVO</span>
+            <div class="top-bar__ticker">
+                <p>PRÓXIMA OPERACIÓN: DOMINGO 10:00H — QUEDAN PLAZAS DISPONIBLES — EQUIPO DE ALQUILER REVISADO</p>
+            </div>
+            <span class="top-bar__date" id="topBarDate"></span>
+        </div>
+    </div>
+
+    <header class="site-header" id="siteHeader" role="banner">
+        <div class="container header__inner">
+            <a href="#hero" class="header__logo" aria-label="Volver al inicio">
+                <img src="logo.jpg" alt="Logo Agoge Elite" width="40" height="40">
+                <span>AGOGE ELITE</span>
+            </a>
+            <nav class="nav" aria-label="Navegación principal">
+                <ul class="nav__list" id="navList" role="list">
+                    <li class="nav__item nav__dropdown">
+                        <button class="nav__link dropdown-trigger" aria-haspopup="true" aria-expanded="false">
+                            CENTRO <span class="dropdown-arrow"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="#about" class="nav__link">Nosotros</a></li>
+                            <li><a href="#gallery" class="nav__link">Galería</a></li>
+                            <li><a href="#testimonios" class="nav__link">Opiniones</a></li>
+                            <li><a href="#faq" class="nav__link">Dudas (FAQ)</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav__item nav__dropdown">
+                        <button class="nav__link dropdown-trigger" aria-haspopup="true" aria-expanded="false">
+                            OPERACIONES <span class="dropdown-arrow"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="#games" class="nav__link">Partidas</a></li>
+                            <li><a href="#calendario" class="nav__link">Calendario</a></li>
+                            <li><a href="#tarifas" class="nav__link">Tarifas</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav__item nav__dropdown">
+                        <button class="nav__link dropdown-trigger" aria-haspopup="true" aria-expanded="false">
+                            LOGÍSTICA <span class="dropdown-arrow"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="#equipment" class="nav__link">Alquiler</a></li>
+                            <li><a href="#rules" class="nav__link">Normativa</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#contact" class="nav__link nav__link--cta">Contacto</a></li>
+                    <li class="nav__auth-wrap">
+                        <button id="authTrigger" class="nav__link nav__link--auth">Acceso Operador</button>
+                        <div id="userMenu" class="user-menu hidden">
+                            <span id="userName" class="user-menu__name"></span>
+                            <div class="user-menu__actions">
+                                <button id="profileBtn" class="user-menu__btn">Mi Perfil</button>
+                                <button id="adminBtn" class="nav__link nav__link--auth hidden">ADMIN</button>
+                                <button id="logoutBtn" class="user-menu__logout">Cerrar Sesión</button>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+            <button class="hamburger" id="hamburger" aria-label="Abrir menú" aria-expanded="false"
+                aria-controls="navList">
+                <span class="hamburger__bar"></span>
+                <span class="hamburger__bar"></span>
+                <span class="hamburger__bar"></span>
+            </button>
+        </div>
+    </header>
+
+    <div class="page-frame">
+        <div class="column-decor column-decor--left" aria-hidden="true"></div>
+        <div class="column-decor column-decor--right" aria-hidden="true"></div>
+
+        <main id="main">
+
+            <!-- HERO -->
+            <section id="hero" class="hero" aria-labelledby="heroHeading">
+                <div class="hero__overlay" aria-hidden="true"></div>
+                <div class="hero__parallax" id="heroParallax" aria-hidden="true"></div>
+                <div class="hero__smoke" id="heroSmoke" aria-hidden="true"></div>
+                <div class="hero__content">
+                    <p class="hero__eyebrow">Campo CQB Indoor — Valladolid</p>
+                    <h1 class="hero__title" id="heroHeading">AGOGE ELITE</h1>
+                    <p class="hero__subtitle">CQB AIRSOFT CAMP</p>
+                    <p class="hero__tagline">Disciplina. Estrategia. Realismo táctico.</p>
+                    <div class="hero__actions">
+                        <a href="#tarifas" class="btn btn--primary">Reserva tu misión</a>
+                        <a href="#about" class="btn btn--outline">Conoce el campo</a>
+                    </div>
+                </div>
+                <a href="#about" class="hero__scroll" aria-label="Desplazar hacia abajo">
+                    <span class="hero__scroll-icon" aria-hidden="true"></span>
+                </a>
+            </section>
+
+            <!-- OPERATOR DASHBOARD (Conditional) -->
+            <section id="dashboard" class="section section--dashboard hidden" aria-labelledby="dashHeading">
+                <div class="container">
+                    <div class="dashboard__grid">
+                        <div class="dashboard__main reveal">
+                            <span class="section__label">Estado Operacional</span>
+                            <h2 class="section__title" id="dashHeading">Próxima Misión</h2>
+
+                            <!-- User View -->
+                            <div id="userMissionView" class="mission-card reveal">
+                                <div class="mission-card__info">
+                                    <p>Próxima Misión</p>
+                                    <h3 id="nextMissionDate">Domingo, -- de --</h3>
+                                    <div class="mission-countdown" id="missionCountdown">
+                                        <div class="countdown-item">
+                                            <span class="countdown-val" id="countDays">00</span>
+                                            <span class="countdown-label">Días</span>
+                                        </div>
+                                        <div class="countdown-item">
+                                            <span class="countdown-val" id="countHours">00</span>
+                                            <span class="countdown-label">Hrs</span>
+                                        </div>
+                                        <div class="countdown-item">
+                                            <span class="countdown-val" id="countMins">00</span>
+                                            <span class="countdown-label">Min</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mission-card__stats">
+                                    <div class="operator-profile-snippet">
+                                        <div class="rank-badge" id="userRankBadge">Recluta</div>
+                                        <div class="specialty-tag" id="userSpecialtyTag">ASALTO</div>
+                                    </div>
+                                    <div class="player-count-wrap">
+                                        <span class="mission-stat__val" id="playerCount">0</span>
+                                        <span class="mission-stat__label">Operadores Listos</span>
+                                    </div>
+                                    <div id="enrollStatus" class="enroll-status hidden">
+                                        <span>INSCRITO</span>
+                                        <button id="openIntelBtn" class="btn btn--outline btn--xs"
+                                            style="margin-top:10px; border-color:var(--bronze); color:var(--bronze);">ACCEDER
+                                            INTELIGENCIA</button>
+                                    </div>
+                                </div>
+
+                                <div class="mission-card__actions" id="enrollActionWrap">
+                                    <div class="waiver-wrap">
+                                        <input type="checkbox" id="rulesWaiver" class="waiver-check">
+                                        <label for="rulesWaiver" class="waiver-label">He leído y acepto estrictamente la
+                                            <a href="#rules">normativa de seguridad</a>.</label>
+                                    </div>
+                                    <button id="enrollBtn" class="btn btn--primary btn--full">Confirmar
+                                        Asistencia</button>
+                                </div>
+                            </div>
+
+                            <!-- Profile View (Ficha de Operador) -->
+                            <div id="profilePanel" class="profile-panel hidden reveal">
+                                <div class="profile-panel__header">
+                                    <h3 class="profile-panel__title">FICHA DE OPERADOR (SITREP)</h3>
+                                    <div class="profile-panel__header-actions">
+                                        <button id="editProfileBtn" class="user-menu__btn">Editar Perfil</button>
+                                        <button id="closeProfileBtn" class="profile-panel__close"
+                                            aria-label="Cerrar Perfil">&times;</button>
+                                    </div>
+                                </div>
+                                <div class="profile-grid">
+                                    <div class="profile-main">
+                                        <!-- View Mode -->
+                                        <div id="profileViewMode" class="profile-id-card">
+                                            <div class="profile-photo">
+                                                <img src="https://placehold.co/200x200/111/444?text=OPERATOR"
+                                                    id="profileImg" alt="Foto Operador">
+                                            </div>
+                                            <div class="profile-details">
+                                                <div class="profile-row">
+                                                    <span class="profile-label">CALLSIGN</span>
+                                                    <span class="profile-val" id="profCallsign">-</span>
+                                                </div>
+                                                <div class="profile-row">
+                                                    <span class="profile-label">NOMBRE REAL</span>
+                                                    <span class="profile-val" id="profRealName">-</span>
+                                                </div>
+                                                <div class="profile-row">
+                                                    <span class="profile-label">ESPECIALIDAD</span>
+                                                    <span class="profile-val" id="profSpecialty">-</span>
+                                                </div>
+                                                <div class="profile-row">
+                                                    <span class="profile-label">EQUIPACIÓN</span>
+                                                    <span class="profile-val" id="profGear">PROPIA</span>
+                                                </div>
+                                                <div class="profile-row">
+                                                    <span class="profile-label">CLAN / GRUPO</span>
+                                                    <span class="profile-val" id="profClan">SIN CLAN</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Edit Mode (Hidden) -->
+                                        <form id="profileEditForm" class="profile-edit-form hidden">
+                                            <div class="form-group">
+                                                <label for="editCallsign">Callsign</label>
+                                                <input type="text" id="editCallsign" class="form-input" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="editSpecialty">Especialidad</label>
+                                                <select id="editSpecialty" class="form-input">
+                                                    <option value="assault">Asalto</option>
+                                                    <option value="medic">Médico</option>
+                                                    <option value="support">Apoyo</option>
+                                                    <option value="sniper">Tirador</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Inventario de Réplica / Alquiler</label>
+                                                <div class="gear-options gear-options--vertical">
+                                                    <label class="radio-label">
+                                                        <input type="radio" name="editGear" value="own" checked> Propia
+                                                        (0€)
+                                                    </label>
+                                                    <label class="radio-label">
+                                                        <input type="radio" name="editGear" value="complete"> Equipo
+                                                        Completo (25€)
+                                                    </label>
+                                                    <label class="radio-label">
+                                                        <input type="radio" name="editGear" value="replica"> Solo
+                                                        Réplica (20€)
+                                                    </label>
+                                                    <label class="radio-label">
+                                                        <input type="radio" name="editGear" value="basic"> Equipo Básico
+                                                        (5€)
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="edit-actions">
+                                                <button type="submit" class="btn btn--primary">Confirmar SITREP</button>
+                                                <button type="button" id="cancelEditBtn"
+                                                    class="btn btn--outline">Anular</button>
+                                            </div>
+                                        </form>
+
+                                        <div class="clan-section">
+                                            <h4 class="mission-log__title">CLAN / FUERZA DE TAREAS</h4>
+                                            <div id="clanView" class="clan-view">
+                                                <div class="clan-empty">
+                                                    <p>Actualmente no perteneces a ninguna fuerza de tareas.</p>
+                                                    <div class="clan-actions">
+                                                        <button id="createClanBtn"
+                                                            class="btn btn--primary btn--sm">Crear Clan</button>
+                                                        <button id="joinClanBtn" class="btn btn--outline btn--sm">Unirse
+                                                            a Clan</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="medals-section">
+                                                <h4 class="mission-log__title">GALARDONES Y HONORES</h4>
+                                                <div id="medalsList" class="medals-list">
+                                                    <!-- Populated via JS -->
+                                                    <div class="medal-slot empty" title="Escudo de Esparta (Bloqueado)">
+                                                        <img src="/C:/Users/sergiolopez/.gemini/antigravity/brain/ef5c91d8-f873-4e2d-9e35-c99052363a61/agoge_medal_spartan_shield_1772470581102.png"
+                                                            class="medal-icon locked" alt="Medalla Escudo de Esparta">
+                                                    </div>
+                                                    <div class="medal-slot empty" title="Punta de Lanza (Bloqueado)">
+                                                        <img src="/C:/Users/sergiolopez/.gemini/antigravity/brain/ef5c91d8-f873-4e2d-9e35-c99052363a61/agoge_medal_spear_point_1772470673963.png"
+                                                            class="medal-icon locked" alt="Medalla Punta de Lanza">
+                                                    </div>
+                                                    <div class="medal-slot empty" title="Lealtad Agoge (Bloqueado)">
+                                                        <i class="fas fa-helmet-battle medal-placeholder"></i>
+                                                    </div>
+                                                    <div class="medal-slot empty" title="Hermandad (Bloqueado)">
+                                                        <i class="fas fa-users-crown medal-placeholder"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="mission-log">
+                                                <h4 class="mission-log__title">Registro de Misiones (Logbook)</h4>
+                                                <div id="missionLogList" class="mission-log__list">
+                                                    <!-- Populated via JS -->
+                                                    <p class="mission-log__empty">Esperando primera operación...</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="profile-stats-grid">
+                                            <div class="profile-stat-box">
+                                                <span class="stat-box__label">RANGO ACTUAL</span>
+                                                <span class="stat-box__val" id="profRank">-</span>
+                                            </div>
+                                            <div class="profile-stat-box">
+                                                <span class="stat-box__label">EXP. ACUMULADA</span>
+                                                <span class="stat-box__val" id="profMissions">0</span>
+                                            </div>
+                                            <div class="profile-stat-box">
+                                                <span class="stat-box__label">CERTIFICACIÓN</span>
+                                                <span class="stat-box__val" style="color:var(--bronze);">VÁLIDA</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Admin View -->
+                                <div id="adminPanel" class="admin-panel hidden reveal">
+                                    <div class="admin-panel__header">
+                                        <h3 class="admin-panel__title">CENTRO DE MANDO (ADMIN)</h3>
+                                        <div class="admin-panel__header-actions">
+                                            <button id="downloadManifestoBtn" class="user-menu__btn">Descargar
+                                                Manifiesto</button>
+                                            <button id="closeAdminBtn" class="admin-panel__close"
+                                                aria-label="Cerrar Panel Admin">&times;</button>
+                                        </div>
+                                    </div>
+                                    <div class="admin-aforo-bar">
+                                        <div class="admin-aforo-info">
+                                            <span class="aforo-label">AFORO PARA ESTE DOMINGO</span>
+                                            <span class="aforo-count" id="adminAforoCount">0 / 20</span>
+                                        </div>
+                                        <div class="admin-aforo-progress">
+                                            <div id="adminAforoProgress" class="admin-aforo-fill" style="width: 0%;">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="admin-manual-enroll">
+                                        <h4 class="admin-col__title">Inscripción Manual / Invitados</h4>
+                                        <div class="admin-manual-form">
+                                            <div class="manual-field">
+                                                <input type="text" id="manualNameInput"
+                                                    placeholder="Nombre Operador / Invitado" class="form-input">
+                                            </div>
+                                            <div class="manual-field manual-field--select">
+                                                <select id="manualGearSelect" class="form-input">
+                                                    <option value="own">Propia</option>
+                                                    <option value="complete">Completo (25€)</option>
+                                                    <option value="replica">Réplica (20€)</option>
+                                                    <option value="basic">Básico (5€)</option>
+                                                </select>
+                                            </div>
+                                            <button id="addManualBtn"
+                                                class="btn btn--primary btn--sm">Inscribir</button>
+                                        </div>
+                                    </div>
+                                    <div class="admin-grid">
+                                        <div class="admin-col">
+                                            <h4 class="admin-col__title">Operadores Registrados</h4>
+                                            <div class="admin-list" id="adminUserList">
+                                                <!-- Populated via JS -->
+                                            </div>
+                                        </div>
+                                        <div class="admin-col">
+                                            <h4 class="admin-col__title">Inscritos Misión Domingo</h4>
+                                            <div class="admin-list" id="adminEnrollList">
+                                                <!-- Populated via JS -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Intel Board View (Classified) - Relocated -->
+                            <div id="intelBoard" class="intel-board hidden">
+                                <div class="intel-board__header">
+                                    <div class="intel-badge">CLASSIFIED / CONFIDENCIAL</div>
+                                    <h3 class="intel-board__title">TABLERO DE INTELIGENCIA (INTEL-DASH)</h3>
+                                    <button id="closeIntelBtn" class="profile-panel__close">&times;</button>
+                                </div>
+                                <div class="intel-grid">
+                                    <div class="intel-map-container">
+                                        <div class="intel-map-placeholder">
+                                            <div class="scan-line"></div>
+                                            <p>CARGANDO MAPA OPERACIONAL...</p>
+                                            <small>(Pendiente de croquis final)</small>
+                                        </div>
+                                        <!-- Final image will go here -->
+                                        <img id="intelMapImg"
+                                            src="file:///C:/Users/sergiolopez/.gemini/antigravity/brain/ef5c91d8-f873-4e2d-9e35-c99052363a61/agoge_tactical_map_blueprint_1772446112038.png"
+                                            class="hidden" alt="Plano Táctico Agoge">
+                                    </div>
+                                    <div class="intel-briefing">
+                                        <h4 class="briefing-title">ORDEN DE OPERACIONES (OPORD)</h4>
+                                        <div class="briefing-content">
+                                            <div class="briefing-item">
+                                                <strong>SITUACIÓN:</strong>
+                                                <p>Inteligencia informa de presencia hostil en la zona de oficinas.
+                                                    Objetivo: Asegurar sector Alpha.</p>
+                                            </div>
+                                            <div class="briefing-item">
+                                                <strong>MISIÓN:</strong>
+                                                <p>Eliminación por equipos y captura de flags dinámicos.</p>
+                                            </div>
+                                            <div class="briefing-item">
+                                                <strong>EQUIPAMIENTO:</strong>
+                                                <p>Munición limitada. Uso de granadas permitido (max 1 por respawn).</p>
+                                            </div>
+                                            <div class="briefing-item voting-section">
+                                                <strong>VOTACIÓN DE MISIÓN (OPORD-VOTE):</strong>
+                                                <p class="voting-note">Como parte de la fuerza de asalto, elige el
+                                                    objetivo táctico:</p>
+                                                <div id="votingOptions" class="voting-options">
+                                                    <button class="vote-btn" data-mode="tdm">Eliminación por
+                                                        Equipos</button>
+                                                    <button class="vote-btn" data-mode="ctf">Captura de Bandera</button>
+                                                    <button class="vote-btn" data-mode="vip">Protección de VIP</button>
+                                                    <button class="vote-btn" data-mode="dom">Dominación de
+                                                        Sectores</button>
+                                                </div>
+                                                <div id="votingResults" class="voting-results hidden">
+                                                    <p>VOTO REGISTRADO. RESULTADOS ACTUALES:</p>
+                                                    <div id="resultsList"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </section>
+
+            <!-- ABOUT -->
+            <section id="about" class="section section--dark" aria-labelledby="aboutHeading">
+                <div class="container">
+                    <div class="about__grid">
+                        <div class="about__text reveal">
+                            <span class="section__label">Quiénes somos</span>
+                            <h2 class="section__title" id="aboutHeading">Un campo construido sobre disciplina</h2>
+                            <p class="about__body">Agoge Elite es un campo de airsoft CQB indoor ubicado en Valladolid.
+                                Operamos en una nave adaptada para combate en espacios cerrados, con un enfoque
+                                prioritario
+                                en la seguridad, la disciplina y el realismo táctico.</p>
+                            <p class="about__body">Somos una asociación orientada a ofrecer partidas organizadas,
+                                dinámicas
+                                y profesionales tanto para jugadores habituales como para nuevos reclutas.</p>
+                        </div>
+                        <div class="about__card reveal reveal--delay">
+                            <div class="about__card-accent" aria-hidden="true"></div>
+                            <h3 class="about__card-title">Nuestra filosofía</h3>
+                            <p>Un espacio diseñado para vivir el airsoft de forma táctica y organizada, fomentando el
+                                compañerismo y la mejora constante en cada operación.</p>
+                            <ul class="about__stats" aria-label="Datos clave">
+                                <li><strong>CQB</strong><span>Indoor</span></li>
+                                <li><strong>1J</strong><span>Máx. potencia</span></li>
+                                <li><strong>6–20</strong><span>Jugadores</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- GAMES -->
+            <section id="games" class="section section--mid" aria-labelledby="gamesHeading">
+                <div class="container">
+                    <header class="section__header reveal">
+                        <span class="section__label">Operaciones</span>
+                        <h2 class="section__title" id="gamesHeading">Partidas y Operaciones</h2>
+                    </header>
+                    <div class="cards-grid" role="list">
+                        <article class="card reveal" role="listitem">
+                            <h3 class="card__title">Partidas Públicas</h3>
+                            <p class="card__body">Principalmente domingos. Formato dinámico CQB con listas cerradas
+                                según
+                                aforo.</p>
+                            <span class="card__price">15 € / partida suelta</span>
+                        </article>
+                        <article class="card reveal reveal--delay" role="listitem">
+                            <h3 class="card__title">Partidas Privadas</h3>
+                            <p class="card__body">Para grupos cerrados entre semana o sábados. Ideales para
+                                entrenamientos y
+                                equipos.</p>
+                        </article>
+                        <article class="card reveal reveal--delay-2" role="listitem">
+                            <h3 class="card__title">Entrenamientos</h3>
+                            <p class="card__body">Trabajamos comunicación, coordinación de equipo y estrategias
+                                específicas
+                                de CQB.</p>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <!-- EQUIPMENT -->
+            <section id="equipment" class="section section--dark" aria-labelledby="equipHeading">
+                <div class="container">
+                    <header class="section__header reveal">
+                        <span class="section__label">Equipación</span>
+                        <h2 class="section__title" id="equipHeading">Alquiler de Equipación</h2>
+                    </header>
+                    <div class="equip-grid" role="list">
+                        <article class="equip-card reveal">
+                            <div class="equip-card__img">
+                                <img src="https://placehold.co/600x400/222/555?text=Solo+Replica" alt="Sólo Réplica">
+                            </div>
+                            <div class="equip-card__content">
+                                <h3 class="equip-card__title">Sólo Réplica</h3>
+                                <p>Elección entre Fusil G36C o Subfusil SMG. Incluye batería y 1000 bolas.</p>
+                                <div class="equip-card__price">20€</div>
+                            </div>
+                        </article>
+
+                        <article class="equip-card equip-card--featured reveal">
+                            <div class="equip-card__tag">Recomendado</div>
+                            <div class="equip-card__img">
+                                <img src="https://placehold.co/600x400/222/cd7f32?text=Kit+Completo"
+                                    alt="Kit de Operador Completo">
+                            </div>
+                            <div class="equip-card__content">
+                                <h3 class="equip-card__title">Kit Operador Completo</h3>
+                                <p>Réplica, máscara, gafas, chaleco, mono y 2000 bolas. Todo lo necesario.</p>
+                                <div class="equip-card__price">25€</div>
+                            </div>
+                        </article>
+
+                        <article class="equip-card reveal">
+                            <div class="equip-card__img">
+                                <img src="https://placehold.co/600x400/222/333?text=Equipo+Basico" alt="Equipo Básico">
+                            </div>
+                            <div class="equip-card__content">
+                                <h3 class="equip-card__title">Equipo Básico</h3>
+                                <p>Gafas de protección, máscara facial y chaleco táctico. Sin réplica.</p>
+                                <div class="equip-card__price">5€</div>
+                            </div>
+                        </article>
+                    </div>
+                    <p class="equip-note reveal">* Cargadores extra: 1,50 € / unidad</p>
+                </div>
+            </section>
+
+            <!-- SUPPLIES / LOGISTICS (Phase 19) -->
+            <section id="supplies" class="section section--mid" aria-labelledby="suppliesHeading">
+                <div class="container">
+                    <header class="section__header reveal">
+                        <span class="section__label">Logística y Consumibles</span>
+                        <h2 class="section__title" id="suppliesHeading">Suministros Oficiales</h2>
+                    </header>
+                    <div class="supply-grid">
+                        <article class="supply-card reveal">
+                            <div class="supply-card__img">
+                                <img src="/C:/Users/sergiolopez/.gemini/antigravity/brain/ef5c91d8-f873-4e2d-9e35-c99052363a61/agoge_tactical_supplies_water_1772470125585.png"
+                                    alt="Hidratación Táctica">
+                                <div class="supply-card__badge">EN STOCK</div>
+                            </div>
+                            <div class="supply-card__info">
+                                <h3 class="supply-card__title">Hidratación (Agua/Iso)</h3>
+                                <p class="supply-card__price">1,50€</p>
+                            </div>
+                        </article>
+                        <article class="supply-card reveal">
+                            <div class="supply-card__img">
+                                <img src="/C:/Users/sergiolopez/.gemini/antigravity/brain/ef5c91d8-f873-4e2d-9e35-c99052363a61/agoge_tactical_supplies_energy_1772470167583.png"
+                                    alt="Bebida Energética">
+                                <div class="supply-card__badge">EN STOCK</div>
+                            </div>
+                            <div class="supply-card__info">
+                                <h3 class="supply-card__title">Energía (Power-Up)</h3>
+                                <p class="supply-card__price">2,00€</p>
+                            </div>
+                        </article>
+                        <article class="supply-card reveal">
+                            <div class="supply-card__img">
+                                <img src="/C:/Users/sergiolopez/.gemini/antigravity/brain/ef5c91d8-f873-4e2d-9e35-c99052363a61/agoge_tactical_supplies_bbs_1772470153529.png"
+                                    alt="Bolsas de Bolas">
+                                <div class="supply-card__badge">EN STOCK</div>
+                            </div>
+                            <div class="supply-card__info">
+                                <h3 class="supply-card__title">Munición (Bolas 0.25/0.28)</h3>
+                                <p class="supply-card__price">Desde 12,00€</p>
+                            </div>
+                        </article>
+                        <article class="supply-card reveal">
+                            <div class="supply-card__img">
+                                <img src="/C:/Users/sergiolopez/.gemini/antigravity/brain/ef5c91d8-f873-4e2d-9e35-c99052363a61/agoge_tactical_supplies_gas_1772470399364.png"
+                                    alt="Gas y CO2">
+                                <div class="supply-card__badge">EN STOCK</div>
+                            </div>
+                            <div class="supply-card__info">
+                                <h3 class="supply-card__title">Propulsión (Gas / CO2)</h3>
+                                <p class="supply-card__price">Desde 1,00€</p>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CLAN LEADERBOARD (Phase 22) -->
+            <section id="leaderboard" class="section section--dark" aria-labelledby="leaderHeading">
+                <div class="container">
+                    <header class="section__header reveal">
+                        <span class="section__label">Competición</span>
+                        <h2 class="section__title" id="leaderHeading">Ranking de Fuerzas de Tareas</h2>
+                    </header>
+                    <div class="leaderboard-wrap reveal">
+                        <table class="leaderboard-table">
+                            <thead>
+                                <tr>
+                                    <th>POS</th>
+                                    <th>CLAN / UNIDAD</th>
+                                    <th>OPERADORES</th>
+                                    <th>NIVEL SOCIAL</th>
+                                    <th>XP TOTAL</th>
+                                </tr>
+                            </thead>
+                            <tbody id="clanLeaderboardBody">
+                                <!-- Populated via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TARIFAS -->
+            <section id="tarifas" class="section section--mid" aria-labelledby="tarifasHeading">
+                <div class="container">
+                    <header class="section__header reveal">
+                        <span class="section__label">Planes</span>
+                        <h2 class="section__title" id="tarifasHeading">Planes y Cuotas</h2>
+                    </header>
+                    <div class="plans-grid" role="list">
+                        <article class="plan-card reveal" role="listitem">
+                            <h3 class="plan-card__name">Entre Semana</h3>
+                            <div class="plan-card__price"><span class="plan-card__amount">25€</span><span
+                                    class="plan-card__period">/ persona / mes</span></div>
+                            <ul class="plan-card__features">
+                                <li>4 partidas al mes</li>
+                                <li>Grupo de 8 personas</li>
+                                <li>Lunes a Viernes</li>
+                            </ul>
+                            <a href="#contact" class="btn btn--secondary">Solicitar info</a>
+                        </article>
+                        <article class="plan-card plan-card--featured reveal reveal--delay" role="listitem">
+                            <div class="plan-card__badge">Más popular</div>
+                            <h3 class="plan-card__name">Plan Sábados</h3>
+                            <div class="plan-card__price"><span class="plan-card__amount">32€</span><span
+                                    class="plan-card__period">/ persona / mes</span></div>
+                            <ul class="plan-card__features">
+                                <li>4 partidas al mes (1/sem)</li>
+                                <li>Grupo de 8 personas</li>
+                                <li>Grupos cerrados</li>
+                            </ul>
+                            <a href="#contact" class="btn btn--primary">Solicitar info</a>
+                        </article>
+                        <article class="plan-card reveal reveal--delay-2" role="listitem">
+                            <h3 class="plan-card__name">Bono Flexible</h3>
+                            <div class="plan-card__price"><span class="plan-card__amount">35€</span><span
+                                    class="plan-card__period">/ 4 partidas</span></div>
+                            <ul class="plan-card__features">
+                                <li>Uso totalmente libre</li>
+                                <li>Sin obligación semanal</li>
+                                <li>Ahorro vs partidas sueltas</li>
+                            </ul>
+                            <a href="#contact" class="btn btn--secondary">Solicitar info</a>
+                        </article>
+                    </div>
+                    <div class="private-hire reveal" aria-labelledby="privateHireHeading">
+                        <div class="private-hire__content">
+                            <h3 class="private-hire__title" id="privateHireHeading">Alquiler Privado de Nave</h3>
+                            <p>Disponible de Lunes a Viernes para grupos exclusivos de 6 a 20 personas.</p>
+                            <p class="private-hire__price">Desde 200 € / mes <span>(Grupo de 8 personas)</span></p>
+                            <p>Ideal para equipos que buscan su propia base de entrenamiento táctica.</p>
+                        </div>
+                        <a href="#contact" class="btn btn--primary">Consultar disponibilidad</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- NORMAS -->
+            <section id="rules" class="section section--dark" aria-labelledby="rulesHeading">
+                <div class="container">
+                    <header class="section__header reveal">
+                        <span class="section__label">Seguridad</span>
+                        <h2 class="section__title" id="rulesHeading">Normativa Básica</h2>
+                    </header>
+                    <div class="rules-grid" role="list">
+                        <article class="rule-card reveal" role="listitem">
+                            <h3 class="rule-card__title">1. Protección Primaria</h3>
+                            <p>Uso de gafas de seguridad homologadas obligatorio. Prohibido quitárselas salvo en zonas
+                                frías acotadas.</p>
+                        </article>
+                        <article class="rule-card reveal" role="listitem">
+                            <h3 class="rule-card__title">2. Protección Bucal</h3>
+                            <p>Se recomienda el uso de máscaras bucales; la organización no se hace responsable de
+                                accidentes por no usarlas.</p>
+                        </article>
+                        <article class="rule-card reveal" role="listitem">
+                            <h3 class="rule-card__title">3. Impactos de Rebote</h3>
+                            <p>Si un jugador tiene certeza (mínimo 90%) de que el impacto es de rebote, no se dará por
+                                muerto.</p>
+                        </article>
+                        <article class="rule-card reveal" role="listitem">
+                            <h3 class="rule-card__title">4. Distancia de Juego</h3>
+                            <p>Distancia mínima 0 metros. Se disparará a zonas protegidas o se aplicará "muerto por
+                                toque" con arma blanca.</p>
+                        </article>
+                        <article class="rule-card reveal" role="listitem">
+                            <h3 class="rule-card__title">5. Eliminación Mutua</h3>
+                            <p>Si dos participantes se disparan a menos de 1 metro, ambos se dan de baja inmediatamente.
+                            </p>
+                        </article>
+                        <article class="rule-card reveal" role="listitem">
+                            <h3 class="rule-card__title">6. Zonas de Descanso</h3>
+                            <p>Prohibido disparar o reglar réplicas en zonas de descanso. Habrá una zona específica para
+                                ello.</p>
+                        </article>
+                        <article class="rule-card reveal" role="listitem">
+                            <h3 class="rule-card__title">7. Puntualidad Operativa</h3>
+                            <p>Máxima puntualidad requerida. Los participantes marcan la duración según su agilidad y
+                                puntualidad.</p>
+                        </article>
+                        <article class="rule-card reveal" role="listitem">
+                            <h3 class="rule-card__title">8. Cadena de Mando</h3>
+                            <p>La organización tiene la última palabra a la hora de tomar decisiones o medidas
+                                disciplinarias.</p>
+                        </article>
+                        <article class="rule-card reveal" role="listitem">
+                            <h3 class="rule-card__title">9. Código de Honor</h3>
+                            <p>Prohibidas peleas, insultos o inmortales. Un impacto recibido = un jugador eliminado.</p>
+                        </article>
+                        <article class="rule-card reveal" role="listitem">
+                            <h3 class="rule-card__title">10. Tiro sin Encarar</h3>
+                            <p>Queda totalmente prohibido abrir fuego sin encarar la réplica (disparos "a la libanesa").
+                            </p>
+                        </article>
+                        <article class="rule-card reveal" role="listitem">
+                            <h3 class="rule-card__title">11. Uso de Granadas</h3>
+                            <p>Permitidas (no pirotecnia). Uso limitado a 1 granada por persona para evitar saturación.
+                            </p>
+                        </article>
+                        <article class="rule-card reveal" role="listitem">
+                            <h3 class="rule-card__title">12. Entorno Civil</h3>
+                            <p>Prohibido el porte, uso o manipulación de réplicas fuera del recinto de la nave.</p>
+                        </article>
+                        <article class="rule-card reveal" role="listitem">
+                            <h3 class="rule-card__title">13. Tolerancia Cero</h3>
+                            <p>Prohibido fumar, el consumo de bebidas alcohólicas o de cualquier tipo de estupefaciente.
+                            </p>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TESTIMONIALS -->
+            <section id="testimonios" class="section section--dark" aria-labelledby="testHeading">
+                <div class="container">
+                    <header class="section__header reveal">
+                        <span class="section__label">Operadores</span>
+                        <h2 class="section__title" id="testHeading">Opiniones del Frente</h2>
+                    </header>
+                    <div class="testimonials-grid reveal">
+                        <article class="testimonial-card">
+                            <p class="testimonial-text">"El mejor campo CQB de la zona. La organización es impecable y
+                                el
+                                ambiente muy profesional. Totalmente recomendado."</p>
+                            <cite class="testimonial-author">— Operador</cite>
+                        </article>
+                        <article class="testimonial-card testimonial-card--featured">
+                            <p class="testimonial-text">"La nave está diseñada para obligarte a usar la cabeza. No es
+                                solo
+                                disparar, es pura estrategia. Los briefings son clave."</p>
+                            <cite class="testimonial-author">— Operador</cite>
+                        </article>
+                        <article class="testimonial-card">
+                            <p class="testimonial-text">"Buen rollo y mucha adrenalina. Las partidas de los domingos son
+                                adictivas. El alquiler de equipo es de primera."</p>
+                            <cite class="testimonial-author">— Operador</cite>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <!-- GALLERY -->
+            <section id="gallery" class="section section--mid" aria-labelledby="galleryHeading">
+                <div class="container">
+                    <header class="section__header reveal">
+                        <span class="section__label">El campo</span>
+                        <h2 class="section__title" id="galleryHeading">Galería Operacional</h2>
+                    </header>
+                    <div class="gallery-grid" role="list">
+                        <figure class="gallery-item reveal" role="listitem"><img
+                                src="https://placehold.co/800x600/111/333?text=CQB+HALL" alt="Interior del hall CQB"
+                                loading="lazy" width="800" height="600"></figure>
+                        <figure class="gallery-item reveal reveal--delay" role="listitem"><img
+                                src="https://placehold.co/800x600/111/333?text=POSICION+TACTICA"
+                                alt="Posición táctica de juego" loading="lazy" width="800" height="600"></figure>
+                        <figure class="gallery-item reveal reveal--delay-2" role="listitem"><img
+                                src="https://placehold.co/800x600/111/333?text=EQUIPACION"
+                                alt="Equipo táctico disponible" loading="lazy" width="800" height="600"></figure>
+                        <figure class="gallery-item reveal" role="listitem"><img
+                                src="https://placehold.co/800x600/111/333?text=BRIEFING" alt="Briefing pre-partida"
+                                loading="lazy" width="800" height="600"></figure>
+                    </div>
+                </div>
+            </section>
+
+            <!-- INSTAGRAM FEED -->
+            <section id="instagram" class="section" aria-labelledby="instaHeading">
+                <div class="container">
+                    <header class="section__header reveal">
+                        <span class="section__label">Social</span>
+                        <h2 class="section__title" id="instaHeading">Síguenos en el Campo</h2>
+                        <p class="section__subtitle">Echa un vistazo a nuestras últimas operaciones en @agoge.elite</p>
+                    </header>
+                    <div class="insta-grid reveal">
+                        <a href="https://www.instagram.com/agoge.elite" target="_blank" rel="noopener"
+                            class="insta-item">
+                            <img src="https://placehold.co/400x400/111/444?text=LIVE+ACTION" alt="Instagram Post 1"
+                                loading="lazy">
+                            <div class="insta-overlay"><span class="insta-icon"></span></div>
+                        </a>
+                        <a href="https://www.instagram.com/agoge.elite" target="_blank" rel="noopener"
+                            class="insta-item">
+                            <img src="https://placehold.co/400x400/111/444?text=TACTICAL+GEAR" alt="Instagram Post 2"
+                                loading="lazy">
+                            <div class="insta-overlay"><span class="insta-icon"></span></div>
+                        </a>
+                        <a href="https://www.instagram.com/agoge.elite" target="_blank" rel="noopener"
+                            class="insta-item">
+                            <img src="https://placehold.co/400x400/111/444?text=BRIEFING+ROOM" alt="Instagram Post 3"
+                                loading="lazy">
+                            <div class="insta-overlay"><span class="insta-icon"></span></div>
+                        </a>
+                        <a href="https://www.instagram.com/agoge.elite" target="_blank" rel="noopener"
+                            class="insta-item">
+                            <img src="https://placehold.co/400x400/111/444?text=TEAM+WORK" alt="Instagram Post 4"
+                                loading="lazy">
+                            <div class="insta-overlay"><span class="insta-icon"></span></div>
+                        </a>
+                    </div>
+                    <div class="insta-action reveal">
+                        <a href="https://www.instagram.com/agoge.elite" target="_blank" rel="noopener"
+                            class="btn btn--outline">Ver más en Instagram</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CALENDAR -->
+            <section id="calendario" class="section section--dark" aria-labelledby="calHeading">
+                <div class="container">
+                    <header class="section__header reveal">
+                        <span class="section__label">Agenda</span>
+                        <h2 class="section__title" id="calHeading">Calendario de Partidas</h2>
+                        <p class="section__subtitle">Las partidas públicas se celebran cada domingo. Las privadas se
+                            coordinan por WhatsApp.</p>
+                    </header>
+                    <div class="cal-wrap reveal">
+                        <div class="cal-legend">
+                            <span class="cal-dot cal-dot--public"></span> Partida pública
+                            <span class="cal-dot cal-dot--private"></span> Partida privada
+                        </div>
+                        <div class="calendar" id="calendar" aria-label="Calendario de partidas"></div>
+                        <div class="cal-info-box">
+                            <div class="cal-info-item">
+                                <strong>Domingos</strong>
+                                <span>Partida pública — Lista cerrada por aforo. Regístrate con antelación.</span>
+                            </div>
+                            <div class="cal-info-item">
+                                <strong>Lun – Sáb</strong>
+                                <span>Disponible para grupos privados y alquiler de nave. Contacta para reservar.</span>
+                            </div>
+                            <a href="https://wa.me/34691868419" class="btn btn--primary" target="_blank"
+                                rel="noopener">Reservar plaza por WhatsApp</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FAQ SECTION -->
+            <section id="faq" class="section" aria-labelledby="faqHeading">
+                <div class="container">
+                    <header class="section__header reveal">
+                        <span class="section__label">Dudas</span>
+                        <h2 class="section__title" id="faqHeading">Preguntas Frecuentes</h2>
+                    </header>
+                    <div class="faq-container reveal">
+                        <div class="faq-item">
+                            <button class="faq-question" aria-expanded="false">
+                                <span>¿Es necesario tener equipo propio?</span>
+                                <span class="faq-icon">+</span>
+                            </button>
+                            <div class="faq-answer">
+                                <p>No. Disponemos de equipo completo en alquiler (réplica, máscara protectora, bolas y
+                                    chaleco). Solo necesitas traer calzado cómodo y ganas de jugar.</p>
+                            </div>
+                        </div>
+                        <div class="faq-item">
+                            <button class="faq-question" aria-expanded="false">
+                                <span>¿Cuál es la edad mínima para jugar?</span>
+                                <span class="faq-icon">+</span>
+                            </button>
+                            <div class="faq-answer">
+                                <p>La edad mínima es de 16 años, siempre con autorización firmada por padre/madre/tutor
+                                    legal y acompañados de un adulto responsable.</p>
+                            </div>
+                        </div>
+                        <div class="faq-item">
+                            <button class="faq-question" aria-expanded="false">
+                                <span>¿Qué normativa de potencia usáis?</span>
+                                <span class="faq-icon">+</span>
+                            </button>
+                            <div class="faq-answer">
+                                <p>Al ser un campo CQB, el límite máximo es de 1 Julio (aprox. 328 FPS con 0.20g). Solo
+                                    se
+                                    permite el modo de disparo tiro a tiro (semi-automático).</p>
+                            </div>
+                        </div>
+                        <div class="faq-item">
+                            <button class="faq-question" aria-expanded="false">
+                                <span>¿Puedo reservar el campo en privado?</span>
+                                <span class="faq-icon">+</span>
+                            </button>
+                            <div class="faq-answer">
+                                <p>Sí, la nave está disponible para alquiler privado de lunes a sábado para grupos,
+                                    equipos
+                                    o entrenamientos tácticos. Consulta disponibilidad vía WhatsApp.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CONTACT -->
+            <section id="contact" class="section section--dark" aria-labelledby="contactHeading">
+                <div class="container">
+                    <header class="section__header reveal">
+                        <span class="section__label">Contacto</span>
+                        <h2 class="section__title" id="contactHeading">Únete a la operación</h2>
+                    </header>
+                    <div class="contact-grid reveal">
+                        <div class="contact-info">
+                            <p>¿Listo para entrar en combate? Escríbenos para reservar tu plaza o consultar cualquier
+                                duda
+                                sobre tarifas, alquiler de nave o partidas privadas.</p>
+                            <ul class="contact-details" aria-label="Datos de contacto">
+                                <li><span class="contact-label">Email</span><a
+                                        href="mailto:agogeelite13@gmail.com">agogeelite13@gmail.com</a></li>
+                                <li><span class="contact-label">WhatsApp</span><a href="https://wa.me/34691868419"
+                                        target="_blank" rel="noopener">+34 691 868 419</a></li>
+                                <li><span class="contact-label">Instagram</span><a
+                                        href="https://www.instagram.com/agoge.elite" target="_blank"
+                                        rel="noopener">@agoge.elite</a></li>
+                                <li><span class="contact-label">Ubicación</span><a
+                                        href="https://maps.app.goo.gl/qJNjiiSeFnfwz217A" target="_blank"
+                                        rel="noopener">Cam.
+                                        de Palomares, 300 — Valladolid</a></li>
+                            </ul>
+                        </div>
+                        <form class="contact-form" aria-label="Formulario de contacto" novalidate>
+                            <div class="form-group">
+                                <label for="tipoMision" class="form-label">Tipo de Misión</label>
+                                <select id="tipoMision" name="tipoMision" class="form-input">
+                                    <option value="publica">Reserva Partida Pública (Domingo)</option>
+                                    <option value="privada">Reserva Nave Privada</option>
+                                    <option value="entrenamiento">Entrenamiento Táctico</option>
+                                    <option value="consulta">Consulta General</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="name" class="form-label">Nombre</label>
+                                <input type="text" id="name" name="name" class="form-input" placeholder="Tu nombre"
+                                    required autocomplete="name">
+                            </div>
+                            <div class="form-group">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" id="email" name="email" class="form-input"
+                                    placeholder="tu@email.com" required autocomplete="email">
+                            </div>
+                            <div class="form-group">
+                                <label for="message" class="form-label">Mensaje</label>
+                                <textarea id="message" name="message" class="form-input form-textarea"
+                                    placeholder="¿En qué podemos ayudarte?" required rows="4"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn--primary btn--full">Enviar mensaje</button>
+                        </form>
+                    </div>
+                    <!-- Google Maps -->
+                    <div class="map-wrap reveal">
+                        <iframe
+                            src="https://www.google.com/maps?q=Camino+de+Palomares,+300,+47011+Valladolid&output=embed"
+                            width="100%" height="350" style="border:0;" allowfullscreen="" loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade" title="Ubicación Agoge Elite en Google Maps"
+                            aria-label="Mapa de Google mostrando la ubicación"></iframe>
+                        <a href="https://maps.app.goo.gl/qJNjiiSeFnfwz217A" class="map-link btn btn--secondary"
+                            target="_blank" rel="noopener">Abrir en Google Maps</a>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <footer class="site-footer" role="contentinfo">
+            <div class="container footer__inner">
+                <div class="footer__brand">
+                    <a href="#hero" aria-label="Inicio Agoge Elite"><img src="logo.jpg" alt="Logo Agoge Elite"
+                            width="48" height="48"></a>
+                    <p class="footer__tagline">EL PRECIO DE LA VICTORIA ES LA DISCIPLINA.</p>
+                </div>
+                <nav class="footer__nav" aria-label="Navegación pie de página">
+                    <ul role="list">
+                        <li><a href="#about">Nosotros</a></li>
+                        <li><a href="#games">Partidas</a></li>
+                        <li><a href="#tarifas">Tarifas</a></li>
+                        <li><a href="#rules">Normas</a></li>
+                        <li><a href="#contact">Contacto</a></li>
+                    </ul>
+                </nav>
+                <address class="footer__contact">
+                    <p>Cam. de Palomares, 300</p>
+                    <p>47011 Valladolid, España</p>
+                    <a href="mailto:agogeelite13@gmail.com">agogeelite13@gmail.com</a>
+                    <a href="https://www.instagram.com/agoge.elite" target="_blank" rel="noopener"
+                        class="footer__instagram">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16"
+                            height="16" aria-hidden="true">
+                            <path
+                                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                        </svg>
+                        @agoge.elite
+                    </a>
+                </address>
+            </div>
+            <div class="footer__bottom">
+                <p>&copy; 2025 Agoge Elite – CQB Airsoft Camp. Todos los derechos reservados.</p>
+            </div>
+        </footer>
+
+        </main>
+    </div>
+
+    <!-- Gallery Lightbox -->
+    <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Imagen en grande">
+        <button class="lightbox__close" id="lightboxClose" aria-label="Cerrar">&times;</button>
+        <img class="lightbox__img" id="lightboxImg" src="" alt="">
+    </div>
+
+    <!-- WhatsApp FAB -->
+    <a href="https://wa.me/34691868419" class="whatsapp-fab" target="_blank" rel="noopener noreferrer"
+        aria-label="Contactar por WhatsApp">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="28"
+            height="28">
+            <path
+                d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+            <path
+                d="M12 0C5.373 0 0 5.373 0 12c0 2.118.549 4.107 1.51 5.837L.057 23.527a.5.5 0 0 0 .614.614l5.737-1.45A11.943 11.943 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.896 0-3.677-.493-5.227-1.357l-.374-.214-3.884.982.998-3.77-.233-.388A9.962 9.962 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
+        </svg>
+    </a>
+
+    <!-- AUTH MODAL -->
+    <div class="modal" id="authModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal__overlay" id="modalOverlay"></div>
+        <div class="modal__content">
+            <button class="modal__close" id="modalClose">&times;</button>
+
+            <div id="loginFormWrap">
+                <h2 class="modal__title" id="modalTitle">Acceso Operador</h2>
+                <form class="auth-form" id="loginForm">
+                    <div class="form-group">
+                        <label for="loginEmail">Email</label>
+                        <input type="email" id="loginEmail" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPass">Contraseña</label>
+                        <input type="password" id="loginPass" class="form-input" required>
+                    </div>
+                    <button type="submit" class="btn btn--primary btn--full">Entrar</button>
+                </form>
+                <p class="modal__footer">¿No tienes cuenta? <button id="toRegister"
+                        class="text-link">Regístrate</button></p>
+                <p class="modal__footer"><button id="toRecover" class="text-link">¿Has olvidado tu contraseña?</button>
+                </p>
+            </div>
+
+            <div id="recoveryFormWrap" class="hidden">
+                <h2 class="modal__title">Recuperar Acceso</h2>
+                <p class="modal__intro">Introduce tu email de operador y te enviaremos las instrucciones de
+                    recuperación.</p>
+                <form class="auth-form" id="recoveryForm">
+                    <div class="form-group">
+                        <label for="recoverEmail">Email de Operador</label>
+                        <input type="email" id="recoverEmail" class="form-input" required>
+                    </div>
+                    <button type="submit" class="btn btn--primary btn--full">Enviar Instrucciones</button>
+                </form>
+                <p class="modal__footer"><button id="backToLogin" class="text-link">Volver al inicio de sesión</button>
+                </p>
+            </div>
+
+            <div id="registerFormWrap" class="hidden">
+                <h2 class="modal__title">Registro de Recluta</h2>
+                <form class="auth-form" id="registerForm">
+                    <div class="form-group">
+                        <label for="regName">Nombre Real</label>
+                        <input type="text" id="regName" class="form-input" required placeholder="Nombre y Apellido">
+                    </div>
+                    <div class="form-group">
+                        <label for="regCallsign">Callsign (Alias)</label>
+                        <input type="text" id="regCallsign" class="form-input" required
+                            placeholder="Ej: Ghost, Viper...">
+                    </div>
+                    <div class="form-group">
+                        <label for="regSpecialty">Especialidad Táctica</label>
+                        <select id="regSpecialty" class="form-input" required>
+                            <option value="" disabled selected>Selecciona Especialidad</option>
+                            <option value="assault">Asalto (Fusilero)</option>
+                            <option value="medic">Médico de Campo</option>
+                            <option value="support">Apoyo (SMG)</option>
+                            <option value="sniper">Tirador Selecto</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="regEmail">Email</label>
+                        <input type="email" id="regEmail" class="form-input" required placeholder="tu@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="regPass">Contraseña</label>
+                        <input type="password" id="regPass" class="form-input" required
+                            placeholder="Mínimo 6 caracteres">
+                    </div>
+                    <button type="submit" class="btn btn--primary btn--full">Crear Cuenta</button>
+                </form>
+                <p class="modal__footer">¿Ya tienes cuenta? <button id="toLogin" class="text-link">Inicia
+                        sesión</button></p>
+            </div>
+        </div>
+    </div>
+    <!-- Auth Scanning Overlay -->
+    <div id="scanOverlay" class="scan-overlay">
+        <div class="scan-line"></div>
+        <div class="scan-content">
+            <div class="scan-spinner"></div>
+            <h3>VERIFICANDO IDENTIDAD</h3>
+            <p>OPERADOR ENCRIPTADO...</p>
+            <div class="scan-stats">
+                <span>SECURE_LINK: ESTABLISHED</span>
+                <span>DB_ACCESS: GRANTED</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+</body>
+
+</html>
