@@ -431,14 +431,13 @@ const initAuth = () => {
     let clans = [];
     let currentVotes = {};
 
-    // Modal Helpers
     const openModal = () => {
-        authModal?.classList.remove('hidden');
+        authModal?.classList.add('is-open');
         document.body.style.overflow = 'hidden';
     };
 
     const closeModal = () => {
-        authModal?.classList.add('hidden');
+        authModal?.classList.remove('is-open');
         document.body.style.overflow = '';
         // Clear forms
         loginForm?.reset();
@@ -809,14 +808,14 @@ const initAuth = () => {
                 title: 'Escudo de Esparta',
                 desc: 'Veteranía demostrada (10+ misiones)',
                 unlocked: totalMissions >= 10,
-                img: '/C:/Users/sergiolopez/.gemini/antigravity/brain/ef5c91d8-f873-4e2d-9e35-c99052363a61/agoge_medal_spartan_shield_1772470581102.png'
+                img: 'medals/spartan_shield.png'
             },
             {
                 id: 'spear_point',
                 title: 'Punta de Lanza',
                 desc: 'Primeros en el frente (Inscrito esta semana)',
                 unlocked: isEnrolled,
-                img: '/C:/Users/sergiolopez/.gemini/antigravity/brain/ef5c91d8-f873-4e2d-9e35-c99052363a61/agoge_medal_spear_point_1772470673963.png'
+                img: 'medals/spear_point.png'
             },
             {
                 id: 'brotherhood',
