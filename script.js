@@ -410,7 +410,7 @@ const initAuth = () => {
     const closeIntelBtn = document.getElementById('closeIntelBtn');
     // Supabase Configuration
     const supabaseUrl = 'https://vekyfzeiijhgjazwkdlk.supabase.co';
-    const supabaseKey = 'sb_publishable_bYKU5Yd3oKbnYC5uT2CNJg_oTOTQp_x';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZla3lmemVpaWpoZ2phendrZGxrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1MDgxMDQsImV4cCI6MjA4ODA4NDEwNH0.HiA8WOEAo6qx2HpnYpOWqea8-Sdxuew8gNFsuRTJ9cY';
     const supabase = window.supabase?.createClient(supabaseUrl, supabaseKey);
 
     // State
@@ -419,6 +419,28 @@ const initAuth = () => {
     let enrollments = {};
     let clans = [];
     let currentVotes = {};
+
+    // Modal Helpers
+    const openModal = () => {
+        authModal?.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    };
+
+    const closeModal = () => {
+        authModal?.classList.add('hidden');
+        document.body.style.overflow = '';
+        // Clear forms
+        loginForm?.reset();
+        registerForm?.reset();
+        recoveryForm?.reset();
+        // Reset view
+        showWrap(loginFormWrap);
+    };
+
+    const showWrap = (wrap) => {
+        [loginFormWrap, registerFormWrap, recoveryFormWrap].forEach(w => w?.classList.add('hidden'));
+        wrap?.classList.remove('hidden');
+    };
 
     // Helper: Get Next Sunday String
     const getNextSunday = () => {
@@ -632,6 +654,16 @@ const initAuth = () => {
             renderMedals();
         }
     };
+
+    // Modal Triggers
+    authTrigger?.addEventListener('click', openModal);
+    modalClose?.addEventListener('click', closeModal);
+    modalOverlay?.addEventListener('click', closeModal);
+
+    toRegister?.addEventListener('click', () => showWrap(registerFormWrap));
+    toLogin?.addEventListener('click', () => showWrap(loginFormWrap));
+    toRecover?.addEventListener('click', () => showWrap(recoveryFormWrap));
+    backToLogin?.addEventListener('click', () => showWrap(loginFormWrap));
 
     // INTEL BOARD LOGIC
     const openIntelMode = () => {
@@ -852,20 +884,6 @@ const initAuth = () => {
         }).join('') || '<p style="padding:15px; color:#666; font-size:0.8rem;">Nadie inscrito todavía.</p>';
     };
 
-    // Events: Modal
-    authTrigger?.addEventListener('click', () => authModal.classList.add('is-open'));
-    const closeModal = () => authModal.classList.remove('is-open');
-    [modalClose, modalOverlay].forEach(el => el?.addEventListener('click', closeModal));
-
-    const showWrap = (wrap) => {
-        [loginFormWrap, registerFormWrap, recoveryFormWrap].forEach(w => w?.classList.add('hidden'));
-        wrap?.classList.remove('hidden');
-    };
-
-    toRegister?.addEventListener('click', () => showWrap(registerFormWrap));
-    toLogin?.addEventListener('click', () => showWrap(loginFormWrap));
-    toRecover?.addEventListener('click', () => showWrap(recoveryFormWrap));
-    backToLogin?.addEventListener('click', () => showWrap(loginFormWrap));
 
     // Recovery Submit
     recoveryForm?.addEventListener('submit', (e) => {
