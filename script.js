@@ -413,8 +413,9 @@ const initAuth = () => {
     const supabaseKey = 'sb_publishable_bYKU5Yd3oKbnYC5uT2CNJg_oTOTQp_x';
     const supabase = window.supabase?.createClient(supabaseUrl, supabaseKey);
 
-    // State (Temporary Local Cache, but primary source is DB)
-    let currentUser = JSON.parse(localStorage.getItem('agogeUser')) || null;
+    // State
+    let currentUser = null; // Will stay null until session is detected
+    let userProfile = null; // The metadata from 'users' table
     let enrollments = {};
     let clans = [];
     let currentVotes = {};
@@ -423,7 +424,7 @@ const initAuth = () => {
     const getNextSunday = () => {
         const d = new Date();
         d.setDate(d.getDate() + (7 - d.getDay()) % 7);
-        if (d.getDay() !== 0 || (d.getHours() > 14)) d.setDate(d.getDate() + 7); // If today is Sun afternoon, move to next
+        if (d.getDay() !== 0 || (d.getHours() > 14)) d.setDate(d.getDate() + 7);
         const options = { weekday: 'long', day: 'numeric', month: 'long' };
         return d.toLocaleDateString('es-ES', options);
     };
@@ -436,42 +437,47 @@ const initAuth = () => {
 
     // SUPABASE SERVICE LAYER
     const api = {
+        async getProfile(userId) {
+            const { data, error } = await supabase.from('users').select('*').eq('id', userId).single();
+            return data || null;
+        },
         async getUsers() {
             const { data, error } = await supabase.from('users').select('*');
             return data || [];
         },
-        async saveUser(user) {
-            const { error } = await supabase.from('users').upsert(user);
+        async saveProfile(profile) {
+            const { error } = await supabase.from('users').upsert(profile);
             return !error;
         },
         async getEnrollments() {
             const { data, error } = await supabase.from('enrollments').select('*');
-            // Transform list to the expected object format { date: [emails] }
             const transformed = {};
             data?.forEach(e => {
                 if (!transformed[e.sun_key]) transformed[e.sun_key] = [];
-                transformed[e.sun_key].push(e.is_guest ? e.guest_name : e.user_email);
+                // Store full object for better management
+                transformed[e.sun_key].push(e);
             });
             return transformed;
         },
-        async enroll(sunKey, email, gear) {
+        async enroll(sunKey, userId, email, gear) {
             const { error } = await supabase.from('enrollments').insert({
                 sun_key: sunKey,
+                user_id: userId,
                 user_email: email,
                 gear: gear
             });
             return !error;
         },
-        async unenroll(sunKey, email) {
-            const { error } = await supabase.from('enrollments').delete().match({ sun_key: sunKey, user_email: email });
+        async unenroll(enrollmentId) {
+            const { error } = await supabase.from('enrollments').delete().eq('id', enrollmentId);
             return !error;
         },
         async getClans() {
             const { data, error } = await supabase.from('clans').select('*');
             return data || [];
         },
-        async createClan(name, leaderEmail) {
-            const { error } = await supabase.from('clans').insert({ name, leader_email: leaderEmail });
+        async createClan(name, leaderId, leaderEmail) {
+            const { error } = await supabase.from('clans').insert({ name, leader_id: leaderId, leader_email: leaderEmail });
             return !error;
         },
         async getVotes(sunKey) {
@@ -480,48 +486,47 @@ const initAuth = () => {
             data?.forEach(v => votesObj[v.user_email] = v.mode);
             return votesObj;
         },
-        async castVote(sunKey, email, mode) {
-            const { error } = await supabase.from('votes').upsert({ sun_key: sunKey, user_email: email, mode });
+        async castVote(sunKey, userId, email, mode) {
+            const { error } = await supabase.from('votes').upsert({ sun_key: sunKey, user_id: userId, user_email: email, mode });
             return !error;
         }
     };
 
     // Global refresh from DB
-    const refreshData = async () => {
-        const [dbEnrollments, dbClans] = await Promise.all([
-            api.getEnrollments(),
-            api.getClans()
-        ]);
-        enrollments = dbEnrollments;
-        clans = dbClans;
-        updateUI();
-    };
-
-    const ADMIN_EMAIL = 'admin@agoge.elite';
-    const ADMIN_PASS = 'agoge2025';
+    // Session / Auth Listener
+    supabase.auth.onAuthStateChange((event, session) => {
+        currentUser = session?.user || null;
+        if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
+            refreshData();
+        } else if (event === 'SIGNED_OUT') {
+            userProfile = null;
+            currentUser = null;
+            updateUI();
+        }
+    });
 
     const updateUI = () => {
-        if (currentUser) {
+        if (currentUser && userProfile) {
             authTrigger?.classList.add('hidden');
             userMenu?.classList.remove('hidden');
-            if (userNameDisplay) userNameDisplay.textContent = currentUser.callsign || currentUser.name;
+            if (userNameDisplay) userNameDisplay.textContent = userProfile.callsign || userProfile.name;
             dashboard?.classList.remove('hidden');
 
-            // Admin button visibility
-            if (currentUser.email === ADMIN_EMAIL) {
+            // Admin button visibility (using DB metadata)
+            if (userProfile.is_admin) {
                 adminBtn?.classList.remove('hidden');
             } else {
                 adminBtn?.classList.add('hidden');
             }
 
-            // Profile info populate (Dashboard snippet)
-            if (userNameDisplay) userNameDisplay.textContent = currentUser.callsign || currentUser.name;
+            // Profile info populate
             updateProfileView();
 
             // Enrollment check
             const sunKey = getNextSundayKey();
             const list = enrollments[sunKey] || [];
-            if (list.includes(currentUser.email)) {
+            const isEnrolled = list.some(e => e.user_id === currentUser.id);
+            if (isEnrolled) {
                 enrollBtn?.classList.add('hidden');
                 enrollStatus?.classList.remove('hidden');
             } else {
@@ -531,7 +536,7 @@ const initAuth = () => {
 
             // Rank & Specialty Display
             if (userRankBadge) {
-                const totalMissions = currentUser.exp || 0;
+                const totalMissions = userProfile.exp || 0;
                 let rank = 'RECLUTA';
                 if (totalMissions >= 10) rank = 'ÉLITE';
                 else if (totalMissions >= 6) rank = 'VETERANO';
@@ -546,8 +551,8 @@ const initAuth = () => {
                     'support': 'APOYO',
                     'sniper': 'TIRADOR'
                 };
-                userSpecialtyTag.textContent = specMap[currentUser.specialty] || 'ASALTO';
-                userSpecialtyTag.dataset.specialty = currentUser.specialty || 'assault';
+                userSpecialtyTag.textContent = specMap[userProfile.specialty] || 'ASALTO';
+                userSpecialtyTag.dataset.specialty = userProfile.specialty || 'assault';
             }
         } else {
             authTrigger?.classList.remove('hidden');
@@ -566,7 +571,8 @@ const initAuth = () => {
 
         // Reset waiver
         if (rulesWaiver) rulesWaiver.checked = false;
-        if (currentUser && list.includes(currentUser.email)) {
+        const isEnrolled = currentUser ? list.some(e => e.user_id === currentUser.id) : false;
+        if (isEnrolled) {
             enrollActionWrap?.classList.add('hidden');
         } else {
             enrollActionWrap?.classList.remove('hidden');
@@ -583,11 +589,6 @@ const initAuth = () => {
     const openIntelMode = () => {
         if (!intelBoard) return;
         intelBoard.classList.remove('hidden');
-        // If map image exists, show it, otherwise keep placeholder
-        if (intelMapImg && intelMapImg.getAttribute('src')) {
-            intelMapImg.classList.remove('hidden');
-            document.querySelector('.intel-map-placeholder')?.classList.add('hidden');
-        }
         renderVoting();
     };
 
@@ -602,7 +603,7 @@ const initAuth = () => {
     const renderVoting = async () => {
         const sunKey = getNextSundayKey();
         const votes = await api.getVotes(sunKey);
-        const userVote = votes[currentUser?.email];
+        const userVote = userProfile ? votes[userProfile.email] : null;
         const votingResults = document.getElementById('votingResults');
         const votingOptions = document.getElementById('votingOptions');
         const resultsList = document.getElementById('resultsList');
@@ -641,9 +642,9 @@ const initAuth = () => {
 
     document.querySelectorAll('.vote-btn').forEach(btn => {
         btn.addEventListener('click', async () => {
-            if (!currentUser) return;
+            if (!currentUser || !userProfile) return;
             const sunKey = getNextSundayKey();
-            const success = await api.castVote(sunKey, currentUser.email, btn.dataset.mode);
+            const success = await api.castVote(sunKey, currentUser.id, userProfile.email, btn.dataset.mode);
             if (success) {
                 renderVoting();
             }
@@ -769,33 +770,35 @@ const initAuth = () => {
         if (adminAforoProgress) adminAforoProgress.style.width = `${(currentCount / maxAforo) * 100}%`;
 
         // Users List
-        adminUserList.innerHTML = allUsers.map(u => `
-            <div class="admin-item">
-                <div class="admin-item__info">
-                    <span class="admin-item__name">${u.callsign || u.name} <small style="opacity:0.5; font-size:0.7em;">(${u.name})</small></span>
-                    <span class="admin-item__sub">${u.email} — ${u.clan || 'sin clan'}</span>
+        adminUserList.innerHTML = allUsers.map(u => {
+            const isEnrolled = enrolledIdentifiers.some(e => e.user_id === u.id);
+            return `
+                <div class="admin-item">
+                    <div class="admin-item__info">
+                        <span class="admin-item__name">${u.callsign || u.name} <small style="opacity:0.5; font-size:0.7em;">(${u.name})</small></span>
+                        <span class="admin-item__sub">${u.email} — ${u.clan || 'sin clan'}</span>
+                    </div>
+                    <div class="admin-item__actions">
+                        <button class="btn btn--primary btn--xs" onclick="adminEnrollUser('${u.id}', '${u.email}')" ${isEnrolled ? 'disabled' : ''}>
+                            ${isEnrolled ? 'INSCRITO' : 'INSCRIBIR'}
+                        </button>
+                    </div>
                 </div>
-                <div class="admin-item__actions">
-                    <button class="btn btn--primary btn--xs" onclick="adminEnrollUser('${u.email}')" ${enrolledIdentifiers.includes(u.email) ? 'disabled' : ''}>
-                        ${enrolledIdentifiers.includes(u.email) ? 'INSCRITO' : 'INSCRIBIR'}
-                    </button>
-                </div>
-            </div>
-        `).join('') || '<p style="padding:15px; color:#666; font-size:0.8rem;">No hay usuarios registrados.</p>';
+            `;
+        }).join('') || '<p style="padding:15px; color:#666; font-size:0.8rem;">No hay usuarios registrados.</p>';
 
         // Enrollment List (including guests)
-        adminEnrollList.innerHTML = enrolledIdentifiers.map(id => {
-            const isGuest = !id.includes('@');
-            const u = isGuest ? { name: id, gear: (enrollments[`${sunKey}_gear`] || {})[id] || 'unknown' } : (allUsers.find(user => user.email === id) || { name: id });
+        adminEnrollList.innerHTML = enrolledIdentifiers.map(entry => {
+            const u = entry.is_guest ? { name: entry.guest_name, gear: entry.gear } : (allUsers.find(user => user.id === entry.user_id) || { name: entry.user_email, gear: entry.gear });
             const gearMap = { 'own': 'PROPIA', 'complete': 'COMPLETO', 'replica': 'RÉPLICA', 'basic': 'BÁSICO' };
             const gearStr = u?.gear ? `<span style="color:var(--bronze); font-size:0.7em;">(${gearMap[u.gear] || 'N/A'})</span>` : '';
             return `
                 <div class="admin-item">
                     <div class="admin-item__info">
                         <span class="admin-item__name">${u.callsign || u.name} ${gearStr}</span>
-                        <span class="admin-item__sub">${isGuest ? 'INVITADO' : id}</span>
+                        <span class="admin-item__sub">${entry.is_guest ? 'INVITADO' : entry.user_email}</span>
                     </div>
-                    <button class="btn btn--outline btn--xs" onclick="adminUnenrollUser('${id}')">BORRAR</button>
+                    <button class="btn btn--outline btn--xs" onclick="adminUnenrollUser('${entry.id}')">BORRAR</button>
                 </div>
             `;
         }).join('') || '<p style="padding:15px; color:#666; font-size:0.8rem;">Nadie inscrito todavía.</p>';
@@ -833,23 +836,31 @@ const initAuth = () => {
         const email = document.getElementById('regEmail').value;
         const pass = document.getElementById('regPass').value;
 
-        const users = await api.getUsers();
-        if (users.find(u => u.email === email)) {
-            alert('Este email ya está registrado.');
+        // 1. Create User in Supabase Auth
+        const { data, error } = await supabase.auth.signUp({
+            email,
+            password: pass,
+        });
+
+        if (error) {
+            alert(`Error de registro: ${error.message}`);
             return;
         }
 
-        const newUser = { name, callsign, specialty, email, password: pass, exp: 0 };
-        const saved = await api.saveUser(newUser);
-
-        if (saved) {
-            currentUser = newUser;
-            localStorage.setItem('agogeUser', JSON.stringify(currentUser));
-            updateUI();
-            closeModal();
-            refreshData(); // Sync everything
-        } else {
-            alert('Error al conectar con la base de datos.');
+        if (data.user) {
+            // 2. Create Profile in public.users
+            const profile = {
+                id: data.user.id,
+                email: email,
+                name: name,
+                callsign: callsign,
+                specialty: specialty,
+                exp: 0,
+                is_admin: false
+            };
+            await api.saveProfile(profile);
+            alert('Registro completado. Revisa tu email para confirmar la cuenta si es necesario.');
+            showWrap(loginFormWrap);
         }
     });
 
@@ -859,35 +870,25 @@ const initAuth = () => {
         const email = document.getElementById('loginEmail').value;
         const pass = document.getElementById('loginPass').value;
 
-        // Mock Admin check
-        let user;
-        if (email === ADMIN_EMAIL && pass === ADMIN_PASS) {
-            user = { name: 'Administrador', email: ADMIN_EMAIL, callsign: 'ADMIN' };
-        } else {
-            const users = await api.getUsers();
-            user = users.find(u => u.email === email && u.password === pass);
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email,
+            password: pass
+        });
+
+        if (error) {
+            alert(`Error de acceso: ${error.message}`);
+            return;
         }
 
-        if (user) {
+        if (data.user) {
             closeModal();
             const scan = document.getElementById('scanOverlay');
             if (scan) {
                 scan.classList.add('is-active');
-                setTimeout(async () => {
+                setTimeout(() => {
                     scan.classList.remove('is-active');
-                    localStorage.setItem('agogeUser', JSON.stringify(user));
-                    currentUser = user;
-                    await refreshData();
-                    updateUI();
                 }, 2500);
-            } else {
-                localStorage.setItem('agogeUser', JSON.stringify(user));
-                currentUser = user;
-                await refreshData();
-                updateUI();
             }
-        } else {
-            alert('Credenciales inválidas. Acceso denegado.');
         }
     });
 
@@ -938,46 +939,46 @@ const initAuth = () => {
         profileEditForm?.classList.add('hidden');
     });
 
-    profileEditForm?.addEventListener('submit', (e) => {
+    profileEditForm?.addEventListener('submit', async (e) => {
         e.preventDefault();
         const newCallsign = document.getElementById('editCallsign').value;
         const newSpecialty = document.getElementById('editSpecialty').value;
         const gearVal = document.querySelector('input[name="editGear"]:checked').value;
 
-        currentUser.callsign = newCallsign;
-        currentUser.specialty = newSpecialty;
-        currentUser.gear = gearVal;
+        const updatedProfile = {
+            ...userProfile,
+            callsign: newCallsign,
+            specialty: newSpecialty,
+            gear: gearVal
+        };
 
-        // Persist
-        localStorage.setItem('agogeUser', JSON.stringify(currentUser));
-
-        const users = JSON.parse(localStorage.getItem('agoge_users')) || [];
-        const idx = users.findIndex(u => u.email === currentUser.email);
-        if (idx !== -1) {
-            users[idx] = currentUser;
-            localStorage.setItem('agoge_users', JSON.stringify(users));
+        const success = await api.saveProfile(updatedProfile);
+        if (success) {
+            userProfile = updatedProfile;
+            profileViewMode?.classList.remove('hidden');
+            profileEditForm?.classList.add('hidden');
+            updateProfileView();
+            updateUI();
+        } else {
+            alert('Error al guardar el perfil.');
         }
-
-        profileViewMode?.classList.remove('hidden');
-        profileEditForm?.classList.add('hidden');
-        updateProfileView();
-        updateUI();
     });
 
     // Admin Manifesto Download
-    downloadManifestoBtn?.addEventListener('click', () => {
+    downloadManifestoBtn?.addEventListener('click', async () => {
         const sunKey = getNextSundayKey();
         const list = enrollments[sunKey] || [];
-        const users = JSON.parse(localStorage.getItem('agoge_users')) || [];
+        const allUsers = await api.getUsers();
 
         let manifest = `MANIFESTO AGOGE ELITE - ${sunKey}\n`;
         manifest += `TOTAL INSCRITOS: ${list.length}\n`;
         manifest += `------------------------------------------\n`;
 
-        list.forEach((email, i) => {
-            const u = users.find(x => x.email === email);
-            const gear = u?.gear === 'rental' ? '[ALQUILER]' : '[PROPIA]';
-            manifest += `${i + 1}. ${u?.callsign || 'N/A'} (${u?.name || email}) - ${gear}\n`;
+        list.forEach((entry, i) => {
+            const u = entry.is_guest ? { name: entry.guest_name, gear: entry.gear } : (allUsers.find(x => x.id === entry.user_id) || { name: entry.user_email, gear: entry.gear });
+            const gearMap = { 'own': 'PROPIA', 'complete': 'COMPLETO', 'replica': 'RÉPLICA', 'basic': 'BÁSICO' };
+            const gearStr = gearMap[entry.gear || 'own'];
+            manifest += `${i + 1}. ${u?.callsign || 'N/A'} (${u?.name || entry.user_email}) - ${gearStr}\n`;
         });
 
         const blob = new Blob([manifest], { type: 'text/plain' });
@@ -1002,9 +1003,10 @@ const initAuth = () => {
         });
     });
 
-    logoutBtn?.addEventListener('click', () => {
+    logoutBtn?.addEventListener('click', async () => {
+        await supabase.auth.signOut();
         currentUser = null;
-        localStorage.removeItem('agogeUser');
+        userProfile = null;
         updateUI();
     });
 
@@ -1023,7 +1025,8 @@ const initAuth = () => {
         enrollments = await api.getEnrollments();
         const list = enrollments[sunKey] || [];
 
-        if (list.includes(currentUser.email)) {
+        const isAlreadyEnrolled = list.some(e => e.user_id === currentUser.id);
+        if (isAlreadyEnrolled) {
             alert('Ya estás inscrito para esta misión.');
             return;
         }
@@ -1034,7 +1037,7 @@ const initAuth = () => {
         }
 
         // Enrollment Logic via API
-        const success = await api.enroll(sunKey, currentUser.email, currentUser.gear || 'own');
+        const success = await api.enroll(sunKey, currentUser.id, userProfile.email, userProfile.gear || 'own');
 
         if (success) {
             // Clan Multiplier Logic
@@ -1152,15 +1155,14 @@ const initAuth = () => {
     };
 
     // ADMIN MANUAL TOOLS
-    window.adminEnrollUser = async (email) => {
+    window.adminEnrollUser = async (userId, email) => {
         const sunKey = getNextSundayKey();
-        const success = await api.enroll(sunKey, email, 'own');
+        const success = await api.enroll(sunKey, userId, email, 'own');
         if (success) await refreshData();
     };
 
-    window.adminUnenrollUser = async (email) => {
-        const sunKey = getNextSundayKey();
-        const success = await api.unenroll(sunKey, email);
+    window.adminUnenrollUser = async (enrollmentId) => {
+        const success = await api.unenroll(enrollmentId);
         if (success) await refreshData();
     };
 
