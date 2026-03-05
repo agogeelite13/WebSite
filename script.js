@@ -493,6 +493,22 @@ const initAuth = () => {
     };
 
     // Global refresh from DB
+    const refreshData = async () => {
+        const [dbEnrollments, dbClans] = await Promise.all([
+            api.getEnrollments(),
+            api.getClans()
+        ]);
+        enrollments = dbEnrollments;
+        clans = dbClans;
+
+        if (currentUser) {
+            userProfile = await api.getProfile(currentUser.id);
+        } else {
+            userProfile = null;
+        }
+
+        updateUI();
+    };
     // Session / Auth Listener
     supabase.auth.onAuthStateChange((event, session) => {
         currentUser = session?.user || null;
