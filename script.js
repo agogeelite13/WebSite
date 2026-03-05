@@ -885,6 +885,14 @@ const initAuth = () => {
         e.preventDefault();
         const email = document.getElementById('loginEmail').value;
         const pass = document.getElementById('loginPass').value;
+        const submitBtn = loginForm.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+
+        // Feedback visual: Cargando
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Verificando...';
+
+        console.log('Intentando login para:', email);
 
         const { data, error } = await supabase.auth.signInWithPassword({
             email,
@@ -892,11 +900,16 @@ const initAuth = () => {
         });
 
         if (error) {
+            console.error('Error de Supabase Auth:', error);
+            // Feedback visual: Error
             alert(`Error de acceso: ${error.message}`);
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
             return;
         }
 
         if (data.user) {
+            console.log('Login exitoso, usuario:', data.user.id);
             closeModal();
             const scan = document.getElementById('scanOverlay');
             if (scan) {
@@ -905,6 +918,9 @@ const initAuth = () => {
                     scan.classList.remove('is-active');
                 }, 2500);
             }
+        } else {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
         }
     });
 
