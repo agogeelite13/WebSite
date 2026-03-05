@@ -494,20 +494,51 @@ const initAuth = () => {
 
     // Global refresh from DB
     const refreshData = async () => {
-        const [dbEnrollments, dbClans] = await Promise.all([
-            api.getEnrollments(),
-            api.getClans()
-        ]);
-        enrollments = dbEnrollments;
-        clans = dbClans;
+        console.log('--- REFRESH DATA START ---');
+        try {
+            const [dbEnrollments, dbClans] = await Promise.all([
+                api.getEnrollments(),
+                api.getClans()
+            ]);
+            enrollments = dbEnrollments;
+            clans = dbClans;
+            console.log('General data loaded: enrollments, clans');
 
-        if (currentUser) {
-            userProfile = await api.getProfile(currentUser.id);
-        } else {
-            userProfile = null;
+            if (currentUser) {
+                console.log('Fetching profile for UUID:', currentUser.id);
+                userProfile = await api.getProfile(currentUser.id);
+
+                // AUTO-REPAIR: If Auth user exists but public.users profile is missing
+                if (!userProfile) {
+                    console.log('Profile missing! Creating default profile for:', currentUser.email);
+                    const defaultProfile = {
+                        id: currentUser.id,
+                        email: currentUser.email,
+                        name: currentUser.email.split('@')[0],
+                        callsign: 'RECLUTA',
+                        specialty: 'assault',
+                        exp: 0,
+                        is_admin: false
+                    };
+                    const success = await api.saveProfile(defaultProfile);
+                    if (success) {
+                        userProfile = defaultProfile;
+                        console.log('Default profile created successfully.');
+                    } else {
+                        console.error('Failed to create default profile.');
+                    }
+                }
+                console.log('Profile result:', userProfile);
+            } else {
+                userProfile = null;
+                console.log('No currentUser, profile set to null');
+            }
+        } catch (err) {
+            console.error('Fatal error in refreshData:', err);
         }
 
         updateUI();
+        console.log('--- REFRESH DATA END ---');
     };
     // Session / Auth Listener
     supabase.auth.onAuthStateChange((event, session) => {
@@ -522,6 +553,7 @@ const initAuth = () => {
     });
 
     const updateUI = () => {
+        console.log('Updating UI. State:', { hasUser: !!currentUser, hasProfile: !!userProfile });
         if (currentUser && userProfile) {
             authTrigger?.classList.add('hidden');
             userMenu?.classList.remove('hidden');
