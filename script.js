@@ -411,7 +411,18 @@ const initAuth = () => {
     // Supabase Configuration
     const supabaseUrl = 'https://vekyfzeiijhgjazwkdlk.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZla3lmemVpaWpoZ2phendrZGxrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1MDgxMDQsImV4cCI6MjA4ODA4NDEwNH0.HiA8WOEAo6qx2HpnYpOWqea8-Sdxuew8gNFsuRTJ9cY';
-    const supabase = window.supabase?.createClient(supabaseUrl, supabaseKey);
+
+    let supabase = null;
+    try {
+        if (window.supabase) {
+            supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+            console.log('Supabase client initialized successfully.');
+        } else {
+            console.error('Supabase library not found! Ensure the script tag is in index.html');
+        }
+    } catch (e) {
+        console.error('Error creating Supabase client:', e);
+    }
 
     // State
     let currentUser = null; // Will stay null until session is detected
@@ -732,7 +743,7 @@ const initAuth = () => {
     });
 
     const updateProfileView = () => {
-        if (!currentUser) return;
+        if (!currentUser || !userProfile) return;
         const profCallsign = document.getElementById('profCallsign');
         const profRealName = document.getElementById('profRealName');
         const profSpecialty = document.getElementById('profSpecialty');
@@ -742,8 +753,8 @@ const initAuth = () => {
         const profClan = document.getElementById('profClan');
         const missionLogList = document.getElementById('missionLogList');
 
-        if (profCallsign) profCallsign.textContent = currentUser.callsign || '-';
-        if (profRealName) profRealName.textContent = currentUser.name || '-';
+        if (profCallsign) profCallsign.textContent = userProfile.callsign || '-';
+        if (profRealName) profRealName.textContent = userProfile.name || '-';
 
         const gearMap = {
             'own': 'PROPIA',
@@ -751,8 +762,8 @@ const initAuth = () => {
             'replica': 'RÉPLICA (20€)',
             'basic': 'BÁSICO (5€)'
         };
-        if (profGear) profGear.textContent = gearMap[currentUser.gear] || 'PROPIA';
-        if (profClan) profClan.textContent = currentUser.clan || 'SIN CLAN';
+        if (profGear) profGear.textContent = gearMap[userProfile.gear] || 'PROPIA';
+        if (profClan) profClan.textContent = userProfile.clan || 'SIN CLAN';
 
         const specMap = {
             'assault': 'ASALTO (FUSILERO)',
@@ -760,9 +771,9 @@ const initAuth = () => {
             'support': 'APOYO (SMG)',
             'sniper': 'TIRADOR SELECTO'
         };
-        if (profSpecialty) profSpecialty.textContent = specMap[currentUser.specialty] || 'ASALTO';
+        if (profSpecialty) profSpecialty.textContent = specMap[userProfile.specialty] || 'ASALTO';
 
-        const totalMissions = (currentUser.exp || 0);
+        const totalMissions = (userProfile.exp || 0);
         let rankStr = 'RECLUTA';
         if (totalMissions >= 10) rankStr = 'ÉLITE';
         else if (totalMissions >= 6) rankStr = 'VETERANO';
@@ -772,7 +783,7 @@ const initAuth = () => {
         if (profMissions) profMissions.textContent = totalMissions;
 
         if (missionLogList) {
-            const history = currentUser.missionHistory || [];
+            const history = userProfile.missionHistory || [];
             missionLogList.innerHTML = history.length > 0 ?
                 history.map(date => `<div class="mission-item">OPERACIÓN: SUNDAY ${date}</div>`).join('') :
                 '<div class="mission-item">SIN ACTIVIDAD REGISTRADA</div>';
@@ -786,11 +797,11 @@ const initAuth = () => {
 
     const renderMedals = () => {
         const medalsList = document.getElementById('medalsList');
-        if (!medalsList || !currentUser) return;
+        if (!medalsList || !userProfile) return;
 
-        const totalMissions = (currentUser.exp || 0);
-        const hasClan = !!currentUser.clan;
-        const isEnrolled = enrollments[getNextSundayKey()]?.includes(currentUser.email);
+        const totalMissions = (userProfile.exp || 0);
+        const hasClan = !!userProfile.clan;
+        const isEnrolled = enrollments[getNextSundayKey()]?.some(e => e.user_id === currentUser.id);
 
         const medals = [
             {
@@ -902,31 +913,41 @@ const initAuth = () => {
         const email = document.getElementById('regEmail').value;
         const pass = document.getElementById('regPass').value;
 
-        // 1. Create User in Supabase Auth
-        const { data, error } = await supabase.auth.signUp({
-            email,
-            password: pass,
-        });
-
-        if (error) {
-            alert(`Error de registro: ${error.message}`);
+        if (!supabase) {
+            alert('Error crítico: El sistema de seguridad no se ha cargado. Refresca la página.');
             return;
         }
 
-        if (data.user) {
-            // 2. Create Profile in public.users
-            const profile = {
-                id: data.user.id,
-                email: email,
-                name: name,
-                callsign: callsign,
-                specialty: specialty,
-                exp: 0,
-                is_admin: false
-            };
-            await api.saveProfile(profile);
-            alert('Registro completado. Revisa tu email para confirmar la cuenta si es necesario.');
-            showWrap(loginFormWrap);
+        try {
+            // 1. Create User in Supabase Auth
+            const { data, error } = await supabase.auth.signUp({
+                email,
+                password: pass,
+            });
+
+            if (error) {
+                alert(`Error de registro: ${error.message}`);
+                return;
+            }
+
+            if (data.user) {
+                // 2. Create Profile in public.users
+                const profile = {
+                    id: data.user.id,
+                    email: email,
+                    name: name,
+                    callsign: callsign,
+                    specialty: specialty,
+                    exp: 0,
+                    is_admin: false
+                };
+                await api.saveProfile(profile);
+                alert('Registro completado. Revisa tu email para confirmar la cuenta si es necesario.');
+                showWrap(loginFormWrap);
+            }
+        } catch (err) {
+            console.error('CRASH en registro submit:', err);
+            alert(`Error inesperado en registro: ${err.message}`);
         }
     });
 
@@ -938,37 +959,49 @@ const initAuth = () => {
         const submitBtn = loginForm.querySelector('button[type="submit"]');
         const originalText = submitBtn.textContent;
 
+        if (!supabase) {
+            alert('Error crítico: El sistema de seguridad (Supabase) no se ha cargado correctamente. Por favor, refresca la página.');
+            return;
+        }
+
         // Feedback visual: Cargando
         submitBtn.disabled = true;
         submitBtn.textContent = 'Verificando...';
 
         console.log('Intentando login para:', email);
 
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email,
-            password: pass
-        });
+        try {
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email,
+                password: pass
+            });
 
-        if (error) {
-            console.error('Error de Supabase Auth:', error);
-            // Feedback visual: Error
-            alert(`Error de acceso: ${error.message}`);
-            submitBtn.disabled = false;
-            submitBtn.textContent = originalText;
-            return;
-        }
-
-        if (data.user) {
-            console.log('Login exitoso, usuario:', data.user.id);
-            closeModal();
-            const scan = document.getElementById('scanOverlay');
-            if (scan) {
-                scan.classList.add('is-active');
-                setTimeout(() => {
-                    scan.classList.remove('is-active');
-                }, 2500);
+            if (error) {
+                console.error('Error de Supabase Auth:', error);
+                // Feedback visual: Error
+                alert(`Error de acceso: ${error.message}`);
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+                return;
             }
-        } else {
+
+            if (data.user) {
+                console.log('Login exitoso, usuario:', data.user.id);
+                closeModal();
+                const scan = document.getElementById('scanOverlay');
+                if (scan) {
+                    scan.classList.add('is-active');
+                    setTimeout(() => {
+                        scan.classList.remove('is-active');
+                    }, 2500);
+                }
+            } else {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
+        } catch (err) {
+            console.error('CRASH en login submit:', err);
+            alert(`Error inesperado: ${err.message}`);
             submitBtn.disabled = false;
             submitBtn.textContent = originalText;
         }
@@ -1125,9 +1158,9 @@ const initAuth = () => {
             // Clan Multiplier Logic
             let xpGained = 1;
             let socialXpGained = 1;
-            if (currentUser.clan) {
+            if (userProfile.clan) {
                 const allUsers = await api.getUsers();
-                const clanMembersInMission = allUsers.filter(u => u.clan === currentUser.clan && list.includes(u.email));
+                const clanMembersInMission = allUsers.filter(u => u.clan === userProfile.clan && list.some(e => e.user_email === u.email));
 
                 if (clanMembersInMission.length >= 1) { // 1 existing + 1 joining = 2
                     xpGained = 1.5;
@@ -1136,17 +1169,16 @@ const initAuth = () => {
             }
 
             // Experience & Mission Log Gain
-            currentUser.exp = (currentUser.exp || 0) + xpGained;
-            currentUser.socialLevel = (currentUser.socialLevel || 0) + socialXpGained;
+            userProfile.exp = (userProfile.exp || 0) + xpGained;
+            userProfile.socialLevel = (userProfile.socialLevel || 0) + socialXpGained;
 
-            if (!currentUser.missionHistory) currentUser.missionHistory = [];
-            if (!currentUser.missionHistory.includes(sunKey)) {
-                currentUser.missionHistory.unshift(sunKey);
+            if (!userProfile.missionHistory) userProfile.missionHistory = [];
+            if (!userProfile.missionHistory.includes(sunKey)) {
+                userProfile.missionHistory.unshift(sunKey);
             }
 
             // Persist User Changes to DB
-            await api.saveUser(currentUser);
-            localStorage.setItem('agogeUser', JSON.stringify(currentUser));
+            await api.saveProfile(userProfile);
 
             await refreshData();
         } else {
@@ -1159,7 +1191,7 @@ const initAuth = () => {
         const clanView = document.getElementById('clanView');
         if (!clanView) return;
 
-        if (!currentUser.clan) {
+        if (!userProfile.clan) {
             clanView.innerHTML = `
                 <div class="clan-empty">
                     <p>Actualmente no perteneces a ninguna fuerza de tareas.</p>
@@ -1172,12 +1204,12 @@ const initAuth = () => {
             document.getElementById('createClanBtn')?.addEventListener('click', createClan);
             document.getElementById('joinClanBtn')?.addEventListener('click', joinClan);
         } else {
-            const clanData = clans.find(c => c.name === currentUser.clan) || { level: 1 };
+            const clanData = clans.find(c => c.name === userProfile.clan) || { level: 1 };
             clanView.innerHTML = `
                 <div class="clan-info">
                     <div class="clan-header">
-                        <span class="clan-tag" style="background:var(--bronze); color:black; padding:2px 6px; font-weight:bold; border-radius:2px; font-size:0.7em; margin-right:8px;">[${currentUser.clan.substring(0, 3).toUpperCase()}]</span>
-                        <span class="clan-name" style="font-family:var(--font-display); font-size:0.9rem;">${currentUser.clan}</span>
+                        <span class="clan-tag" style="background:var(--bronze); color:black; padding:2px 6px; font-weight:bold; border-radius:2px; font-size:0.7em; margin-right:8px;">[${userProfile.clan.substring(0, 3).toUpperCase()}]</span>
+                        <span class="clan-name" style="font-family:var(--font-display); font-size:0.9rem;">${userProfile.clan}</span>
                     </div>
                     <div class="clan-stats" style="margin-top:10px; font-size:0.75rem; color:var(--text-muted); display:flex; align-items:center; justify-content:space-between;">
                         <span>Nivel de Clan: <span style="color:var(--white)">${clanData.level || 1}</span></span>
@@ -1200,11 +1232,10 @@ const initAuth = () => {
             return;
         }
 
-        const success = await api.createClan(name, currentUser.email);
+        const success = await api.createClan(name, userProfile.id, userProfile.email);
         if (success) {
-            currentUser.clan = name;
-            await api.saveUser(currentUser);
-            localStorage.setItem('agogeUser', JSON.stringify(currentUser));
+            userProfile.clan = name;
+            await api.saveProfile(userProfile);
             await refreshData();
         } else {
             alert('Error al crear el clan.');
@@ -1222,17 +1253,15 @@ const initAuth = () => {
             return;
         }
 
-        currentUser.clan = clan.name;
-        await api.saveUser(currentUser);
-        localStorage.setItem('agogeUser', JSON.stringify(currentUser));
+        userProfile.clan = clan.name;
+        await api.saveProfile(userProfile);
         await refreshData();
     };
 
     const leaveClan = async () => {
         if (!confirm('¿Estás seguro de que deseas abandonar tu clan actual?')) return;
-        currentUser.clan = null;
-        await api.saveUser(currentUser);
-        localStorage.setItem('agogeUser', JSON.stringify(currentUser));
+        userProfile.clan = null;
+        await api.saveProfile(userProfile);
         await refreshData();
     };
 
