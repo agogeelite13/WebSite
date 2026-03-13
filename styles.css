@@ -3875,3 +3875,119 @@ select.form-input option {
     white-space: nowrap;
     border: 0;
 }
+
+/* Phase Bravo: Tactical Mission Editor & Roles */
+.admin-mission-config {
+    background: rgba(0,0,0,0.3);
+    border-radius: 4px;
+    padding: 20px;
+}
+
+.admin-mission-config textarea.form-input {
+    background: rgba(20,20,20,0.8);
+    border-color: var(--border);
+    color: var(--white);
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    line-height: 1.4;
+    resize: none;
+}
+
+.admin-mission-config textarea.form-input:focus {
+    border-color: var(--bronze);
+    outline: none;
+}
+
+.role-selector-wrap select.form-input {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23cd7f32' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    padding-right: 40px;
+    cursor: pointer;
+}
+
+.mission-stat__val#playerCount {
+    text-shadow: 0 0 15px var(--glow-bronze);
+}
+
+@media (max-width: 768px) {
+    #adminMissionForm {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* =============================================
+   PHASE DELTA: IMMERSIVE UI
+   ============================================= */
+
+/* Hero Cinematic */
+.hero__video-wrap {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    z-index: 0;
+}
+
+.hero__video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.6) contrast(1.1) grayscale(30%);
+}
+
+/* scan-line logic */
+.scan-line {
+    position: absolute;
+    width: 100%;
+    height: 10px;
+    background: linear-gradient(to bottom, transparent, rgba(205, 127, 50, 0.2), transparent);
+    z-index: 10;
+    pointer-events: none;
+    animation: scanMove 4s linear infinite;
+}
+
+@keyframes scanMove {
+    0% { top: -10%; }
+    100% { top: 110%; }
+}
+
+/* Tactical Map Hotspots */
+.map-hotspot {
+    cursor: pointer;
+    pointer-events: all;
+    transition: all 0.3s var(--ease);
+}
+
+.map-hotspot circle {
+    fill: var(--bronze);
+    fill-opacity: 0.2;
+    stroke: var(--bronze);
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+}
+
+.map-hotspot:hover circle {
+    fill-opacity: 0.6;
+    stroke: var(--white);
+    filter: drop-shadow(0 0 5px var(--bronze));
+}
+
+.map-hotspot text {
+    fill: var(--white);
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 700;
+    pointer-events: none;
+    text-shadow: 0 0 5px rgba(0,0,0,0.8);
+}
+
+.map-tooltip {
+    transition: opacity 0.2s var(--ease);
+}
+
+.map-tooltip.hidden {
+    display: none;
+    opacity: 0;
+}

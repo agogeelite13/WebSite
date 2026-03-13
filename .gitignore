@@ -1,0 +1,24 @@
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Gemini / AG Artifacts
+.gemini/
+.agents/
+.agent/
+brain/
+implementation_plan.md
+task.md
+walkthrough.md
+production_plan.md
+security_plan.md
+supabase_setup.md
+
+# Tmp
+/tmp/

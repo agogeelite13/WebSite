@@ -123,6 +123,12 @@
 
             <!-- HERO -->
             <section id="hero" class="hero" aria-labelledby="heroHeading">
+                <div class="hero__video-wrap">
+                    <video autoplay muted loop playsinline class="hero__video" poster="logo.jpg" id="heroVideo">
+                        <source src="img/hero-cinematic.mp4" type="video/mp4">
+                        <!-- Fallback content if needed -->
+                    </video>
+                </div>
                 <div class="hero__overlay" aria-hidden="true"></div>
                 <div class="hero__parallax" id="heroParallax" aria-hidden="true"></div>
                 <div class="hero__smoke" id="heroSmoke" aria-hidden="true"></div>
@@ -178,6 +184,7 @@
                                     <div class="player-count-wrap">
                                         <span class="mission-stat__val" id="playerCount">0</span>
                                         <span class="mission-stat__label">Operadores Listos</span>
+                                        <div id="slotsRemaining" style="font-size:0.7rem; color:var(--bronze); margin-top:5px; font-weight:bold; letter-spacing:1px;">PLAZAS DISPONIBLES: --</div>
                                     </div>
                                     <div id="enrollStatus" class="enroll-status hidden">
                                         <span>INSCRITO</span>
@@ -188,6 +195,15 @@
                                 </div>
 
                                 <div class="mission-card__actions" id="enrollActionWrap">
+                                    <div class="role-selector-wrap" style="margin-bottom:15px;">
+                                        <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:8px; text-transform:uppercase; letter-spacing:1px;">Selecciona tu rol táctico:</p>
+                                        <select id="enrollRole" class="form-input" style="border-color:var(--border);">
+                                            <option value="assault">ASALTO (FUSILERO)</option>
+                                            <option value="medic">MÉDICO DE CAMPO</option>
+                                            <option value="support">APOYO (SMG)</option>
+                                            <option value="sniper">TIRADOR SELECTO</option>
+                                        </select>
+                                    </div>
                                     <div class="waiver-wrap">
                                         <input type="checkbox" id="rulesWaiver" class="waiver-check">
                                         <label for="rulesWaiver" class="waiver-label">He leído y acepto estrictamente la
@@ -237,22 +253,45 @@
                                                     <span class="profile-label">CLAN / GRUPO</span>
                                                     <span class="profile-val" id="profClan">SIN CLAN</span>
                                                 </div>
+                                                <div class="profile-row">
+                                                    <span class="profile-label">FACCIÓN</span>
+                                                    <span class="profile-val" id="profFaction">TASK FORCE</span>
+                                                </div>
+                                                <div class="xp-progress-container" style="margin-top:20px;">
+                                                    <div style="display:flex; justify-content:space-between; font-size:0.6rem; color:var(--text-muted); margin-bottom:5px;">
+                                                        <span id="profLevel">NIVEL 1</span>
+                                                        <span id="profXPText">0 / 500 XP</span>
+                                                    </div>
+                                                    <div class="xp-bar-bg" style="height:6px; background:rgba(0,0,0,0.5); border:1px solid var(--border); border-radius:3px;">
+                                                        <div id="profXPFill" class="xp-bar-fill" style="width:0%; height:100%; background:var(--blood); box-shadow:0 0 10px var(--blood);"></div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
 
                                         <!-- Edit Mode (Hidden) -->
                                         <form id="profileEditForm" class="profile-edit-form hidden">
-                                            <div class="form-group">
-                                                <label for="editCallsign">Callsign</label>
-                                                <input type="text" id="editCallsign" class="form-input" required>
+                                            <div class="form-group grid-2">
+                                                <div class="field-wrap">
+                                                    <label for="editCallsign">Callsign</label>
+                                                    <input type="text" id="editCallsign" class="form-input" required>
+                                                </div>
+                                                <div class="field-wrap">
+                                                    <label for="editSpecialty">Especialidad</label>
+                                                    <select id="editSpecialty" class="form-input">
+                                                        <option value="assault">Asalto</option>
+                                                        <option value="medic">Médico</option>
+                                                        <option value="support">Apoyo</option>
+                                                        <option value="sniper">Tirador</option>
+                                                    </select>
+                                                </div>
                                             </div>
                                             <div class="form-group">
-                                                <label for="editSpecialty">Especialidad</label>
-                                                <select id="editSpecialty" class="form-input">
-                                                    <option value="assault">Asalto</option>
-                                                    <option value="medic">Médico</option>
-                                                    <option value="support">Apoyo</option>
-                                                    <option value="sniper">Tirador</option>
+                                                <label for="editFaction">Facción de Lealtad</label>
+                                                <select id="editFaction" class="form-input">
+                                                    <option value="none">Sin Facción</option>
+                                                    <option value="taskforce">Task Force (Orden)</option>
+                                                    <option value="uprising">Uprising (Rebelión)</option>
                                                 </select>
                                             </div>
                                             <div class="form-group">
@@ -398,6 +437,40 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="admin-mission-config" style="margin-top:30px; padding-top:20px; border-top:1px dashed var(--border);">
+                                    <h4 class="admin-col__title">🔧 CONFIGURAR MISIÓN (DOMINGO)</h4>
+                                    <form id="adminMissionForm" class="admin-manual-form" style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+                                        <div class="manual-field">
+                                            <label for="confSituation" style="font-size:0.7rem; color:var(--text-muted);">SITUACIÓN (LORE)</label>
+                                            <textarea id="confSituation" class="form-input" style="height:80px;"></textarea>
+                                        </div>
+                                        <div class="manual-field">
+                                            <label for="confMission" style="font-size:0.7rem; color:var(--text-muted);">MISIÓN (OBJETIVOS)</label>
+                                            <textarea id="confMission" class="form-input" style="height:80px;"></textarea>
+                                        </div>
+                                        <div class="manual-field">
+                                            <label for="confGear" style="font-size:0.7rem; color:var(--text-muted);">EQUIPAMIENTO/REGLAS</label>
+                                            <input type="text" id="confGear" class="form-input">
+                                        </div>
+                                        <div class="manual-field">
+                                            <label for="confMap" style="font-size:0.7rem; color:var(--text-muted);">URL IMAGEN MAPA (SITREP)</label>
+                                            <input type="text" id="confMap" class="form-input" placeholder="img/mapa.png">
+                                        </div>
+                                        <div class="manual-field">
+                                            <label for="confMode" style="font-size:0.7rem; color:var(--text-muted);">MODO DE JUEGO ACTUAL</label>
+                                            <select id="confMode" class="form-input">
+                                                <option value="tdm">Eliminación por Equipos</option>
+                                                <option value="ctf">Captura de Bandera</option>
+                                                <option value="vip">Protección de VIP</option>
+                                                <option value="dom">Dominación de Sectores</option>
+                                            </select>
+                                        </div>
+                                        <div style="display:flex; align-items:flex-end;">
+                                            <button type="submit" class="btn btn--primary btn--full">PUBLICAR OPORD</button>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                   </div>
                             </div>
@@ -410,11 +483,16 @@
                                     <button id="closeIntelBtn" class="profile-panel__close">&times;</button>
                                 </div>
                                 <div class="intel-grid">
-                                    <div class="intel-map-container">
-                                        <!-- Operational Tactical Map -->
-                                        <div class="scan-line"></div>
-                                        <img id="intelMapImg" src="img/agoge_tactical_map_final.png"
-                                            alt="Plano Táctico Operacional Agoge">
+                                    <div class="intel-map-wrap">
+                                        <div class="intel-map-container" style="position:relative; overflow:hidden; border:2px solid var(--border); border-radius:4px;">
+                                            <div class="scan-line"></div>
+                                            <img id="intelMapImg" src="img/agoge_tactical_map_final.png"
+                                                alt="Plano Táctico Operacional Agoge" class="intel-map" style="display:block; width:100%; height:auto;">
+                                            <svg id="mapHotspots" viewBox="0 0 1200 800" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none;">
+                                                <!-- Hotspots injected via JS -->
+                                            </svg>
+                                            <div id="mapTooltip" class="map-tooltip hidden" style="position:absolute; background:rgba(0,0,0,0.9); color:var(--white); padding:5px 10px; border:1px solid var(--bronze); font-size:0.7rem; pointer-events:none; z-index:100; font-family:var(--font-display);"></div>
+                                        </div>
                                     </div>
                                     <div class="intel-briefing">
                                         <h4 class="briefing-title">ORDEN DE OPERACIONES (OPORD)</h4>
@@ -430,7 +508,13 @@
                                             </div>
                                             <div class="briefing-item">
                                                 <strong>EQUIPAMIENTO:</strong>
-                                                <p>Munición limitada. Uso de granadas permitido (max 1 por respawn).</p>
+                                                <p id="opordGear">Munición limitada. Uso de granadas permitido (max 1 por respawn).</p>
+                                            </div>
+                                            <div class="briefing-item team-balance-section" style="margin-top:20px; border-top:1px solid rgba(255,255,255,0.1); padding-top:15px;">
+                                                <strong>DESPLIEGUE POR ROLES (TEAM BALANCE):</strong>
+                                                <div id="roleDistribution" class="role-distribution-grid" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; margin-top:10px;">
+                                                    <!-- Stats injected via JS -->
+                                                </div>
                                             </div>
                                             <div class="briefing-item voting-section">
                                                 <strong>VOTACIÓN DE MISIÓN (OPORD-VOTE):</strong>
@@ -639,6 +723,29 @@
                                 <!-- Populated via JS -->
                             </tbody>
                         </table>
+                    </div>
+
+                    <!-- Faction Balance (New Phase Charlie) -->
+                    <div class="faction-ranking reveal" style="margin-top:40px; border-top:1px solid var(--border); padding-top:40px;">
+                        <h3 style="text-align:center; font-family:var(--font-display); font-size:1.2rem; color:var(--bronze); margin-bottom:30px;">BALANCE DE PODER GLOBAL</h3>
+                        <div class="faction-progress-wrap" style="display:flex; height:60px; background:rgba(0,0,0,0.3); border:2px solid var(--border); border-radius:4px; overflow:hidden; position:relative;">
+                            <div id="tfProgress" style="width:50%; background:var(--white); transition: width 1s ease-in-out; display:flex; align-items:center; padding-left:20px;">
+                                <span style="color:black; font-weight:bold; font-family:var(--font-display);">TASK FORCE</span>
+                            </div>
+                            <div id="upProgress" style="width:50%; background:var(--blood); transition: width 1s ease-in-out; display:flex; align-items:center; justify-content:flex-end; padding-right:20px;">
+                                <span style="color:white; font-weight:bold; font-family:var(--font-display);">UPRISING</span>
+                            </div>
+                        </div>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-top:15px; text-align:center; font-size:0.8rem; color:var(--text-muted);">
+                            <div>
+                                <div id="tfStats" style="color:var(--white); font-weight:bold;">0 XP | 0 OP</div>
+                                <div style="font-size:0.6rem; text-transform:uppercase;">Orden Operacional</div>
+                            </div>
+                            <div>
+                                <div id="upStats" style="color:var(--blood); font-weight:bold;">0 XP | 0 OP</div>
+                                <div style="font-size:0.6rem; text-transform:uppercase;">Resistencia Civil</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -1130,15 +1237,25 @@
                         <input type="text" id="regCallsign" class="form-input" required
                             placeholder="Ej: Ghost, Viper...">
                     </div>
-                    <div class="form-group">
-                        <label for="regSpecialty">Especialidad Táctica</label>
-                        <select id="regSpecialty" class="form-input" required>
-                            <option value="" disabled selected>Selecciona Especialidad</option>
-                            <option value="assault">Asalto (Fusilero)</option>
-                            <option value="medic">Médico de Campo</option>
-                            <option value="support">Apoyo (SMG)</option>
-                            <option value="sniper">Tirador Selecto</option>
-                        </select>
+                    <div class="form-group grid-2">
+                        <div class="field-wrap">
+                            <label for="regSpecialty">Especialidad Táctica</label>
+                            <select id="regSpecialty" class="form-input" required>
+                                <option value="" disabled selected>Especialidad</option>
+                                <option value="assault">Asalto</option>
+                                <option value="medic">Médico</option>
+                                <option value="support">Apoyo</option>
+                                <option value="sniper">Tirador</option>
+                            </select>
+                        </div>
+                        <div class="field-wrap">
+                            <label for="regFaction">Lealtad (Facción)</label>
+                            <select id="regFaction" class="form-input" required>
+                                <option value="none">Neutral</option>
+                                <option value="taskforce">Task Force</option>
+                                <option value="uprising">Uprising</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="regEmail">Email</label>
@@ -1172,7 +1289,7 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="script.js"></script>
+    <script type="module" src="script.js"></script>
 </body>
 
 </html>
