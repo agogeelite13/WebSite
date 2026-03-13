@@ -258,20 +258,20 @@
                                             <div class="form-group">
                                                 <label>Inventario de Réplica / Alquiler</label>
                                                 <div class="gear-options gear-options--vertical">
-                                                    <label class="radio-label">
-                                                        <input type="radio" name="editGear" value="own" checked> Propia
+                                                    <label class="radio-label" for="gearOwn">
+                                                        <input type="radio" name="editGear" id="gearOwn" value="own" checked> Propia
                                                         (0€)
                                                     </label>
-                                                    <label class="radio-label">
-                                                        <input type="radio" name="editGear" value="complete"> Equipo
+                                                    <label class="radio-label" for="gearComplete">
+                                                        <input type="radio" name="editGear" id="gearComplete" value="complete"> Equipo
                                                         Completo (25€)
                                                     </label>
-                                                    <label class="radio-label">
-                                                        <input type="radio" name="editGear" value="replica"> Solo
+                                                    <label class="radio-label" for="gearReplica">
+                                                        <input type="radio" name="editGear" id="gearReplica" value="replica"> Solo
                                                         Réplica (20€)
                                                     </label>
-                                                    <label class="radio-label">
-                                                        <input type="radio" name="editGear" value="basic"> Equipo Básico
+                                                    <label class="radio-label" for="gearBasic">
+                                                        <input type="radio" name="editGear" id="gearBasic" value="basic"> Equipo Básico
                                                         (5€)
                                                     </label>
                                                 </div>
@@ -339,65 +339,67 @@
                                                 <span class="stat-box__val" style="color:var(--bronze);">VÁLIDA</span>
                                             </div>
                                         </div>
+                                                              </div>
+
+                            <!-- Admin View -->
+                            <div id="adminPanel" class="admin-panel hidden reveal">
+                                <div class="admin-panel__header">
+                                    <h3 class="admin-panel__title">CENTRO DE MANDO (ADMIN)</h3>
+                                    <div class="admin-panel__header-actions">
+                                        <button id="downloadManifestoBtn" class="user-menu__btn">Descargar
+                                            Manifiesto</button>
+                                        <button id="closeAdminBtn" class="admin-panel__close"
+                                            aria-label="Cerrar Panel Admin">&times;</button>
+                                    </div>
+                                </div>
+                                <div class="admin-aforo-bar">
+                                    <div class="admin-aforo-info">
+                                        <span class="aforo-label">AFORO PARA ESTE DOMINGO</span>
+                                        <span class="aforo-count" id="adminAforoCount">0 / 20</span>
+                                    </div>
+                                    <div class="admin-aforo-progress">
+                                        <div id="adminAforoProgress" class="admin-aforo-fill" style="width: 0%;">
+                                        </div>
                                     </div>
                                 </div>
 
-                                <!-- Admin View -->
-                                <div id="adminPanel" class="admin-panel hidden reveal">
-                                    <div class="admin-panel__header">
-                                        <h3 class="admin-panel__title">CENTRO DE MANDO (ADMIN)</h3>
-                                        <div class="admin-panel__header-actions">
-                                            <button id="downloadManifestoBtn" class="user-menu__btn">Descargar
-                                                Manifiesto</button>
-                                            <button id="closeAdminBtn" class="admin-panel__close"
-                                                aria-label="Cerrar Panel Admin">&times;</button>
+                                <div class="admin-manual-enroll">
+                                    <h4 class="admin-col__title">Inscripción Manual / Invitados</h4>
+                                    <div class="admin-manual-form">
+                                        <div class="manual-field">
+                                            <label for="manualNameInput" class="visually-hidden">Nombre Operador / Invitado</label>
+                                            <input type="text" id="manualNameInput"
+                                                placeholder="Nombre Operador / Invitado" class="form-input">
+                                        </div>
+                                        <div class="manual-field manual-field--select">
+                                            <label for="manualGearSelect" class="visually-hidden">Seleccionar Equipación</label>
+                                            <select id="manualGearSelect" class="form-input">
+                                                <option value="own">Propia</option>
+                                                <option value="complete">Completo (25€)</option>
+                                                <option value="replica">Réplica (20€)</option>
+                                                <option value="basic">Básico (5€)</option>
+                                            </select>
+                                        </div>
+                                        <button id="addManualBtn"
+                                            class="btn btn--primary btn--sm">Inscribir</button>
+                                    </div>
+                                </div>
+                                <div class="admin-grid">
+                                    <div class="admin-col">
+                                        <h4 class="admin-col__title">Operadores Registrados</h4>
+                                        <div class="admin-list" id="adminUserList">
+                                            <!-- Populated via JS -->
                                         </div>
                                     </div>
-                                    <div class="admin-aforo-bar">
-                                        <div class="admin-aforo-info">
-                                            <span class="aforo-label">AFORO PARA ESTE DOMINGO</span>
-                                            <span class="aforo-count" id="adminAforoCount">0 / 20</span>
-                                        </div>
-                                        <div class="admin-aforo-progress">
-                                            <div id="adminAforoProgress" class="admin-aforo-fill" style="width: 0%;">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="admin-manual-enroll">
-                                        <h4 class="admin-col__title">Inscripción Manual / Invitados</h4>
-                                        <div class="admin-manual-form">
-                                            <div class="manual-field">
-                                                <input type="text" id="manualNameInput"
-                                                    placeholder="Nombre Operador / Invitado" class="form-input">
-                                            </div>
-                                            <div class="manual-field manual-field--select">
-                                                <select id="manualGearSelect" class="form-input">
-                                                    <option value="own">Propia</option>
-                                                    <option value="complete">Completo (25€)</option>
-                                                    <option value="replica">Réplica (20€)</option>
-                                                    <option value="basic">Básico (5€)</option>
-                                                </select>
-                                            </div>
-                                            <button id="addManualBtn"
-                                                class="btn btn--primary btn--sm">Inscribir</button>
-                                        </div>
-                                    </div>
-                                    <div class="admin-grid">
-                                        <div class="admin-col">
-                                            <h4 class="admin-col__title">Operadores Registrados</h4>
-                                            <div class="admin-list" id="adminUserList">
-                                                <!-- Populated via JS -->
-                                            </div>
-                                        </div>
-                                        <div class="admin-col">
-                                            <h4 class="admin-col__title">Inscritos Misión Domingo</h4>
-                                            <div class="admin-list" id="adminEnrollList">
-                                                <!-- Populated via JS -->
-                                            </div>
+                                    <div class="admin-col">
+                                        <h4 class="admin-col__title">Inscritos Misión Domingo</h4>
+                                        <div class="admin-list" id="adminEnrollList">
+                                            <!-- Populated via JS -->
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                  </div>
                             </div>
 
                             <!-- Intel Board View (Classified) - Relocated -->

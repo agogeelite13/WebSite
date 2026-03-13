@@ -572,11 +572,23 @@ const initAuth = () => {
         updateUI();
         console.log('--- REFRESH DATA END ---');
     };
+    // Fix possible DOM nesting issues (e.g. adminPanel inside profilePanel)
+    const fixDOMHierarchy = () => {
+        const ap = document.getElementById('adminPanel');
+        const main = document.querySelector('.dashboard__main');
+        if (ap && main && ap.parentElement !== main) {
+            console.log('!!! DOM Hierarchy Fix: Moving adminPanel to correct parent');
+            main.appendChild(ap);
+        }
+    };
+
     // Session / Auth Listener
     supabase.auth.onAuthStateChange((event, session) => {
         currentUser = session?.user || null;
         if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
-            refreshData();
+            refreshData().then(() => {
+                fixDOMHierarchy();
+            });
         } else if (event === 'SIGNED_OUT') {
             userProfile = null;
             currentUser = null;
@@ -1008,10 +1020,30 @@ const initAuth = () => {
 
     // Admin Panel Controls
     adminBtn?.addEventListener('click', () => {
+        console.log('ADMIN_CLICK_START: User Role Admin =', userProfile?.is_admin);
+        if (!adminPanel) {
+            console.error('CRITICAL: Admin Panel element NOT FOUND in DOM (ID=adminPanel)');
+            alert('Error interno: El panel de administración no está disponible en la página.');
+            return;
+        }
+        
+        // Final UI Force
+        console.log('Force visual state change...');
         userMissionView?.classList.add('hidden');
         profilePanel?.classList.add('hidden');
-        adminPanel?.classList.remove('hidden');
-        updateAdminDashboard();
+        
+        // Remove hidden and force display
+        adminPanel.classList.remove('hidden');
+        adminPanel.style.display = 'block'; 
+        adminPanel.style.opacity = '1';
+        adminPanel.style.visibility = 'visible';
+
+        console.log('Calling updateAdminDashboard...');
+        updateAdminDashboard().then(() => {
+            console.log('Admin Dashboard update finished successfully');
+        }).catch(err => {
+            console.error('Error updating admin dashboard:', err);
+        });
     });
 
     closeAdminBtn?.addEventListener('click', () => {
@@ -1186,7 +1218,7 @@ const initAuth = () => {
     });
 
     // CLAN LOGIC
-    const renderClanView = () => {
+    const renderClanView = async () => {
         const clanView = document.getElementById('clanView');
         if (!clanView) return;
 
@@ -1204,13 +1236,31 @@ const initAuth = () => {
             document.getElementById('joinClanBtn')?.addEventListener('click', joinClan);
         } else {
             const clanData = clans.find(c => c.name === userProfile.clan) || { level: 1 };
+            
+            // Fetch clan members
+            const allUsers = await api.getUsers();
+            const members = allUsers.filter(u => u.clan === userProfile.clan);
+            
             clanView.innerHTML = `
                 <div class="clan-info">
                     <div class="clan-header">
                         <span class="clan-tag" style="background:var(--bronze); color:black; padding:2px 6px; font-weight:bold; border-radius:2px; font-size:0.7em; margin-right:8px;">[${userProfile.clan.substring(0, 3).toUpperCase()}]</span>
                         <span class="clan-name" style="font-family:var(--font-display); font-size:0.9rem;">${userProfile.clan}</span>
                     </div>
-                    <div class="clan-stats" style="margin-top:10px; font-size:0.75rem; color:var(--text-muted); display:flex; align-items:center; justify-content:space-between;">
+                    
+                    <div class="clan-members" style="margin-top:15px; border-top: 1px solid var(--border); padding-top:10px;">
+                        <h5 style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; margin-bottom:8px;">Miembros de la Unidad</h5>
+                        <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:4px;">
+                            ${members.map(m => `
+                                <li style="font-size:0.75rem; display:flex; justify-content:space-between; align-items:center;">
+                                    <span><i class="fas fa-user-shield" style="margin-right:5px; color:var(--white); font-size:0.8em;"></i> ${m.callsign || m.name}</span>
+                                    <span style="font-size:0.7em; opacity:0.6;">LVL ${Math.floor(m.exp || 0)}</span>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+
+                    <div class="clan-stats" style="margin-top:15px; font-size:0.75rem; color:var(--text-muted); display:flex; align-items:center; justify-content:space-between;">
                         <span>Nivel de Clan: <span style="color:var(--white)">${clanData.level || 1}</span></span>
                         <button id="leaveClanBtn" class="btn btn--outline btn--xs">Abandonar</button>
                     </div>
