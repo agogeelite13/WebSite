@@ -195,6 +195,24 @@ window.adminUnenrollUser = async (eid) => {
     if (await api.unenroll(eid)) refreshData();
 };
 
+window.adminConfirmAttendance = async (userId, sunKey) => {
+    const profile = await api.getProfile(userId);
+    if (!profile) return alert('No se pudo cargar el perfil del operador.');
+    
+    const history = profile.missionHistory || [];
+    if (history.includes(sunKey)) return alert('La asistencia ya estaba confirmada.');
+    
+    profile.missionHistory = [...history, sunKey];
+    profile.exp = (profile.exp || 0) + 1; // 1 misión = 100 XP
+    
+    if (await api.saveProfile(profile)) {
+        alert('Asistencia confirmada. Misiones y EXP actualizadas.');
+        refreshData();
+    } else {
+        alert('Error al guardar. Verifica los permisos de administrador en la base de datos.');
+    }
+};
+
 const renderClanLeaderboard = (allUsers) => {
     const body = document.getElementById('clanLeaderboardBody');
     if (!body) return;

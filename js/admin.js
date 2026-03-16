@@ -43,13 +43,18 @@ export const updateAdminDashboard = async (api, nextSundayKey) => {
         const u = entry.is_guest ? { name: entry.guest_name, gear: entry.gear } : (allUsers.find(user => user.id === entry.user_id) || { name: entry.user_email, gear: entry.gear });
         const gearMap = { 'own': 'PROPIA', 'complete': 'COMPLETO', 'replica': 'RÉPLICA', 'basic': 'BÁSICO' };
         const gearStr = u?.gear ? `<span style="color:var(--bronze); font-size:0.7em;">(${gearMap[u.gear] || 'N/A'})</span>` : '';
+        const hasAttended = u?.missionHistory?.includes(nextSundayKey);
+        
         return `
             <div class="admin-item">
                 <div class="admin-item__info">
                     <span class="admin-item__name">${u.callsign || u.name} ${gearStr}</span>
                     <span class="admin-item__sub">${entry.is_guest ? 'INVITADO' : entry.user_email}</span>
                 </div>
-                <button class="btn btn--outline btn--xs" onclick="window.adminUnenrollUser('${entry.id}')">BORRAR</button>
+                <div class="admin-item__actions" style="display:flex; gap:5px;">
+                    ${!entry.is_guest ? `<button class="btn btn--primary btn--xs" onclick="window.adminConfirmAttendance('${entry.user_id}', '${nextSundayKey}')" ${hasAttended ? 'disabled' : ''}>${hasAttended ? 'CONFIRMADO' : 'ASISTIÓ'}</button>` : ''}
+                    <button class="btn btn--outline btn--xs" onclick="window.adminUnenrollUser('${entry.id}')">BORRAR</button>
+                </div>
             </div>
         `;
     }).join('') || '<p style="padding:15px; color:#666; font-size:0.8rem;">Nadie inscrito todavía.</p>';
