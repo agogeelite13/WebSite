@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "moshfeu.auto-commit",
+    "ritwickdey.liveserver",
+    "esbenp.prettier-vscode",
+    "pranaygp.vscode-css-peek",
+    "formulahendry.auto-rename-tag"
+  ]
+}

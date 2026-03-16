@@ -1,0 +1,7 @@
+{
+  "git-auto-commit.autoCommitMessage": "Auto-update: Archivos guardados via editor",
+  "git-auto-commit.autoPush": true,
+  "git-auto-commit.showNotification": false,
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
+}
