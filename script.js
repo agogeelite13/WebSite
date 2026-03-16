@@ -369,6 +369,7 @@ const setupAuthUI = () => {
 
     els.adminBtn?.addEventListener('click', () => {
         document.getElementById('userMissionView').classList.add('hidden');
+        document.getElementById('profilePanel').classList.add('hidden'); // Fix overlap
         document.getElementById('adminPanel').classList.remove('hidden');
         admin.updateAdminDashboard(api, getNextSundayKey());
         admin.setupMissionConfig(api, getNextSundayKey());
@@ -381,6 +382,7 @@ const setupAuthUI = () => {
 
     els.profileBtn?.addEventListener('click', () => {
         document.getElementById('userMissionView').classList.add('hidden');
+        document.getElementById('adminPanel').classList.add('hidden'); // Fix overlap
         document.getElementById('profilePanel').classList.remove('hidden');
         profile.updateProfileView(userProfile);
     });
