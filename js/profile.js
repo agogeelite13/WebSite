@@ -98,26 +98,29 @@ export const updateProfileView = (userProfile) => {
 
     // Advanced Level & XP Logic
     const missions = (userProfile.exp || 0);
-    const baseXP = missions * 100;
-    const clanBonus = userProfile.clan ? 50 : 0;
-    const totalXP = baseXP + clanBonus;
-    
-    // Level Curve: 500 XP per level for now (linear but expandable)
-    const level = Math.floor(totalXP / 500) + 1;
-    const currentLevelXP = (level - 1) * 500;
-    const nextLevelXP = level * 500;
-    const progressInLevel = totalXP - currentLevelXP;
-    const percent = (progressInLevel / 500) * 100;
+    const level = Math.floor(missions / 5) + 1;
+    const currentLevelXP = missions % 5;
+    const xpPercent = (currentLevelXP / 5) * 100;
 
-    let rankStr = 'RECLUTA';
-    if (level >= 10) rankStr = 'ÉLITE';
-    else if (level >= 6) rankStr = 'VETERANO';
-    else if (level >= 3) rankStr = 'OPERADOR';
+    let rank = 'RECLUTA';
+    if (userProfile.role === 'admin') {
+        rank = userProfile.rank || 'COMANDANTE SUPREMO';
+        const profilePanel = document.getElementById('profilePanel');
+        if (profilePanel) profilePanel.classList.add('admin-mode');
+        if (elements.profCallsign && !elements.profCallsign.innerHTML.includes('supreme-badge')) {
+            elements.profCallsign.innerHTML += ' <span class="supreme-badge">MANDO</span>';
+        }
+    } else if (missions >= 10) rank = 'ÉLITE';
+    else if (missions >= 6) rank = 'VETERANO';
+    else if (missions >= 3) rank = 'OPERADOR';
 
-    if (elements.profRank) elements.profRank.textContent = rankStr;
+    if (elements.profRank) {
+        elements.profRank.textContent = rank;
+        elements.profRank.dataset.rank = rank.toLowerCase();
+    }
     if (elements.profLevel) elements.profLevel.textContent = `NIVEL ${level}`;
-    if (elements.profXPText) elements.profXPText.textContent = `${progressInLevel} / 500 XP`;
-    if (elements.profXPFill) elements.profXPFill.style.width = `${percent}%`;
+    if (elements.profXPText) elements.profXPText.textContent = `${currentLevelXP} / 5 XP`;
+    if (elements.profXPFill) elements.profXPFill.style.width = `${xpPercent}%`;
     if (elements.profMissions) elements.profMissions.textContent = missions;
 
     if (elements.missionLogList) {

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CENTRO DE MANDO – AGOGE ELITE</title>
+    <link rel="icon" href="logo.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Oswald:wght@400;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body class="page-admin">
+    <div class="top-bar">
+        <div class="container top-bar__inner">
+            <span class="top-bar__status"><span class="status-dot"></span> MANDO SUPREMO ACTIVO</span>
+            <div class="top-bar__ticker"><p>ACCESO RESTRINGIDO — NIVEL DE SEGURIDAD 5 — COMANDANCIA AGOGE</p></div>
+            <span class="top-bar__date" id="topBarDate"></span>
+        </div>
+    </div>
+
+    <header class="site-header scrolled" id="siteHeader">
+        <div class="container header__inner">
+            <a href="index.html" class="header__logo">
+                <img src="logo.jpg" alt="Logo" width="40" height="40">
+                <span>AGOGE ELITE</span>
+            </a>
+            <nav class="nav">
+                <ul class="nav__list">
+                    <li><a href="index.html" class="nav__link">Inicio</a></li>
+                    <li><a href="misiones.html" class="nav__link">Misiones</a></li>
+                    <li><a href="perfil.html" class="nav__link">Mi Perfil</a></li>
+                    <li><a href="admin.html" class="nav__link nav__link--active">Admin</a></li>
+                    <li class="nav__auth-wrap">
+                        <div id="userMenu" class="user-menu" style="background:transparent;">
+                            <span id="userName" class="user-menu__name" style="color:var(--bronze);">MANDO</span>
+                            <button id="logoutBtn" class="user-menu__logout" style="margin-left:15px; border:1px solid var(--blood);">DETERMINAR</button>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content" style="padding-top:100px; padding-bottom:50px;">
+        <div class="container">
+            <div id="adminPanel" class="admin-panel">
+                <div class="admin-panel__header">
+                    <h2 class="admin-panel__title">CENTRO DE MANDO ESTRATÉGICO</h2>
+                </div>
+                <div class="admin-panel__content">
+                    <div class="admin-grid">
+                        <!-- Dashboard Column -->
+                        <div class="admin-col admin-col--dash">
+                            <h3 class="admin-section-title">ESTADO DE LA OPERACIÓN</h3>
+                            <div id="adminDashboard" class="admin-dashboard-grid">
+                                <!-- Admin dashboard stats injected via JS -->
+                            </div>
+                            
+                            <h3 class="admin-section-title" style="margin-top:40px;">GESTIÓN DE OPERADORES</h3>
+                            <div class="admin-table-wrap">
+                                <table class="admin-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Operador</th>
+                                            <th>Rol</th>
+                                            <th>Inscrito</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="adminUserList">
+                                        <!-- Users injected via JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Config Column -->
+                        <div class="admin-col admin-col--config">
+                            <h3 class="admin-section-title">CONFIGURACIÓN DE OPORD</h3>
+                            <form id="missionConfigForm" class="admin-manual-form">
+                                <div class="form-group">
+                                    <label>Situación Táctica:</label>
+                                    <textarea id="configSituation" class="form-input" rows="3"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>Objetivos de Misión:</label>
+                                    <textarea id="configMission" class="form-input" rows="3"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>Reglas de Equipamiento:</label>
+                                    <textarea id="configGear" class="form-input" rows="3"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>URL Mapa Táctico:</label>
+                                    <input type="text" id="configMap" class="form-input">
+                                </div>
+                                <button type="submit" class="btn btn--primary btn--full">PUBLICAR ACTUALIZACIÓN</button>
+                                <p id="configFeedback" style="display:none; margin-top:10px; font-weight:bold;"></p>
+                            </form>
+    <!-- Auth Modal Shared -->
+    <div id="authModal" class="modal">
+        <div class="modal__overlay" id="modalOverlay"></div>
+        <div class="modal__content">
+            <button class="modal__close" id="modalClose">&times;</button>
+            <div id="loginFormWrap">
+                <h3 class="modal__title">Acceso Operador</h3>
+                <form id="loginForm" class="auth-form">
+                    <input type="email" id="loginEmail" placeholder="Email Militar" required class="form-input">
+                    <input type="password" id="loginPass" placeholder="Código de Seguridad" required class="form-input">
+                    <button type="submit" class="btn btn--primary btn--full">Establecer Enlace</button>
+                </form>
+                <div id="forgotPassWrap" class="hidden">
+                    <h3 class="modal__title">Recuperación de Enlace</h3>
+                    <form id="forgotPassForm" class="auth-form">
+                        <input type="email" id="resetEmail" placeholder="Email Registrado" required class="form-input">
+                        <button type="submit" class="btn btn--primary btn--full">Enviar Código</button>
+                    </form>
+                    <p class="modal__footer"><button id="backToLogin" class="text-link">Volver al inicio de sesión</button></p>
+                </div>
+                <p class="modal__footer">¿No registrado? <button id="toRegister" class="text-link">Inicia Alistamiento</button></p>
+            </div>
+            
+            <div id="registerFormWrap" class="hidden">
+                <h3 class="modal__title">Registro de Recluta</h3>
+                <form class="auth-form" id="registerForm">
+                    <div class="form-group"><input type="text" id="regName" class="form-input" required placeholder="Nombre Real"></div>
+                    <div class="form-group"><input type="text" id="regCallsign" class="form-input" required placeholder="Callsign (Alias)"></div>
+                    <div class="form-group grid-2">
+                        <select id="regSpecialty" class="form-input" required>
+                            <option value="" disabled selected>Especialidad</option>
+                            <option value="assault">Asalto</option>
+                            <option value="medic">Médico</option>
+                            <option value="support">Apoyo</option>
+                            <option value="sniper">Tirador</option>
+                        </select>
+                        <select id="regFaction" class="form-input" required>
+                            <option value="none">Neutral</option>
+                            <option value="taskforce">Task Force</option>
+                            <option value="uprising">Uprising</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><input type="email" id="regEmail" class="form-input" required placeholder="tu@email.com"></div>
+                    <div class="form-group"><input type="password" id="regPass" class="form-input" required placeholder="Mínimo 6 caracteres"></div>
+                    <button type="submit" class="btn btn--primary btn--full">Crear Cuenta</button>
+                </form>
+                <p class="modal__footer">¿Ya tienes cuenta? <button id="toLogin" class="text-link">Inicia sesión</button></p>
+            </div>
+        </div>
+    </div>
+    
+    <div id="scanOverlay" class="scan-overlay">
+        <div class="scan-line"></div>
+        <div class="scan-content">
+            <div class="scan-spinner"></div>
+            <h3>VERIFICANDO IDENTIDAD</h3>
+            <p>OPERADOR ENCRIPTADO...</p>
+        </div>
+    </div>
+                            <button id="downloadManifestoBtn" class="btn btn--outline btn--full" style="margin-top:20px;">DESCARGAR MANIFIESTO (CSV)</button>
+
+                            <!-- PHOTO MODERATION (FASE 37) -->
+                            <h3 class="admin-section-title" style="margin-top:40px;">MODERACIÓN DE INTELIGENCIA VISUAL</h3>
+                            <div id="adminPhotoList" class="admin-photo-grid" style="display:grid; grid-template-columns: 1fr; gap:15px;">
+                                <!-- Pending photos injected via JS -->
+                                <p class="empty-msg" style="color:var(--text-muted); font-size:0.8rem;">No hay archivos pendientes de revisión.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer__inner">
+            <p>&copy; 2024 AGOGE ELITE. Sistema de Seguridad de Mando Nivel 5.</p>
+        </div>
+    </footer>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>

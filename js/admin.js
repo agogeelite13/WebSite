@@ -121,3 +121,108 @@ export const setupMissionConfig = async (api, nextSundayKey) => {
         }
     });
 };
+
+const renderAdminPhotos = async (api) => {
+    const photoList = document.getElementById('adminPhotoList');
+    if (!photoList) return;
+
+    photoList.innerHTML = '<div style="grid-column:span 2; text-align:center; font-size:0.8rem; color:var(--text-muted);">Cargando inteligencia...</div>';
+    
+    // Obtenemos las fotos pendientes
+    const photos = await api.getCommunityPhotos('pending');
+    
+    if (photos.length === 0) {
+        photoList.innerHTML = '<div style="grid-column:span 2; text-align:center; font-size:0.8rem; color:var(--text-muted); padding:20px;">No hay archivos visuales pendientes de revisión.</div>';
+        return;
+    }
+
+    photoList.innerHTML = '';
+    photos.forEach(photo => {
+        const div = document.createElement('div');
+        div.className = 'admin-item';
+        div.style.flexDirection = 'column';
+        div.style.alignItems = 'stretch';
+        div.style.padding = '10px';
+        div.style.background = 'rgba(0,0,0,0.5)';
+        
+        div.innerHTML = `
+            <img src="${photo.image_url}" alt="Intel" style="width:100%; height:150px; object-fit:cover; border:1px solid var(--border); border-radius:4px; margin-bottom:10px;">
+            <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:5px;">
+                <span style="color:var(--bronze-light);">OP:</span> ${photo.user_id}
+            </div>
+            <div style="font-size:0.8rem; line-height:1.2; margin-bottom:15px;">"${photo.caption}"</div>
+            <div class="admin-item__actions" style="justify-content:space-between;">
+                <button class="btn btn--xs reject-photo" data-id="${photo.id}" style="background:var(--blood); color:var(--white);">DENEGAR</button>
+                <button class="btn btn--outline btn--xs approve-photo" data-id="${photo.id}" style="border-color:#2ecc71; color:#2ecc71;">APROBAR</button>
+            </div>
+        `;
+        photoList.appendChild(div);
+    });
+
+    // Listeners aprobar/rechazar
+    document.querySelectorAll('.approve-photo').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            const id = e.currentTarget.getAttribute('data-id');
+            e.currentTarget.textContent = '...';
+            if(await api.updateCommunityPhotoStatus(id, 'approved')){
+                 renderAdminPhotos(api); // refrescar
+            } else {
+                 alert('Error al aprobar foto.');
+            }
+        });
+    });
+
+    document.querySelectorAll('.reject-photo').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            const id = e.currentTarget.getAttribute('data-id');
+            e.currentTarget.textContent = '...';
+            if(await api.updateCommunityPhotoStatus(id, 'rejected')){
+                 renderAdminPhotos(api); // refrescar
+            } else {
+                 alert('Error al denegar foto.');
+            }
+        });
+    });
+};
+
+// EXPOSE TO WINDOW FOR ONCLICK HANDLERS
+export const attachAdminGlobals = (api, nextSundayKey) => {
+    window.adminEnrollUser = async (userId, email) => {
+        if (await api.enroll(nextSundayKey, userId, email, 'own')) {
+            updateAdminDashboard(api, nextSundayKey);
+        } else {
+            alert('Error al inscribir usuario.');
+        }
+    };
+
+    window.adminUnenrollUser = async (enrollmentId) => {
+        if (await api.unenroll(enrollmentId)) {
+            updateAdminDashboard(api, nextSundayKey);
+        } else {
+            alert('Error al borrar inscripción.');
+        }
+    };
+
+    window.adminConfirmAttendance = async (userId, sunKey) => {
+        const user = await api.getProfile(userId);
+        if (!user) return;
+        
+        const history = user.missionHistory || [];
+        if (history.includes(sunKey)) return;
+        
+        history.push(sunKey);
+        const newExp = (user.exp || 0) + 100; // 100 XP por asistencia
+        
+        const success = await api.saveProfile({
+            ...user,
+            exp: newExp,
+            missionHistory: history
+        });
+
+        if (success) {
+            updateAdminDashboard(api, sunKey);
+        } else {
+            alert('Error al guardar. Verifica los permisos de administrador en la base de datos.');
+        }
+    };
+};

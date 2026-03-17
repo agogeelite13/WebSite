@@ -84,5 +84,47 @@ export const api = {
     async saveMissionSettings(mission) {
         const { error } = await supabase.from('missions').upsert(mission);
         return !error;
+    },
+    async uploadCommunityPhoto(file, userId, caption) {
+        // 1. Upload to Storage
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${userId}-${Date.now()}.${fileExt}`;
+        const filePath = `${fileName}`;
+
+        const { data: uploadData, error: uploadError } = await supabase.storage
+            .from('community_photos')
+            .upload(filePath, file);
+
+        if (uploadError) {
+            console.error('Storage Upload Error:', uploadError);
+            return null;
+        }
+
+        // Get public URL
+        const { data: urlData } = supabase.storage
+            .from('community_photos')
+            .getPublicUrl(filePath);
+
+        // 2. Insert into DB
+        const { data: dbData, error: dbError } = await supabase.from('community_photos').insert({
+            user_id: userId,
+            image_url: urlData.publicUrl,
+            caption: caption,
+            status: 'pending'
+        }).select().single();
+
+        if (dbError) {
+            console.error('DB Insert Error:', dbError);
+            return null;
+        }
+        return dbData;
+    },
+    async getCommunityPhotos(status = 'approved') {
+        const { data } = await supabase.from('community_photos').select('*').eq('status', status).order('created_at', { ascending: false });
+        return data || [];
+    },
+    async updateCommunityPhotoStatus(id, newStatus) {
+        const { error } = await supabase.from('community_photos').update({ status: newStatus }).eq('id', id);
+        return !error;
     }
 };

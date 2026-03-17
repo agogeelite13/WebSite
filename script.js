@@ -86,25 +86,48 @@ const updateUI = async () => {
         adminPanel: document.getElementById('adminPanel'),
         profilePanel: document.getElementById('profilePanel')
     };
-
     if (currentUser && userProfile) {
         els.authTrigger?.classList.add('hidden');
         els.userMenu?.classList.remove('hidden');
         if (els.userNameDisplay) els.userNameDisplay.textContent = userProfile.callsign || userProfile.name;
-        els.dashboard?.classList.remove('hidden');
-
-        if (userProfile.is_admin) els.adminBtn?.classList.remove('hidden');
-        else els.adminBtn?.classList.add('hidden');
-
-        profile.updateProfileView(userProfile);
-
-        const sunKey = getNextSundayKey();
-        const list = enrollments[sunKey] || [];
-        const isEnrolled = list.some(e => e.user_id === currentUser.id);
         
+        // Dynamic Navbar Links
+        const navProfile = document.getElementById('navProfileLink');
+        const navAdmin = document.getElementById('navAdminLink');
+        if (navProfile) navProfile.classList.remove('hidden');
+        if (navAdmin && userProfile.is_admin) navAdmin.classList.remove('hidden');
+
+        // Page-specific UI Logic
+        const path = window.location.pathname;
+        if (path.includes('perfil.html')) {
+            profile.updateProfileView(userProfile);
+            profile.renderMedals(userProfile, enrollments, getNextSundayKey());
+        } else if (path.includes('admin.html')) {
+            if (!userProfile.is_admin) window.location.href = 'index.html';
+            admin.updateAdminDashboard(api, getNextSundayKey());
+            admin.setupMissionConfig(api, getNextSundayKey());
+            admin.renderAdminPhotos(api);
+        } else if (path.includes('misiones.html')) {
+            renderActiveMission();
+            renderVoting();
+            setupVotingListeners();
+        }
+
+        // Enrollment Logic (if in index.html)
+        const sunKey = getNextSundayKey();
+        const missionEnrollments = enrollments[sunKey] || [];
+        const isEnrolled = missionEnrollments.some(e => e.user_id === currentUser.id);
+        const count = missionEnrollments.length;
+        const capacity = 20;
+
+        if (els.playerCount) els.playerCount.textContent = `${count}/${capacity}`;
+        if (els.nextMissionDate) els.nextMissionDate.textContent = getNextSunday().toUpperCase();
+
         if (isEnrolled) {
-            els.enrollBtn?.classList.add('hidden');
-            els.enrollStatus?.classList.remove('hidden');
+            if (els.enrollStatus) {
+                els.enrollStatus.textContent = 'ESTADO: INSCRITO — TE VEO EN EL CAMPO';
+                els.enrollStatus.style.color = '#2ecc71';
+            }
             els.enrollActionWrap?.classList.add('hidden');
         } else {
             els.enrollBtn?.classList.remove('hidden');
@@ -186,32 +209,8 @@ const leaveClan = async () => {
     refreshData();
 };
 
-// Global Exposure for Admin Buttons (legacy style in string templates)
-window.adminEnrollUser = async (userId, email) => {
-    if (await api.enroll(getNextSundayKey(), userId, email, 'own')) refreshData();
-};
-
-window.adminUnenrollUser = async (eid) => {
-    if (await api.unenroll(eid)) refreshData();
-};
-
-window.adminConfirmAttendance = async (userId, sunKey) => {
-    const profile = await api.getProfile(userId);
-    if (!profile) return alert('No se pudo cargar el perfil del operador.');
-    
-    const history = profile.missionHistory || [];
-    if (history.includes(sunKey)) return alert('La asistencia ya estaba confirmada.');
-    
-    profile.missionHistory = [...history, sunKey];
-    profile.exp = (profile.exp || 0) + 1; // 1 misión = 100 XP
-    
-    if (await api.saveProfile(profile)) {
-        alert('Asistencia confirmada. Misiones y EXP actualizadas.');
-        refreshData();
-    } else {
-        alert('Error al guardar. Verifica los permisos de administrador en la base de datos.');
-    }
-};
+// Admin globals are now handled in js/admin.js via attachAdminGlobals
+admin.attachAdminGlobals(api, getNextSundayKey());
 
 const renderClanLeaderboard = (allUsers) => {
     const body = document.getElementById('clanLeaderboardBody');
@@ -277,7 +276,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     ui.initLightbox();
     ui.initFAQ();
     ui.initCountdown();
-    ui.initTacticalMap();
+    
+    const path = window.location.pathname;
+    if (path.includes('misiones.html') || document.querySelector('.intel-map-container')) {
+        ui.initTacticalMap();
+    }
     ui.initTerminalLog();
 
     // Supabase Init
@@ -436,6 +439,45 @@ const setupAuthUI = () => {
         }
     });
 
+    // Subida de Fotos Comunitarias
+    const uploadPhotoForm = document.getElementById('uploadPhotoForm');
+    const uploadFeedback = document.getElementById('uploadFeedback');
+
+    uploadPhotoForm?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const fileInput = document.getElementById('photoUpload');
+        const captionInput = document.getElementById('photoCaption');
+        const file = fileInput.files[0];
+        
+        if(!file) return;
+        
+        const submitBtn = document.getElementById('submitPhotoBtn');
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'SUBIENDO...';
+        submitBtn.disabled = true;
+        uploadFeedback.style.display = 'block';
+        uploadFeedback.style.color = 'var(--text-muted)';
+        uploadFeedback.textContent = 'Estableciendo conexión encriptada y subiendo imagen...';
+
+        const result = await api.uploadCommunityPhoto(file, userProfile.callsign || 'Anon', captionInput.value);
+        
+        if (result) {
+            uploadFeedback.style.color = '#2ecc71';
+            uploadFeedback.textContent = '¡Archivo enviado! El Mando revisará la foto antes de publicarla.';
+            uploadPhotoForm.reset();
+        } else {
+            uploadFeedback.style.color = 'var(--blood)';
+            uploadFeedback.textContent = 'Error en la transmisión. Revisa la consola o reintenta.';
+        }
+        
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+        
+        setTimeout(() => {
+            uploadFeedback.style.display = 'none';
+        }, 6000);
+    });
+
     els.downloadManifestoBtn?.addEventListener('click', () => admin.downloadManifesto(api, getNextSundayKey()));
 
     els.openIntelBtn?.addEventListener('click', () => {
@@ -454,8 +496,8 @@ const renderActiveMission = async () => {
     const enrolled = (await api.refreshEnrollments())[sunKey] || [];
     
     // 1. Update Mission Briefing
-    const sit = document.querySelector('.briefing-item:nth-child(1) p');
-    const mis = document.querySelector('.briefing-item:nth-child(2) p');
+    const sit = document.getElementById('opordSituation');
+    const mis = document.getElementById('opordMission');
     const gear = document.getElementById('opordGear');
     const mapImg = document.getElementById('intelMapImg');
 
@@ -499,21 +541,41 @@ const renderVoting = async () => {
         opt?.classList.add('hidden');
         res?.classList.remove('hidden');
         const labels = { tdm: 'Eliminación', ctf: 'Bandera', vip: 'VIP', dom: 'Dominación' };
-        const total = Object.values(votes).length;
+        const allVotes = Object.values(votes);
+        const total = allVotes.length;
         const counts = {};
-        Object.values(votes).forEach(v => counts[v] = (counts[v] || 0) + 1);
+        allVotes.forEach(v => counts[v] = (counts[v] || 0) + 1);
         
         if (list) {
             list.innerHTML = Object.entries(labels).map(([k, l]) => {
                 const c = counts[k] || 0;
                 const p = total ? (c / total) * 100 : 0;
-                return `<div class="result-item"><span>${l} (${c})</span><div class="result-bar-wrap"><div class="result-bar-fill" style="width:${p}%"></div></div></div>`;
+                return `<div class="result-item" style="margin-bottom:10px;">
+                    <div style="display:flex; justify-content:space-between; font-size:0.7rem; margin-bottom:4px;">
+                        <span>${l}</span>
+                        <span>${c} (${Math.round(p)}%)</span>
+                    </div>
+                    <div class="result-bar-wrap" style="height:6px; background:rgba(0,0,0,0.3); border-radius:3px; overflow:hidden;">
+                        <div class="result-bar-fill" style="width:${p}%; height:100%; background:var(--bronze);"></div>
+                    </div>
+                </div>`;
             }).join('');
         }
     } else {
         opt?.classList.remove('hidden');
         res?.classList.add('hidden');
     }
+};
+
+const setupVotingListeners = () => {
+    document.querySelectorAll('.vote-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            if (!currentUser) return alert('Debes estar logueado para votar.');
+            if (await api.castVote(getNextSundayKey(), currentUser.id, userProfile.email, btn.dataset.mode)) {
+                renderVoting();
+            }
+        });
+    });
 };
 
 document.querySelectorAll('.vote-btn').forEach(btn => {

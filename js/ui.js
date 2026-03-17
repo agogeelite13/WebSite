@@ -313,9 +313,10 @@ export const initTacticalMap = () => {
     ];
 
     svg.innerHTML = hotspots.map((h, i) => `
-        <g class="map-hotspot" data-index="${i}" transform="translate(${h.x}, ${h.y})">
-            <circle r="20" />
-            <text x="25" y="5" class="hotspot-text">${h.label}</text>
+        <g class="map-hotspot" data-index="${i}" transform="translate(${h.x}, ${h.y})" style="cursor:pointer; pointer-events:all;">
+            <circle r="12" fill="rgba(205, 127, 50, 0.6)" stroke="var(--bronze)" stroke-width="2" />
+            <rect x="20" y="-12" width="${h.label.length * 9 + 10}" height="24" fill="rgba(0,0,0,0.85)" stroke="var(--border)" rx="4" />
+            <text x="25" y="5" class="hotspot-text" style="fill:var(--white); font-family:var(--font-display); font-size:14px; font-weight:bold; pointer-events:none;">${h.label}</text>
         </g>
     `).join('');
 
