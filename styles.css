@@ -4279,3 +4279,143 @@ select.form-input option {
  
   
  
+/* --- PHASE 45: PREMIUM TACTICAL PROFILE --- */
+.profile-panel {
+    background: rgba(10, 10, 10, 0.85) !important;
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 30px rgba(0,0,0,0.5);
+}
+
+.profile-panel::before {
+    content: " \;
+ position: absolute;
+ top: 0; left: 0; right: 0;
+ height: 2px;
+ background: linear-gradient(90deg, transparent, var(--bronze), transparent);
+ animation: scanLineH 4s linear infinite;
+ opacity: 0.5;
+}
+
+@keyframes scanLineH {
+ 0% { transform: translateX(-100%); }
+ 100% { transform: translateX(100%); }
+}
+
+/* Tactical ID Header */
+.profile-header-premium {
+ display: grid;
+ grid-template-columns: 120px 1fr auto;
+ gap: 25px;
+ align-items: center;
+ border-bottom: 2px solid rgba(205, 127, 50, 0.2);
+ padding-bottom: 25px;
+ margin-bottom: 25px;
+}
+
+.operator-avatar-frame {
+ width: 120px;
+ height: 120px;
+ background: #000;
+ border: 1px solid var(--bronze);
+ position: relative;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ overflow: hidden;
+ box-shadow: inset 0 0 15px rgba(205, 127, 50, 0.3);
+}
+
+.operator-avatar-frame i {
+ font-size: 3.5rem;
+ color: var(--bronze);
+ opacity: 0.8;
+}
+
+.operator-id-tag {
+ position: absolute;
+ bottom: 5px;
+ left: 5px;
+ font-size: 0.5rem;
+ color: var(--bronze);
+ font-family: monospace;
+ letter-spacing: 1px;
+}
+
+/* Glow Ranges */
+.profile-panel[data-tier=\supreme\] {
+ border-color: #d4af37;
+ box-shadow: 0 0 40px rgba(212, 175, 55, 0.15);
+}
+
+.profile-panel[data-tier=\elite\] {
+ border-color: var(--bronze);
+ box-shadow: 0 0 30px rgba(205, 127, 50, 0.1);
+}
+
+/* Stats Premium */
+.profile-stats-grid {
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+ gap: 15px;
+}
+
+.prof-stat {
+ background: rgba(255,255,255,0.03);
+ padding: 15px;
+ border-left: 3px solid var(--border);
+ transition: all 0.3s ease;
+}
+
+.prof-stat:hover {
+ background: rgba(205, 127, 50, 0.05);
+ border-left-color: var(--bronze);
+ transform: translateX(5px);
+}
+
+.prof-stat__label {
+ display: block;
+ font-size: 0.65rem;
+ color: var(--text-muted);
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ margin-bottom: 5px;
+}
+
+.prof-stat__value {
+ font-family: var(--font-display);
+ font-size: 1rem;
+ color: var(--white);
+}
+
+/* Exp Bar Premium */
+.exp-bar {
+ height: 6px;
+ background: rgba(0,0,0,0.5);
+ border-radius: 0;
+ border: 1px solid rgba(255,255,255,0.1);
+}
+
+.exp-bar__fill {
+ background: linear-gradient(90deg, var(--bronze-dark), var(--bronze)) !important;
+ position: relative;
+ box-shadow: 0 0 10px var(--bronze);
+}
+
+/* Supreme Mode Extra */
+.admin-mode .profile-panel {
+ background: radial-gradient(circle at top right, rgba(212, 175, 55, 0.05), transparent), rgba(10, 10, 10, 0.9) !important;
+}
+
+.admin-mode .profile-callsign {
+ color: #d4af37 !important;
+ text-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+}
+
+.supreme-badge {
+ background: #d4af37 !important;
+ color: #000 !important;
+ box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+}
+

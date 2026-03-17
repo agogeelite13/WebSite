@@ -96,32 +96,61 @@ export const updateProfileView = (userProfile) => {
     };
     if (elements.profSpecialty) elements.profSpecialty.textContent = specMap[userProfile.specialty] || 'ASALTO';
 
-    // Advanced Level & XP Logic
     const missions = (userProfile.exp || 0);
     const level = Math.floor(missions / 5) + 1;
     const currentLevelXP = missions % 5;
     const xpPercent = (currentLevelXP / 5) * 100;
 
     let rank = 'RECLUTA';
+    let tier = 'standard';
+
     if (userProfile.role === 'admin') {
-        rank = userProfile.rank || 'COMANDANTE SUPREMO';
+        rank = 'COMANDANTE SUPREMO';
+        tier = 'supreme';
         const profilePanel = document.getElementById('profilePanel');
-        if (profilePanel) profilePanel.classList.add('admin-mode');
+        if (profilePanel) {
+            profilePanel.classList.add('admin-mode');
+            profilePanel.dataset.tier = 'supreme';
+        }
         if (elements.profCallsign && !elements.profCallsign.innerHTML.includes('supreme-badge')) {
             elements.profCallsign.innerHTML += ' <span class="supreme-badge">MANDO</span>';
         }
-    } else if (missions >= 10) rank = 'ÉLITE';
-    else if (missions >= 6) rank = 'VETERANO';
-    else if (missions >= 3) rank = 'OPERADOR';
+        // Force Max Stats for Admin View
+        if (elements.profLevel) elements.profLevel.textContent = `NIVEL MAX`;
+        if (elements.profXPText) elements.profXPText.textContent = `∞ / ∞ XP`;
+        if (elements.profXPFill) elements.profXPFill.style.width = `100%`;
+    } else {
+        if (missions >= 10) {
+            rank = 'ÉLITE';
+            tier = 'elite';
+        } else if (missions >= 6) {
+            rank = 'VETERANO';
+            tier = 'standard';
+        } else if (missions >= 3) {
+            rank = 'OPERADOR';
+            tier = 'standard';
+        }
+        
+        if (elements.profLevel) elements.profLevel.textContent = `NIVEL ${level}`;
+        if (elements.profXPText) elements.profXPText.textContent = `${currentLevelXP} / 5 XP`;
+        if (elements.profXPFill) elements.profXPFill.style.width = `${xpPercent}%`;
+    }
+
+    const profilePanel = document.getElementById('profilePanel');
+    if (profilePanel) profilePanel.dataset.tier = tier;
 
     if (elements.profRank) {
         elements.profRank.textContent = rank;
-        elements.profRank.dataset.rank = rank.toLowerCase();
+        elements.profRank.dataset.rank = rank.toLowerCase().split(' ')[0]; // Support "comandante"
     }
-    if (elements.profLevel) elements.profLevel.textContent = `NIVEL ${level}`;
-    if (elements.profXPText) elements.profXPText.textContent = `${currentLevelXP} / 5 XP`;
-    if (elements.profXPFill) elements.profXPFill.style.width = `${xpPercent}%`;
+
     if (elements.profMissions) elements.profMissions.textContent = missions;
+
+    // Tactical ID UUID Generation (Fixed based on user ID)
+    const uuidDisplay = document.getElementById('operatorUUID');
+    if (uuidDisplay && userProfile.id) {
+        uuidDisplay.textContent = `ID: ${userProfile.id.substring(0, 8).toUpperCase()}`;
+    }
 
     if (elements.missionLogList) {
         const history = userProfile.missionHistory || [];

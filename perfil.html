@@ -89,10 +89,17 @@
                 <div class="profile-panel__content">
                     <div id="profileViewMode" class="profile-view-grid">
                         <div class="profile-main">
-                            <div class="profile-header-info">
-                                <h3 id="profCallsign" class="profile-callsign">-</h3>
-                                <p id="profRank" class="rank-pill" data-rank="recluta">RECLUTA</p>
-                                <p id="profRealName" class="profile-real-name">-</p>
+                            <!-- Premium Tactical ID Header -->
+                            <div class="profile-header-premium">
+                                <div class="operator-avatar-frame">
+                                    <i class="fas fa-user-secret"></i>
+                                    <div class="operator-id-tag" id="operatorUUID">ID: --</div>
+                                </div>
+                                <div class="profile-header-info">
+                                    <h3 id="profCallsign" class="profile-callsign">-</h3>
+                                    <p id="profRank" class="rank-pill" data-rank="recluta">RECLUTA</p>
+                                    <p id="profRealName" class="profile-real-name">-</p>
+                                </div>
                             </div>
 
                             <div class="profile-stats-grid">
@@ -118,7 +125,7 @@
                                 </div>
                             </div>
 
-                            <div class="profile-exp-section">
+                            <div class="profile-exp-section" style="margin-top:30px;">
                                 <div class="exp-header">
                                     <span id="profLevel">NIVEL 1</span>
                                     <span id="profXPText">0 / 5 XP</span>
@@ -128,8 +135,10 @@
                                 </div>
                             </div>
 
-                            <button id="editProfileBtn" class="btn btn--outline btn--full" style="margin-top:20px;">Actualizar Perfil</button>
-                            <a href="misiones.html" class="btn btn--primary btn--full" style="margin-top:10px; text-decoration:none; display:flex; align-items:center; justify-content:center;">ACCESO A INTELIGENCIA</a>
+                            <div class="profile-actions" style="display:flex; gap:15px; margin-top:30px;">
+                                <button id="editProfileBtn" class="btn btn--outline" style="flex:1;">Configurar</button>
+                                <a href="misiones.html" class="btn btn--primary" style="flex:1; text-decoration:none; display:flex; align-items:center; justify-content:center;">Inteligencia</a>
+                            </div>
                         </div>
 
                         <div class="profile-sidebar">
