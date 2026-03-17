@@ -31,9 +31,39 @@
             <nav class="nav">
                 <ul class="nav__list">
                     <li><a href="index.html" class="nav__link">Inicio</a></li>
-                    <li><a href="centro.html" class="nav__link">Centro</a></li>
-                    <li><a href="operaciones.html" class="nav__link">Operaciones</a></li>
-                    <li><a href="logistica.html" class="nav__link nav__link--active">Logística</a></li>
+                    <li class="nav__item nav__dropdown">
+                        <button class="nav__link dropdown-trigger" aria-haspopup="true" aria-expanded="false">
+                            CENTRO <span class="dropdown-arrow"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="centro.html" class="nav__link">Nosotros</a></li>
+                            <li><a href="centro.html#gallery" class="nav__link">Galería</a></li>
+                            <li><a href="centro.html#testimonios" class="nav__link">Opiniones</a></li>
+                            <li><a href="centro.html#faq" class="nav__link">Dudas (FAQ)</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav__item nav__dropdown">
+                        <button class="nav__link dropdown-trigger" aria-haspopup="true" aria-expanded="false">
+                            OPERACIONES <span class="dropdown-arrow"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="misiones.html" class="nav__link">Misiones (Intel)</a></li>
+                            <li><a href="operaciones.html#games" class="nav__link">Partidas</a></li>
+                            <li><a href="operaciones.html#calendario" class="nav__link">Calendario</a></li>
+                            <li><a href="operaciones.html#tarifas" class="nav__link">Tarifas</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav__item nav__dropdown">
+                        <button class="nav__link dropdown-trigger" aria-haspopup="true" aria-expanded="false">
+                            LOGÍSTICA <span class="dropdown-arrow"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="logistica.html#equipment" class="nav__link nav__link--active">Alquiler</a></li>
+                            <li><a href="logistica.html#rules" class="nav__link">Normativa</a></li>
+                            <li><a href="logistica.html#supplies" class="nav__link">Suministros</a></li>
+                            <li><a href="logistica.html#leaderboard" class="nav__link">Ranking Clanes</a></li>
+                        </ul>
+                    </li>
                     <li class="nav__auth-wrap">
                         <button id="authTrigger" class="nav__link nav__link--auth">Acceso</button>
                         <div id="userMenu" class="user-menu hidden">

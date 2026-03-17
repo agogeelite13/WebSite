@@ -92,9 +92,7 @@ const updateUI = async () => {
         if (els.userNameDisplay) els.userNameDisplay.textContent = userProfile.callsign || userProfile.name;
         
         // Dynamic Navbar Links
-        const navProfile = document.getElementById('navProfileLink');
         const navAdmin = document.getElementById('navAdminLink');
-        if (navProfile) navProfile.classList.remove('hidden');
         if (navAdmin && userProfile.is_admin) navAdmin.classList.remove('hidden');
 
         // Page-specific UI Logic
@@ -122,15 +120,6 @@ const updateUI = async () => {
             });
         } else if (path.includes('centro.html')) {
             renderCommunityBoard();
-        } else if (path.includes('logistica.html')) {
-            const allUsers = await api.getUsers();
-            profile.renderClanView(userProfile, clans, allUsers, {
-                leaderboardId: 'clanLeaderboardBody',
-                tfProgressId: 'tfProgress',
-                upProgressId: 'upProgress',
-                tfStatsId: 'tfStats',
-                upStatsId: 'upStats'
-            });
         }
 
         // Enrollment Logic (if in index.html)
