@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OPERACIONES – AGOGE ELITE</title>
+    <link rel="icon" href="logo.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Oswald:wght@400;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body class="page-operaciones">
+    <div class="top-bar">
+        <div class="container top-bar__inner">
+            <span class="top-bar__status"><span class="status-dot"></span> SISTEMA ACTIVO</span>
+            <div class="top-bar__ticker"><p>ACCESO AUTORIZADO — CALENDARIO DE OPERACIONES — AGOGE ELITE</p></div>
+            <span class="top-bar__date" id="topBarDate"></span>
+        </div>
+    </div>
+
+    <header class="site-header scrolled" id="siteHeader">
+        <div class="container header__inner">
+            <a href="index.html" class="header__logo">
+                <img src="logo.jpg" alt="Logo" width="40" height="40">
+                <span>AGOGE ELITE</span>
+            </a>
+            <nav class="nav">
+                <ul class="nav__list">
+                    <li><a href="index.html" class="nav__link">Inicio</a></li>
+                    <li><a href="centro.html" class="nav__link">Centro</a></li>
+                    <li><a href="operaciones.html" class="nav__link nav__link--active">Operaciones</a></li>
+                    <li><a href="logistica.html" class="nav__link">Logística</a></li>
+                    <li class="nav__auth-wrap">
+                        <button id="authTrigger" class="nav__link nav__link--auth">Acceso</button>
+                        <div id="userMenu" class="user-menu hidden">
+                            <span id="userName" class="user-menu__name"></span>
+                            <div class="user-menu__actions">
+                                <a href="perfil.html" class="user-menu__btn" style="text-decoration:none;">Mi Perfil</a>
+                                <a href="admin.html" id="navAdminLink" class="nav__link nav__link--auth hidden" style="margin:0; padding:10px;">ADMIN</a>
+                                <button id="logoutBtn" class="user-menu__logout">Cerrar Sesión</button>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content" style="padding-top:80px;">
+        <!-- GAMES -->
+        <section id="games" class="section section--mid">
+            <div class="container">
+                <header class="section__header reveal">
+                    <span class="section__label">Operaciones</span>
+                    <h2 class="section__title">Partidas y Entrenamiento</h2>
+                </header>
+                <div class="cards-grid">
+                    <article class="card reveal">
+                        <h3 class="card__title">Partidas Públicas</h3>
+                        <p class="card__body">Principalmente domingos. Formato dinámico CQB con listas cerradas según aforo.</p>
+                        <span class="card__price">15 € / partida suelta</span>
+                    </article>
+                    <article class="card reveal reveal--delay">
+                        <h3 class="card__title">Partidas Privadas</h3>
+                        <p class="card__body">Para grupos cerrados entre semana o sábados. Ideales para entrenamientos y equipos.</p>
+                    </article>
+                    <article class="card reveal reveal--delay-2">
+                        <h3 class="card__title">Entrenamientos</h3>
+                        <p class="card__body">Trabajamos comunicación, coordinación de equipo y estrategias específicas de CQB.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- CALENDAR -->
+        <section id="calendario" class="section section--dark">
+            <div class="container">
+                <header class="section__header reveal">
+                    <span class="section__label">Agenda</span>
+                    <h2 class="section__title">Calendario de Operaciones</h2>
+                </header>
+                <div class="calendar reveal" id="calendarContainer">
+                    <div class="calendar__header">
+                        <button id="prevMonth" class="btn btn--xs">&lt;</button>
+                        <h3 id="currentMonthYear">Mes Año</h3>
+                        <button id="nextMonth" class="btn btn--xs">&gt;</button>
+                    </div>
+                    <div class="calendar__grid" id="calendarGrid">
+                        <!-- Populated via JS -->
+                    </div>
+                    <p class="calendar__note">* Marcados en <span style="color:var(--bronze)">bronce</span> los días de operación oficial (Domingos).</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- TARIFAS -->
+        <section id="tarifas" class="section section--mid">
+            <div class="container">
+                <header class="section__header reveal">
+                    <span class="section__label">Planes</span>
+                    <h2 class="section__title">Planes y Cuotas</h2>
+                </header>
+                <div class="plans-grid">
+                    <article class="plan-card reveal">
+                        <h3 class="plan-card__name">Entre Semana</h3>
+                        <div class="plan-card__price"><span class="plan-card__amount">25€</span><span class="plan-card__period">/ mes</span></div>
+                        <ul class="plan-card__features">
+                            <li>4 partidas al mes</li>
+                            <li>Lunes a Viernes</li>
+                        </ul>
+                    </article>
+                    <article class="plan-card plan-card--featured reveal">
+                        <div class="plan-card__badge">Más popular</div>
+                        <h3 class="plan-card__name">Plan Sábados</h3>
+                        <div class="plan-card__price"><span class="plan-card__amount">32€</span><span class="plan-card__period">/ mes</span></div>
+                        <ul class="plan-card__features">
+                            <li>4 partidas al mes</li>
+                            <li>Grupos de 8 personas</li>
+                        </ul>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer__inner">
+            <p>&copy; 2024 AGOGE ELITE. Sistema de Gestión Táctica v4.1.0</p>
+        </div>
+    </footer>
+
+    <!-- Auth Modal Shared -->
+    <div id="authModal" class="modal">
+        <div class="modal__overlay" id="modalOverlay"></div>
+        <div class="modal__content">
+            <button class="modal__close" id="modalClose">&times;</button>
+            <div id="loginFormWrap">
+                <h3 class="modal__title">Acceso Operador</h3>
+                <form id="loginForm" class="auth-form">
+                    <input type="email" id="loginEmail" placeholder="Email Militar" required class="form-input">
+                    <input type="password" id="loginPass" placeholder="Código de Seguridad" required class="form-input">
+                    <button type="submit" class="btn btn--primary btn--full">Establecer Enlace</button>
+                </form>
+                <div id="forgotPassWrap" class="hidden">
+                    <h3 class="modal__title">Recuperación de Enlace</h3>
+                    <form id="forgotPassForm" class="auth-form">
+                        <input type="email" id="resetEmail" placeholder="Email Registrado" required class="form-input">
+                        <button type="submit" class="btn btn--primary btn--full">Enviar Código</button>
+                    </form>
+                    <p class="modal__footer"><button id="backToLogin" class="text-link">Volver al inicio de sesión</button></p>
+                </div>
+                <p class="modal__footer">¿No registrado? <button id="toRegister" class="text-link">Inicia Alistamiento</button></p>
+            </div>
+            <div id="registerFormWrap" class="hidden">
+                <h3 class="modal__title">Registro de Recluta</h3>
+                <form class="auth-form" id="registerForm">
+                    <div class="form-group"><input type="text" id="regName" class="form-input" required placeholder="Nombre Real"></div>
+                    <div class="form-group"><input type="text" id="regCallsign" class="form-input" required placeholder="Callsign (Alias)"></div>
+                    <div class="form-group grid-2">
+                        <select id="regSpecialty" class="form-input" required>
+                            <option value="" disabled selected>Especialidad</option>
+                            <option value="assault">Asalto</option>
+                            <option value="medic">Médico</option>
+                            <option value="support">Apoyo</option>
+                            <option value="sniper">Tirador</option>
+                        </select>
+                        <select id="regFaction" class="form-input" required>
+                            <option value="none">Neutral</option>
+                            <option value="taskforce">Task Force</option>
+                            <option value="uprising">Uprising</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><input type="email" id="regEmail" class="form-input" required placeholder="tu@email.com"></div>
+                    <div class="form-group"><input type="password" id="regPass" class="form-input" required placeholder="Mínimo 6 caracteres"></div>
+                    <button type="submit" class="btn btn--primary btn--full">Crear Cuenta</button>
+                </form>
+                <p class="modal__footer">¿Ya tienes cuenta? <button id="toLogin" class="text-link">Inicia sesión</button></p>
+            </div>
+        </div>
+    </div>
+    
+    <div id="scanOverlay" class="scan-overlay">
+        <div class="scan-line"></div>
+        <div class="scan-content">
+            <div class="scan-spinner"></div>
+            <h3>VERIFICANDO IDENTIDAD</h3>
+            <p>OPERADOR ENCRIPTADO...</p>
+        </div>
+    </div>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>

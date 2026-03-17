@@ -111,6 +111,26 @@ const updateUI = async () => {
             renderActiveMission();
             renderVoting();
             setupVotingListeners();
+        } else if (path.includes('logistica.html')) {
+            const allUsers = await api.getUsers();
+            profile.renderClanView(userProfile, clans, allUsers, {
+                leaderboardId: 'clanLeaderboardBody',
+                tfProgressId: 'tfProgress',
+                upProgressId: 'upProgress',
+                tfStatsId: 'tfStats',
+                upStatsId: 'upStats'
+            });
+        } else if (path.includes('centro.html')) {
+            renderCommunityBoard();
+        } else if (path.includes('logistica.html')) {
+            const allUsers = await api.getUsers();
+            profile.renderClanView(userProfile, clans, allUsers, {
+                leaderboardId: 'clanLeaderboardBody',
+                tfProgressId: 'tfProgress',
+                upProgressId: 'upProgress',
+                tfStatsId: 'tfStats',
+                upStatsId: 'upStats'
+            });
         }
 
         // Enrollment Logic (if in index.html)
@@ -146,13 +166,22 @@ const updateUI = async () => {
             els.userRankBadge.dataset.rank = rank.toLowerCase();
         }
 
-        const allUsers = await api.getUsers();
-        profile.renderClanView(userProfile, clans, allUsers, {
-            createClan, joinClan, leaveClan
-        });
-        profile.renderMedals(userProfile, enrollments, sunKey);
-        renderClanLeaderboard(allUsers);
-        renderFactionLeaderboard(allUsers);
+        // Leaderboard (only if in index or logistica)
+        const path2 = window.location.pathname;
+        if (path2.includes('index.html') || path2 === '/' || path2.includes('logistica.html')) {
+            const allUsers = await api.getUsers();
+            profile.renderClanView(userProfile, clans, allUsers, {
+                leaderboardId: 'clanLeaderboardBody',
+                tfProgressId: 'tfProgress',
+                upProgressId: 'upProgress',
+                tfStatsId: 'tfStats',
+                upStatsId: 'upStats',
+                createClan: profile.createClan,
+                joinClan: profile.joinClan,
+                leaveClan: profile.leaveClan
+            });
+            profile.renderMedals(userProfile, enrollments, sunKey);
+        }
     } else {
         els.authTrigger?.classList.remove('hidden');
         els.userMenu?.classList.add('hidden');
@@ -567,22 +596,43 @@ const renderVoting = async () => {
     }
 };
 
+const renderCommunityBoard = async () => {
+    const grid = document.getElementById('approvedPhotosGrid');
+    if (!grid) return;
+
+    const photos = await api.getCommunityPhotos('approved');
+    
+    if (photos.length === 0) {
+        grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:var(--text-muted); padding:40px;">No hay reportes visuales disponibles en este momento.</div>';
+        return;
+    }
+
+    grid.innerHTML = photos.map(photo => `
+        <article class="community-card" style="background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:8px; overflow:hidden; transition:transform 0.3s ease;">
+            <div class="community-card__img-wrap" style="aspect-ratio:1/1; overflow:hidden; position:relative;">
+                <img src="${photo.image_url}" alt="Intel" style="width:100%; height:100%; object-fit:cover; transition:transform 0.5s ease;" loading="lazy">
+                <div class="community-card__overlay" style="position:absolute; bottom:0; left:0; width:100%; padding:15px; background:linear-gradient(transparent, rgba(0,0,0,0.8));">
+                    <span class="community-card__user" style="font-size:0.7rem; color:var(--bronze); font-weight:bold; text-transform:uppercase;">OP: ${photo.user_id}</span>
+                </div>
+            </div>
+            <div class="community-card__content" style="padding:15px;">
+                <p class="community-card__caption" style="font-size:0.8rem; line-height:1.4; color:var(--white);">"${photo.caption || 'Sin reporte adicional.'}"</p>
+                <div class="community-card__meta" style="margin-top:10px; font-size:0.6rem; color:var(--text-muted);">${new Date(photo.created_at).toLocaleDateString()}</div>
+            </div>
+        </article>
+    `).join('');
+};
+
 const setupVotingListeners = () => {
     document.querySelectorAll('.vote-btn').forEach(btn => {
-        btn.addEventListener('click', async () => {
+        // Remove existing to avoid duplicates if re-rendered
+        const newBtn = btn.cloneNode(true);
+        btn.parentNode.replaceChild(newBtn, btn);
+        newBtn.addEventListener('click', async () => {
             if (!currentUser) return alert('Debes estar logueado para votar.');
-            if (await api.castVote(getNextSundayKey(), currentUser.id, userProfile.email, btn.dataset.mode)) {
+            if (await api.castVote(getNextSundayKey(), currentUser.id, userProfile.email, newBtn.dataset.mode)) {
                 renderVoting();
             }
         });
     });
 };
-
-document.querySelectorAll('.vote-btn').forEach(btn => {
-    btn.addEventListener('click', async () => {
-        if (!currentUser) return alert('Debes estar logueado para votar.');
-        if (await api.castVote(getNextSundayKey(), currentUser.id, userProfile.email, btn.dataset.mode)) {
-            renderVoting();
-        }
-    });
-});

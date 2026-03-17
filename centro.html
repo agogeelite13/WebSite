@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EL CENTRO – AGOGE ELITE</title>
+    <link rel="icon" href="logo.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Oswald:wght@400;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body class="page-centro">
+    <div class="top-bar">
+        <div class="container top-bar__inner">
+            <span class="top-bar__status"><span class="status-dot"></span> SISTEMA ACTIVO</span>
+            <div class="top-bar__ticker"><p>ACCESO AUTORIZADO — INSTALACIONES AGOGE ELITE — VALLADOLID</p></div>
+            <span class="top-bar__date" id="topBarDate"></span>
+        </div>
+    </div>
+
+    <header class="site-header scrolled" id="siteHeader">
+        <div class="container header__inner">
+            <a href="index.html" class="header__logo">
+                <img src="logo.jpg" alt="Logo" width="40" height="40">
+                <span>AGOGE ELITE</span>
+            </a>
+            <nav class="nav">
+                <ul class="nav__list">
+                    <li><a href="index.html" class="nav__link">Inicio</a></li>
+                    <li><a href="centro.html" class="nav__link nav__link--active">Centro</a></li>
+                    <li><a href="operaciones.html" class="nav__link">Operaciones</a></li>
+                    <li><a href="logistica.html" class="nav__link">Logística</a></li>
+                    <li class="nav__auth-wrap">
+                        <button id="authTrigger" class="nav__link nav__link--auth">Acceso</button>
+                        <div id="userMenu" class="user-menu hidden">
+                            <span id="userName" class="user-menu__name"></span>
+                            <div class="user-menu__actions">
+                                <a href="perfil.html" class="user-menu__btn" style="text-decoration:none;">Mi Perfil</a>
+                                <a href="admin.html" id="navAdminLink" class="nav__link nav__link--auth hidden" style="margin:0; padding:10px;">ADMIN</a>
+                                <button id="logoutBtn" class="user-menu__logout">Cerrar Sesión</button>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content" style="padding-top:80px;">
+        <!-- ABOUT -->
+        <section id="about" class="section section--dark">
+            <div class="container">
+                <div class="about__grid">
+                    <div class="about__text reveal">
+                        <span class="section__label">Quiénes somos</span>
+                        <h2 class="section__title">Un campo construido sobre disciplina</h2>
+                        <p class="about__body">Agoge Elite es un campo de airsoft CQB indoor ubicado en Valladolid. Operamos en una nave adaptada para combate en espacios cerrados, con un enfoque prioritario en la seguridad, la disciplina y el realismo táctico.</p>
+                        <p class="about__body">Somos una asociación orientada a ofrecer partidas organizadas, dinámicas y profesionales tanto para jugadores habituales como para nuevos reclutas.</p>
+                    </div>
+                    <div class="about__card reveal reveal--delay">
+                        <div class="about__card-accent" aria-hidden="true"></div>
+                        <h3 class="about__card-title">Nuestra filosofía</h3>
+                        <p>Un espacio diseñado para vivir el airsoft de forma táctica y organizada, fomentando el compañerismo y la mejora constante en cada operación.</p>
+                        <ul class="about__stats">
+                            <li><strong>CQB</strong><span>Indoor</span></li>
+                            <li><strong>1J</strong><span>Máx. potencia</span></li>
+                            <li><strong>6–20</strong><span>Jugadores</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- GALLERY -->
+        <section id="gallery" class="section section--mid">
+            <div class="container">
+                <header class="section__header reveal">
+                    <span class="section__label">El campo</span>
+                    <h2 class="section__title">Galería Operacional</h2>
+                </header>
+                <div class="gallery-grid">
+                    <figure class="gallery-item reveal"><img src="https://placehold.co/800x600/111/333?text=CQB+HALL" alt="Interior"></figure>
+                    <figure class="gallery-item reveal reveal--delay"><img src="https://placehold.co/800x600/111/444?text=BREACH+POINT" alt="Breach"></figure>
+                    <figure class="gallery-item reveal"><img src="https://placehold.co/800x600/111/222?text=TACTICAL+ZONE" alt="Tactical"></figure>
+                    <figure class="gallery-item reveal reveal--delay"><img src="https://placehold.co/800x600/111/555?text=KILL+HOUSE" alt="Killhouse"></figure>
+                </div>
+            </div>
+        </section>
+
+        <!-- TESTIMONIALS -->
+        <section id="testimonios" class="section section--dark">
+            <div class="container">
+                <header class="section__header reveal">
+                    <span class="section__label">Operadores</span>
+                    <h2 class="section__title">Opiniones del Frente</h2>
+                </header>
+                <div class="testimonials-grid reveal">
+                    <article class="testimonial-card">
+                        <p class="testimonial-text">"El mejor campo CQB de la zona. La organización es impecable y el ambiente muy profesional."</p>
+                        <cite class="testimonial-author">— Operador</cite>
+                    </article>
+                    <article class="testimonial-card testimonial-card--featured">
+                        <p class="testimonial-text">"La nave está diseñada para obligarte a usar la cabeza. No es solo disparar, es pura estrategia."</p>
+                        <cite class="testimonial-author">— Operador</cite>
+                    </article>
+                    <article class="testimonial-card">
+                        <p class="testimonial-text">"Buen rollo y mucha adrenalina. Las partidas de los domingos son adictivas."</p>
+                        <cite class="testimonial-author">— Operador</cite>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ -->
+        <section id="faq" class="section section--mid">
+            <div class="container">
+                <header class="section__header reveal">
+                    <span class="section__label">Información</span>
+                    <h2 class="section__title">Dudas Frecuentes</h2>
+                </header>
+                <div class="faq-accordion reveal">
+                    <details class="faq-item"><summary class="faq-question">¿Cuál es la edad mínima?</summary><div class="faq-answer">La edad mínima para operar es de 16 años con autorización paterna.</div></details>
+                    <details class="faq-item"><summary class="faq-question">¿Necesito equipo propio?</summary><div class="faq-answer">No, disponemos de kits de alquiler completos con todo lo necesario.</div></details>
+                    <details class="faq-item"><summary class="faq-question">¿Qué potencia máxima se permite?</summary><div class="faq-answer">Estrictamente 1 Julio (aprox. 328 FPS con 0.20g) para todas las réplicas.</div></details>
+                </div>
+            </div>
+        </section>
+
+        <!-- COMMUNITY BOARD (NEW PHASE 43) -->
+        <section id="communityBoard" class="section section--dark">
+            <div class="container">
+                <header class="section__header reveal">
+                    <span class="section__label">Comunidad</span>
+                    <h2 class="section__title">Tablón de Operadores</h2>
+                    <p class="section__subtitle" style="color:var(--text-muted); font-size:1.1rem; max-width:600px; margin:10px auto;">Inteligencia visual recopilada directamente desde el frente por nuestros operadores.</p>
+                </header>
+                
+                <div id="approvedPhotosGrid" class="community-grid reveal reveal--delay">
+                    <!-- Photos injected via JS -->
+                    <div class="loading-msg" style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--bronze);">
+                        <div class="scan-spinner" style="margin: 0 auto 15px;"></div>
+                        <p>ACCEDIENDO A ARCHIVOS CLASIFICADOS...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer__inner">
+            <p>&copy; 2024 AGOGE ELITE. Sistema de Gestión Táctica v4.1.0</p>
+        </div>
+    </footer>
+
+    <!-- Auth Modal Shared -->
+    <div id="authModal" class="modal">
+        <div class="modal__overlay" id="modalOverlay"></div>
+        <div class="modal__content">
+            <button class="modal__close" id="modalClose">&times;</button>
+            <div id="loginFormWrap">
+                <h3 class="modal__title">Acceso Operador</h3>
+                <form id="loginForm" class="auth-form">
+                    <input type="email" id="loginEmail" placeholder="Email Militar" required class="form-input">
+                    <input type="password" id="loginPass" placeholder="Código de Seguridad" required class="form-input">
+                    <button type="submit" class="btn btn--primary btn--full">Establecer Enlace</button>
+                </form>
+                <div id="forgotPassWrap" class="hidden">
+                    <h3 class="modal__title">Recuperación de Enlace</h3>
+                    <form id="forgotPassForm" class="auth-form">
+                        <input type="email" id="resetEmail" placeholder="Email Registrado" required class="form-input">
+                        <button type="submit" class="btn btn--primary btn--full">Enviar Código</button>
+                    </form>
+                    <p class="modal__footer"><button id="backToLogin" class="text-link">Volver al inicio de sesión</button></p>
+                </div>
+                <p class="modal__footer">¿No registrado? <button id="toRegister" class="text-link">Inicia Alistamiento</button></p>
+            </div>
+            <div id="registerFormWrap" class="hidden">
+                <h3 class="modal__title">Registro de Recluta</h3>
+                <form class="auth-form" id="registerForm">
+                    <div class="form-group"><input type="text" id="regName" class="form-input" required placeholder="Nombre Real"></div>
+                    <div class="form-group"><input type="text" id="regCallsign" class="form-input" required placeholder="Callsign (Alias)"></div>
+                    <div class="form-group grid-2">
+                        <select id="regSpecialty" class="form-input" required>
+                            <option value="" disabled selected>Especialidad</option>
+                            <option value="assault">Asalto</option>
+                            <option value="medic">Médico</option>
+                            <option value="support">Apoyo</option>
+                            <option value="sniper">Tirador</option>
+                        </select>
+                        <select id="regFaction" class="form-input" required>
+                            <option value="none">Neutral</option>
+                            <option value="taskforce">Task Force</option>
+                            <option value="uprising">Uprising</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><input type="email" id="regEmail" class="form-input" required placeholder="tu@email.com"></div>
+                    <div class="form-group"><input type="password" id="regPass" class="form-input" required placeholder="Mínimo 6 caracteres"></div>
+                    <button type="submit" class="btn btn--primary btn--full">Crear Cuenta</button>
+                </form>
+                <p class="modal__footer">¿Ya tienes cuenta? <button id="toLogin" class="text-link">Inicia sesión</button></p>
+            </div>
+        </div>
+    </div>
+    
+    <div id="scanOverlay" class="scan-overlay">
+        <div class="scan-line"></div>
+        <div class="scan-content">
+            <div class="scan-spinner"></div>
+            <h3>VERIFICANDO IDENTIDAD</h3>
+            <p>OPERADOR ENCRIPTADO...</p>
+        </div>
+    </div>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>

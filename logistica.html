@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOGÍSTICA – AGOGE ELITE</title>
+    <link rel="icon" href="logo.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Oswald:wght@400;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body class="page-logistica">
+    <div class="top-bar">
+        <div class="container top-bar__inner">
+            <span class="top-bar__status"><span class="status-dot"></span> SISTEMA ACTIVO</span>
+            <div class="top-bar__ticker"><p>ACCESO AUTORIZADO — GESTIÓN DE SUMINISTROS — AGOGE ELITE</p></div>
+            <span class="top-bar__date" id="topBarDate"></span>
+        </div>
+    </div>
+
+    <header class="site-header scrolled" id="siteHeader">
+        <div class="container header__inner">
+            <a href="index.html" class="header__logo">
+                <img src="logo.jpg" alt="Logo" width="40" height="40">
+                <span>AGOGE ELITE</span>
+            </a>
+            <nav class="nav">
+                <ul class="nav__list">
+                    <li><a href="index.html" class="nav__link">Inicio</a></li>
+                    <li><a href="centro.html" class="nav__link">Centro</a></li>
+                    <li><a href="operaciones.html" class="nav__link">Operaciones</a></li>
+                    <li><a href="logistica.html" class="nav__link nav__link--active">Logística</a></li>
+                    <li class="nav__auth-wrap">
+                        <button id="authTrigger" class="nav__link nav__link--auth">Acceso</button>
+                        <div id="userMenu" class="user-menu hidden">
+                            <span id="userName" class="user-menu__name"></span>
+                            <div class="user-menu__actions">
+                                <a href="perfil.html" class="user-menu__btn" style="text-decoration:none;">Mi Perfil</a>
+                                <a href="admin.html" id="navAdminLink" class="nav__link nav__link--auth hidden" style="margin:0; padding:10px;">ADMIN</a>
+                                <button id="logoutBtn" class="user-menu__logout">Cerrar Sesión</button>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content" style="padding-top:80px;">
+        <!-- EQUIPMENT -->
+        <section id="equipment" class="section section--dark">
+            <div class="container">
+                <header class="section__header reveal">
+                    <span class="section__label">Equipación</span>
+                    <h2 class="section__title">Alquiler de Equipación</h2>
+                </header>
+                <div class="equip-grid">
+                    <article class="equip-card reveal">
+                        <div class="equip-card__img"><img src="https://placehold.co/600x400/222/555?text=Solo+Replica" alt="Réplica"></div>
+                        <div class="equip-card__content">
+                            <h3 class="equip-card__title">Sólo Réplica</h3>
+                            <p>Elección entre Fusil G36C o Subfusil SMG. Incluye batería y 1000 bolas.</p>
+                            <div class="equip-card__price">20€</div>
+                        </div>
+                    </article>
+                    <article class="equip-card equip-card--featured reveal">
+                        <div class="equip-card__tag">Recomendado</div>
+                        <div class="equip-card__img"><img src="https://placehold.co/600x400/222/cd7f32?text=Kit+Completo" alt="Kit"></div>
+                        <div class="equip-card__content">
+                            <h3 class="equip-card__title">Kit Operador Completo</h3>
+                            <p>Réplica, máscara, gafas, chaleco, mono y 2000 bolas.</p>
+                            <div class="equip-card__price">25€</div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- SUPPLIES -->
+        <section id="supplies" class="section section--mid">
+            <div class="container">
+                <header class="section__header reveal">
+                    <span class="section__label">Logística</span>
+                    <h2 class="section__title">Suministros Oficiales</h2>
+                </header>
+                <div class="supply-grid">
+                    <article class="supply-card reveal">
+                        <div class="supply-card__img"><img src="img/water.png" alt="Agua"></div>
+                        <div class="supply-card__info"><h3 class="supply-card__title">Hidratación</h3><p class="supply-card__price">1,50€</p></div>
+                    </article>
+                    <article class="supply-card reveal">
+                        <div class="supply-card__img"><img src="img/energy.png" alt="Energy"></div>
+                        <div class="supply-card__info"><h3 class="supply-card__title">Energía</h3><p class="supply-card__price">2,00€</p></div>
+                    </article>
+                    <article class="supply-card reveal">
+                        <div class="supply-card__img"><img src="img/bbs.png" alt="Bolsas"></div>
+                        <div class="supply-card__info"><h3 class="supply-card__title">Munición</h3><p class="supply-card__price">Desde 12€</p></div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- RANKING -->
+        <section id="leaderboard" class="section section--dark">
+            <div class="container">
+                <header class="section__header reveal">
+                    <span class="section__label">Competición</span>
+                    <h2 class="section__title">Ranking de Fuerzas de Tareas</h2>
+                </header>
+                <div class="leaderboard-wrap reveal">
+                    <table class="leaderboard-table">
+                        <thead>
+                            <tr><th>POS</th><th>CLAN / UNIDAD</th><th>OPERADORES</th><th>XP TOTAL</th></tr>
+                        </thead>
+                        <tbody id="clanLeaderboardBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- RULES -->
+        <section id="rules" class="section section--mid">
+            <div class="container">
+                <header class="section__header reveal">
+                    <span class="section__label">Seguridad</span>
+                    <h2 class="section__title">Normativa Básica</h2>
+                </header>
+                <div class="rules-grid">
+                    <article class="rule-card reveal"><h3>1. Protección Primaria</h3><p>Uso de gafas de seguridad homologadas obligatorio.</p></article>
+                    <article class="rule-card reveal"><h3>2. Protección Bucal</h3><p>Se recomienda el uso de máscaras bucales.</p></article>
+                    <article class="rule-card reveal"><h3>3. Código de Honor</h3><p>Un impacto recibido = un jugador eliminado.</p></article>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer__inner">
+            <p>&copy; 2024 AGOGE ELITE. Sistema de Gestión Táctica v4.1.0</p>
+        </div>
+    </footer>
+
+    <!-- Auth Modal Shared -->
+    <div id="authModal" class="modal">
+        <div class="modal__overlay" id="modalOverlay"></div>
+        <div class="modal__content">
+            <button class="modal__close" id="modalClose">&times;</button>
+            <div id="loginFormWrap">
+                <h3 class="modal__title">Acceso Operador</h3>
+                <form id="loginForm" class="auth-form">
+                    <input type="email" id="loginEmail" placeholder="Email Militar" required class="form-input">
+                    <input type="password" id="loginPass" placeholder="Código de Seguridad" required class="form-input">
+                    <button type="submit" class="btn btn--primary btn--full">Establecer Enlace</button>
+                </form>
+                <div id="forgotPassWrap" class="hidden">
+                    <h3 class="modal__title">Recuperación de Enlace</h3>
+                    <form id="forgotPassForm" class="auth-form">
+                        <input type="email" id="resetEmail" placeholder="Email Registrado" required class="form-input">
+                        <button type="submit" class="btn btn--primary btn--full">Enviar Código</button>
+                    </form>
+                    <p class="modal__footer"><button id="backToLogin" class="text-link">Volver al inicio de sesión</button></p>
+                </div>
+                <p class="modal__footer">¿No registrado? <button id="toRegister" class="text-link">Inicia Alistamiento</button></p>
+            </div>
+            <div id="registerFormWrap" class="hidden">
+                <h3 class="modal__title">Registro de Recluta</h3>
+                <form class="auth-form" id="registerForm">
+                    <div class="form-group"><input type="text" id="regName" class="form-input" required placeholder="Nombre Real"></div>
+                    <div class="form-group"><input type="text" id="regCallsign" class="form-input" required placeholder="Callsign (Alias)"></div>
+                    <div class="form-group grid-2">
+                        <select id="regSpecialty" class="form-input" required>
+                            <option value="" disabled selected>Especialidad</option>
+                            <option value="assault">Asalto</option>
+                            <option value="medic">Médico</option>
+                            <option value="support">Apoyo</option>
+                            <option value="sniper">Tirador</option>
+                        </select>
+                        <select id="regFaction" class="form-input" required>
+                            <option value="none">Neutral</option>
+                            <option value="taskforce">Task Force</option>
+                            <option value="uprising">Uprising</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><input type="email" id="regEmail" class="form-input" required placeholder="tu@email.com"></div>
+                    <div class="form-group"><input type="password" id="regPass" class="form-input" required placeholder="Mínimo 6 caracteres"></div>
+                    <button type="submit" class="btn btn--primary btn--full">Crear Cuenta</button>
+                </form>
+                <p class="modal__footer">¿Ya tienes cuenta? <button id="toLogin" class="text-link">Inicia sesión</button></p>
+            </div>
+        </div>
+    </div>
+    
+    <div id="scanOverlay" class="scan-overlay">
+        <div class="scan-line"></div>
+        <div class="scan-content">
+            <div class="scan-spinner"></div>
+            <h3>VERIFICANDO IDENTIDAD</h3>
+            <p>OPERADOR ENCRIPTADO...</p>
+        </div>
+    </div>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
