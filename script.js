@@ -89,6 +89,7 @@ const updateUI = async () => {
     if (currentUser && userProfile) {
         els.authTrigger?.classList.add('hidden');
         els.userMenu?.classList.remove('hidden');
+        els.dashboard?.classList.remove('hidden'); // Fix: Show dashboard when logged in
         if (els.userNameDisplay) els.userNameDisplay.textContent = userProfile.callsign || userProfile.name;
         
         // Dynamic Navbar Links
@@ -102,9 +103,16 @@ const updateUI = async () => {
             profile.renderMedals(userProfile, enrollments, getNextSundayKey());
         } else if (path.includes('admin.html')) {
             if (!userProfile.is_admin) window.location.href = 'index.html';
-            admin.updateAdminDashboard(api, getNextSundayKey());
-            admin.setupMissionConfig(api, getNextSundayKey());
+            const sunKey = getNextSundayKey();
+            admin.updateAdminDashboard(api, sunKey);
+            admin.setupMissionConfig(api, sunKey);
             admin.renderAdminPhotos(api);
+            admin.attachAdminGlobals(api, sunKey);
+
+            // Download Manifesto Listener
+            document.getElementById('downloadManifestoBtn')?.addEventListener('click', () => {
+                admin.downloadManifesto(api, sunKey);
+            });
         } else if (path.includes('misiones.html')) {
             renderActiveMission();
             renderVoting();
@@ -628,7 +636,7 @@ const setupVotingListeners = () => {
 
 // 5. INITIALIZATION
 document.addEventListener('DOMContentLoaded', async () => {
-    // a. Component Inits
+    // a. Component Inits (Vanilla UI)
     ui.initScrollProgress();
     ui.initStickyHeader();
     ui.initHamburger();
@@ -638,10 +646,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     ui.initFAQ();
     ui.initTerminalLog();
     ui.initCountdown();
+    ui.initParallax();
+    ui.initStatsCounter();
+    ui.initCalendar();
+    ui.initLightbox();
 
-    // b. Supabase & Data
+    // b. Supabase & Data Logic
     supabase = initSupabase();
     if (supabase) {
+        // Auth UI Bindings
+        setupAuthUI();
+
+        // Check current session
         currentUser = (await supabase.auth.getUser()).data.user;
         refreshData();
         
@@ -654,10 +670,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // c. Page specific listeners
     const path = window.location.pathname;
+    const sunKey = getNextSundayKey();
+    
     if (path.includes('misiones.html')) {
         profile.initMissionVoting();
         ui.initTacticalMap();
-    } else if (path.includes('centro.html')) {
-        ui.initLightbox();
+    } else if (path.includes('admin.html')) {
+        // Admin globals & logic already handled by setupAuthUI calling admin.update...
+        // But we ensure globals are attached
+        admin.attachAdminGlobals(api, sunKey);
     }
 });
