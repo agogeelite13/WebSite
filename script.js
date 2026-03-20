@@ -640,6 +640,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     ui.initScrollProgress();
     ui.initStickyHeader();
     ui.initHamburger();
+    ui.initDropdowns();
     ui.initReveal();
     ui.initSmoothScroll();
     ui.initActiveNav();

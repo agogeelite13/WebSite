@@ -39,6 +39,8 @@ export const initHamburger = () => {
         btn.setAttribute('aria-expanded', 'false');
         btn.setAttribute('aria-label', 'Abrir menú');
         document.body.classList.remove('nav-open');
+        // Close any open dropdowns too
+        document.querySelectorAll('.nav__dropdown').forEach(d => d.classList.remove('is-active'));
     };
 
     const open = () => {
@@ -49,12 +51,49 @@ export const initHamburger = () => {
         document.body.classList.add('nav-open');
     };
 
-    btn.addEventListener('click', () => nav.classList.contains('is-open') ? close() : open());
-    document.querySelectorAll('.nav__link').forEach(l => l.addEventListener('click', close));
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        nav.classList.contains('is-open') ? close() : open();
+    });
+
+    // Only close if NOT a dropdown trigger
+    document.querySelectorAll('.nav__link').forEach(l => {
+        l.addEventListener('click', () => {
+            if (!l.classList.contains('dropdown-trigger')) {
+                close();
+            }
+        });
+    });
+
     document.addEventListener('click', e => {
         if (nav.classList.contains('is-open') && !nav.contains(e.target) && !btn.contains(e.target)) close();
     });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+};
+
+export const initDropdowns = () => {
+    const triggers = document.querySelectorAll('.dropdown-trigger');
+    
+    triggers.forEach(trigger => {
+        trigger.addEventListener('click', (e) => {
+            if (window.innerWidth <= 768) {
+                e.preventDefault();
+                e.stopPropagation();
+                const parent = trigger.closest('.nav__dropdown');
+                const isOpen = parent.classList.contains('is-active');
+                
+                // Close other dropdowns
+                document.querySelectorAll('.nav__dropdown').forEach(d => d.classList.remove('is-active'));
+                
+                if (!isOpen) {
+                    parent.classList.add('is-active');
+                    trigger.setAttribute('aria-expanded', 'true');
+                } else {
+                    trigger.setAttribute('aria-expanded', 'false');
+                }
+            }
+        });
+    });
 };
 
 export const initReveal = () => {
