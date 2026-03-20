@@ -625,3 +625,39 @@ const setupVotingListeners = () => {
         });
     });
 };
+
+// 5. INITIALIZATION
+document.addEventListener('DOMContentLoaded', async () => {
+    // a. Component Inits
+    ui.initScrollProgress();
+    ui.initStickyHeader();
+    ui.initHamburger();
+    ui.initReveal();
+    ui.initSmoothScroll();
+    ui.initActiveNav();
+    ui.initFAQ();
+    ui.initTerminalLog();
+    ui.initCountdown();
+
+    // b. Supabase & Data
+    supabase = initSupabase();
+    if (supabase) {
+        currentUser = (await supabase.auth.getUser()).data.user;
+        refreshData();
+        
+        // Listen for auth changes
+        supabase.auth.onAuthStateChange(async (event, session) => {
+            currentUser = session?.user || null;
+            refreshData();
+        });
+    }
+
+    // c. Page specific listeners
+    const path = window.location.pathname;
+    if (path.includes('misiones.html')) {
+        profile.initMissionVoting();
+        ui.initTacticalMap();
+    } else if (path.includes('centro.html')) {
+        ui.initLightbox();
+    }
+});

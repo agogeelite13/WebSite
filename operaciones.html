@@ -134,24 +134,51 @@
                     <span class="section__label">Planes</span>
                     <h2 class="section__title">Planes y Cuotas</h2>
                 </header>
-                <div class="plans-grid">
-                    <article class="plan-card reveal">
+                <div class="plans-grid" role="list">
+                    <article class="plan-card reveal" role="listitem">
                         <h3 class="plan-card__name">Entre Semana</h3>
-                        <div class="plan-card__price"><span class="plan-card__amount">25€</span><span class="plan-card__period">/ mes</span></div>
+                        <div class="plan-card__price"><span class="plan-card__amount">25€</span><span
+                                class="plan-card__period">/ persona / mes</span></div>
                         <ul class="plan-card__features">
                             <li>4 partidas al mes</li>
+                            <li>Grupo de 8 personas</li>
                             <li>Lunes a Viernes</li>
                         </ul>
+                        <a href="contacto.html" class="btn btn--secondary">Solicitar info</a>
                     </article>
-                    <article class="plan-card plan-card--featured reveal">
+                    <article class="plan-card plan-card--featured reveal reveal--delay" role="listitem">
                         <div class="plan-card__badge">Más popular</div>
                         <h3 class="plan-card__name">Plan Sábados</h3>
-                        <div class="plan-card__price"><span class="plan-card__amount">32€</span><span class="plan-card__period">/ mes</span></div>
+                        <div class="plan-card__price"><span class="plan-card__amount">32€</span><span
+                                class="plan-card__period">/ persona / mes</span></div>
                         <ul class="plan-card__features">
-                            <li>4 partidas al mes</li>
-                            <li>Grupos de 8 personas</li>
+                            <li>4 partidas al mes (1/sem)</li>
+                            <li>Grupo de 8 personas</li>
+                            <li>Grupos cerrados</li>
                         </ul>
+                        <a href="contacto.html" class="btn btn--primary">Solicitar info</a>
                     </article>
+                    <article class="plan-card reveal reveal--delay-2" role="listitem">
+                        <h3 class="plan-card__name">Bono Flexible</h3>
+                        <div class="plan-card__price"><span class="plan-card__amount">35€</span><span
+                                class="plan-card__period">/ 4 partidas</span></div>
+                        <ul class="plan-card__features">
+                            <li>Uso totalmente libre</li>
+                            <li>Sin obligación semanal</li>
+                            <li>Ahorro vs partidas sueltas</li>
+                        </ul>
+                        <a href="contacto.html" class="btn btn--secondary">Solicitar info</a>
+                    </article>
+                </div>
+                <!-- Alquiler Privado -->
+                <div class="private-hire reveal" aria-labelledby="privateHireHeading" style="margin-top: 40px; border-top: 1px solid var(--border); padding-top: 40px;">
+                    <div class="private-hire__content">
+                        <h3 class="private-hire__title" id="privateHireHeading">Alquiler Privado de Nave</h3>
+                        <p>Disponible de Lunes a Viernes para grupos exclusivos de 6 a 20 personas.</p>
+                        <p class="private-hire__price">Desde 200 € / mes <span>(Grupo de 8 personas)</span></p>
+                        <p>Ideal para equipos que buscan su propia base de entrenamiento táctica.</p>
+                    </div>
+                    <a href="contacto.html" class="btn btn--primary">Consultar disponibilidad</a>
                 </div>
             </div>
         </section>
