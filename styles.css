@@ -450,7 +450,7 @@ p {
     top: 0;
     left: 0;
     right: 0;
-    z-index: 1500;
+    z-index: 3000;
     /* Higher than column-decor */
     padding: 16px 0;
     background: linear-gradient(to bottom, rgba(13, 13, 13, 0.95), rgba(13, 13, 13, 0.8));
@@ -652,7 +652,7 @@ p {
     flex-direction: column;
     gap: 6px;
     padding: 10px;
-    z-index: 2500; /* Fixed: Above mobile nav */
+    z-index: 3500; position: relative;
 }
 
 .hamburger__bar {
@@ -1895,7 +1895,8 @@ li,
     /* Header mobile */
     .hamburger {
         display: flex;
-        z-index: 2500;
+        z-index: 3500;
+        position: relative;
     }
 
     .nav {
@@ -1909,11 +1910,13 @@ li,
         padding: 100px 32px 48px;
         transform: translateX(100%);
         transition: transform 0.4s var(--ease);
-        z-index: 2100;
+        z-index: 3100;
+        pointer-events: none; /* Block clicks only when open */
     }
 
     .nav.is-open {
         transform: translateX(0);
+        pointer-events: auto;
     }
 
     .nav__list {
@@ -4199,15 +4202,10 @@ select.form-input option {
    INTEL BOARD 2.0 - REBORN (TACTICAL REDESIGN)
    ============================================= */
 
-.intel-board {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
+/* Modal version of intel board should use .intel-modal class */
+.intel-modal .modal__content--large {
     background: rgba(0, 0, 0, 0.95);
-    z-index: 15000; /* Over everything */
-    padding: 20px;
+    z-index: 15000; 
     display: flex;
     flex-direction: column;
     overflow-y: auto;
