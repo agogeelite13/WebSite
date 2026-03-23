@@ -42,6 +42,8 @@ html {
     scroll-behavior: smooth;
     font-size: 16px;
     scroll-padding-top: 100px;
+    max-width: 100vw;
+    overflow-x: hidden;
 }
 
 body {
@@ -51,6 +53,12 @@ body {
     line-height: 1.7;
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
+    max-width: 100vw;
+}
+
+p, span, h1, h2, h3, h4, a, li, .admin-item__info {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 img {
@@ -1905,18 +1913,22 @@ li,
         right: 0;
         bottom: 0;
         width: min(300px, 80vw);
-        background: #0d0d0d;
-        border-left: 1px solid var(--border);
+        background: #000000 !important;
+        border-left: 2px solid var(--bronze);
+        box-shadow: -10px 0 30px rgba(0,0,0,0.8);
         padding: 100px 32px 48px;
         transform: translateX(100%);
-        transition: transform 0.4s var(--ease);
+        transition: transform 0.4s var(--ease), visibility 0.4s var(--ease);
         z-index: 3100;
-        pointer-events: none; /* Block clicks only when open */
+        pointer-events: none;
+        visibility: hidden;
+        overflow-y: auto;
     }
 
     .nav.is-open {
         transform: translateX(0);
         pointer-events: auto;
+        visibility: visible;
     }
 
     .nav__list {
@@ -1933,6 +1945,9 @@ li,
         border-bottom: 1px solid var(--border);
         width: 100%;
         text-align: left;
+        position: relative;
+        z-index: 3200;
+        pointer-events: auto !important;
     }
 
     .nav__link--cta {
@@ -4489,12 +4504,12 @@ select.form-input option {
 }
 
 /* Glow Ranges */
-.profile-panel[data-tier=\supreme\] {
+.profile-panel[data-tier="supreme"] {
  border-color: #d4af37;
  box-shadow: 0 0 40px rgba(212, 175, 55, 0.15);
 }
 
-.profile-panel[data-tier=\elite\] {
+.profile-panel[data-tier="elite"] {
  border-color: var(--bronze);
  box-shadow: 0 0 30px rgba(205, 127, 50, 0.1);
 }
