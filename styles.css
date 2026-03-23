@@ -576,8 +576,10 @@ p {
     z-index: 100;
 }
 
-.nav__dropdown:hover .dropdown-menu {
+.nav__dropdown:hover .dropdown-menu,
+.nav__dropdown.is-active .dropdown-menu {
     opacity: 1;
+
     visibility: visible;
     transform: translateY(0);
 }
@@ -1900,6 +1902,16 @@ li,
         padding: 0 20px;
     }
 
+    .about__grid,
+    .plans-grid,
+    .cards-grid,
+    .equip-grid,
+    .rules-grid,
+    .dashboard__grid,
+    .profile-stats-grid {
+        grid-template-columns: 1fr;
+    }
+
     /* Header mobile */
     .hamburger {
         display: flex;
@@ -1936,7 +1948,37 @@ li,
         align-items: flex-start;
         gap: 0;
         display: flex;
+        width: 100%;
     }
+    
+    .nav__dropdown {
+        width: 100%;
+    }
+
+    .dropdown-menu {
+        position: static;
+        box-shadow: none;
+        padding-left: 10px;
+        background: transparent;
+        display: none;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        min-width: 100%;
+        border: none;
+    }
+    
+    .nav__dropdown.is-active .dropdown-menu {
+        display: block;
+    }
+
+    .dropdown-trigger {
+        width: 100%;
+        justify-content: space-between;
+        padding: 14px 0;
+        border-bottom: 1px solid var(--border);
+    }
+
 
     .nav__link {
         display: block;
