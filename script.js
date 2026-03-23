@@ -286,42 +286,6 @@ const renderFactionLeaderboard = (allUsers) => {
     if (upStats) upStats.textContent = `${stats.uprising.xp} XP | ${stats.uprising.count} OP`;
 };
 
-// 5. INITIALIZATION
-document.addEventListener('DOMContentLoaded', async () => {
-    // UI Init
-    ui.initScrollProgress();
-    ui.initStickyHeader();
-    ui.initHamburger();
-    ui.initReveal();
-    ui.initActiveNav();
-    ui.initContactForm();
-    ui.initSmoothScroll();
-    ui.initParallax();
-    ui.initStatsCounter();
-    ui.initCalendar();
-    ui.initLightbox();
-    ui.initFAQ();
-    ui.initCountdown();
-    
-    const path = window.location.pathname;
-    if (path.includes('misiones.html') || document.querySelector('.intel-map-container')) {
-        ui.initTacticalMap();
-    }
-    ui.initTerminalLog();
-
-    // Supabase Init
-    supabase = initSupabase();
-    if (!supabase) return;
-
-    // Auth Listeners
-    supabase.auth.onAuthStateChange((event, session) => {
-        currentUser = session?.user || null;
-        refreshData();
-    });
-
-    // Auth UI Bindings
-    setupAuthUI();
-});
 
 const setupAuthUI = () => {
     const els = {
