@@ -1944,39 +1944,44 @@ li,
     }
 
     .nav__list {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0;
-        display: flex;
-        width: 100%;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0 !important;
+        display: flex !important;
+        width: 100% !important;
+        height: auto !important;
+        overflow: visible !important;
     }
     
-    .nav__dropdown {
-        width: 100%;
+    .nav__dropdown, .nav__item {
+        width: 100% !important;
+        display: block !important;
     }
 
     .dropdown-menu {
-        position: static;
-        box-shadow: none;
-        padding-left: 10px;
-        background: transparent;
-        display: none;
-        opacity: 1;
-        visibility: visible;
-        transform: none;
-        min-width: 100%;
-        border: none;
+        position: static !important;
+        box-shadow: none !important;
+        padding-left: 10px !important;
+        background: transparent !important;
+        display: none !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: none !important;
+        min-width: 100% !important;
+        border: none !important;
     }
     
     .nav__dropdown.is-active .dropdown-menu {
-        display: block;
+        display: block !important;
     }
 
     .dropdown-trigger {
-        width: 100%;
-        justify-content: space-between;
-        padding: 14px 0;
-        border-bottom: 1px solid var(--border);
+        width: 100% !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        padding: 14px 0 !important;
+        border-bottom: 1px solid var(--border) !important;
+        display: flex !important;
     }
 
 
