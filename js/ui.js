@@ -33,19 +33,29 @@ export const initHamburger = () => {
     const nav = document.querySelector('.nav');
     if (!btn || !nav) return;
 
+    // Create overlay element dynamically
+    let overlay = document.getElementById('navOverlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'navOverlay';
+        overlay.className = 'nav-overlay';
+        document.body.appendChild(overlay);
+    }
+
     const close = () => {
         btn.classList.remove('is-active');
         nav.classList.remove('is-open');
+        overlay.classList.remove('is-visible');
         btn.setAttribute('aria-expanded', 'false');
         btn.setAttribute('aria-label', 'Abrir menú');
         document.body.classList.remove('nav-open');
-        // Close any open dropdowns too
         document.querySelectorAll('.nav__dropdown').forEach(d => d.classList.remove('is-active'));
     };
 
     const open = () => {
         btn.classList.add('is-active');
         nav.classList.add('is-open');
+        overlay.classList.add('is-visible');
         btn.setAttribute('aria-expanded', 'true');
         btn.setAttribute('aria-label', 'Cerrar menú');
         document.body.classList.add('nav-open');
@@ -56,7 +66,10 @@ export const initHamburger = () => {
         nav.classList.contains('is-open') ? close() : open();
     });
 
-    // Only close if NOT a dropdown trigger
+    // Close on overlay click
+    overlay.addEventListener('click', close);
+
+    // Close when clicking a real link (not dropdown trigger)
     document.querySelectorAll('.nav__link').forEach(l => {
         l.addEventListener('click', () => {
             if (!l.classList.contains('dropdown-trigger')) {
@@ -70,6 +83,7 @@ export const initHamburger = () => {
     });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
 };
+
 
 export const initDropdowns = () => {
     const triggers = document.querySelectorAll('.dropdown-trigger');
