@@ -68,7 +68,7 @@ export const updateAdminDashboard = async (api, nextSundayKey) => {
                 ? { callsign: entry.guest_name, name: entry.guest_name, gear: entry.gear }
                 : (allUsers.find(user => user.id === entry.user_id) || { callsign: entry.user_email, name: entry.user_email, gear: entry.gear });
             const gearStr    = u?.gear ? `<span style="color:var(--bronze);font-size:.7em;">(${gearMap[u.gear] || 'N/A'})</span>` : '';
-            const hasAttended = entry.attended === true;
+            const hasAttended = entry.attended === true || (Array.isArray(u?.missionHistory) && u.missionHistory.includes(nextSundayKey));
 
             return `
                 <div class="admin-item">
