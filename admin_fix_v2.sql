@@ -1,58 +1,91 @@
 -- ==============================================================================
--- AGOGE ELITE - REPARACIÓN DEFINITIVA DE PERMISOS (V2)
--- Instrucciones: 
--- 1. Entra en tu Dashboard de Supabase.
--- 2. Ve a la sección "SQL Editor".
--- 3. Pega este código y pulsa el botón "Run".
+-- AGOGE ELITE - REPARACIÓN DEFINITIVA DE PERMISOS (V3)
+-- Instrucciones:
+--   1. Entra en tu Dashboard de Supabase → SQL Editor
+--   2. Pega ESTE ARCHIVO COMPLETO y pulsa RUN
+--   3. Recarga la web después
 -- ==============================================================================
 
--- 1. HABILITAR EL RLS EN TODAS LAS TABLAS (Si no lo estaba)
-alter table public.users enable row level security;
-alter table public.enrollments enable row level security;
-alter table public.missions enable row level security;
+-- ── 1. HABILITAR RLS EN TODAS LAS TABLAS ─────────────────────────────────────
+alter table public.users            enable row level security;
+alter table public.enrollments      enable row level security;
+alter table public.missions         enable row level security;
 alter table public.community_photos enable row level security;
+alter table public.clans            enable row level security;
+alter table public.votes            enable row level security;
 
--- 2. LIMPIAR POLÍTICAS EXISTENTES PARA EVITAR CONFLICTOS
-drop policy if exists "Permitir lectura publica de usuarios" on public.users;
-drop policy if exists "Permitir actualizacion de usuarios" on public.users;
-drop policy if exists "Permitir lectura publica de inscripciones" on public.enrollments;
-drop policy if exists "Permitir inserccion de inscripciones" on public.enrollments;
-drop policy if exists "Permitir borrado de inscripciones" on public.enrollments;
-drop policy if exists "Permitir actualizacion de inscripciones" on public.enrollments;
-drop policy if exists "Permitir lectura publica de misiones" on public.missions;
-drop policy if exists "Permitir inserccion de misiones" on public.missions;
-drop policy if exists "Permitir actualizacion de misiones" on public.missions;
-drop policy if exists "Permitir borrado de misiones" on public.missions;
+-- ── 2. BORRAR TODAS LAS POLÍTICAS PREVIAS (evita conflictos) ─────────────────
+do $$
+declare
+    r record;
+begin
+    for r in
+        select policyname, tablename
+        from pg_policies
+        where schemaname = 'public'
+          and tablename in ('users','enrollments','missions','community_photos','clans','votes')
+    loop
+        execute format('drop policy if exists %I on public.%I', r.policyname, r.tablename);
+    end loop;
+end $$;
 
--- 3. CREAR POLÍTICAS DE LECTURA (SELECT) PARA TODOS
-create policy "Lectura publica usuarios" on public.users for select using (true);
-create policy "Lectura publica inscripciones" on public.enrollments for select using (true);
-create policy "Lectura publica misiones" on public.missions for select using (true);
-create policy "Lectura publica fotos" on public.community_photos for select using (true);
+-- ── 3. POLÍTICAS ABIERTAS (lectura y escritura para todos los usuarios autenticados y anónimos) ──
+-- USERS
+create policy "users_select"  on public.users for select using (true);
+create policy "users_insert"  on public.users for insert with check (true);
+create policy "users_update"  on public.users for update using (true) with check (true);
+create policy "users_delete"  on public.users for delete using (true);
 
--- 4. CREAR POLÍTICAS DE ESCRITURA (INSERT, UPDATE, DELETE)
--- Por ahora, permitimos a todos para asegurar que el Admin pueda operar sin fallos de RLS.
--- En el futuro se puede restringir a auth.uid().
+-- ENROLLMENTS
+create policy "enroll_select" on public.enrollments for select using (true);
+create policy "enroll_insert" on public.enrollments for insert with check (true);
+create policy "enroll_update" on public.enrollments for update using (true) with check (true);
+create policy "enroll_delete" on public.enrollments for delete using (true);
 
-create policy "Escritura total inscripciones" on public.enrollments for all using (true) with check (true);
-create policy "Escritura total misiones" on public.missions for all using (true) with check (true);
-create policy "Escritura total usuarios" on public.users for all using (true) with check (true);
-create policy "Escritura total fotos" on public.community_photos for all using (true) with check (true);
+-- MISSIONS
+create policy "missions_select" on public.missions for select using (true);
+create policy "missions_insert" on public.missions for insert with check (true);
+create policy "missions_update" on public.missions for update using (true) with check (true);
+create policy "missions_delete" on public.missions for delete using (true);
 
--- 5. CONFIGURACIÓN DEL USUARIO ADMINISTRADOR
--- NOTA: Este comando asegura que el usuario que ya es Admin tenga sincronizado role e is_admin.
--- Sustituye 'mando@agogeelite.com' por tu email real si es diferente.
+-- COMMUNITY PHOTOS
+create policy "photos_select" on public.community_photos for select using (true);
+create policy "photos_insert" on public.community_photos for insert with check (true);
+create policy "photos_update" on public.community_photos for update using (true) with check (true);
+create policy "photos_delete" on public.community_photos for delete using (true);
 
-update public.users 
-set 
-    role = 'admin',
+-- CLANS
+create policy "clans_select" on public.clans for select using (true);
+create policy "clans_insert" on public.clans for insert with check (true);
+create policy "clans_update" on public.clans for update using (true) with check (true);
+create policy "clans_delete" on public.clans for delete using (true);
+
+-- VOTES
+create policy "votes_select" on public.votes for select using (true);
+create policy "votes_insert" on public.votes for insert with check (true);
+create policy "votes_update" on public.votes for update using (true) with check (true);
+create policy "votes_delete" on public.votes for delete using (true);
+
+-- ── 4. MARCAR CUENTA ADMIN ────────────────────────────────────────────────────
+-- Cambia el email por el tuyo si es diferente, y ejecuta solo esta parte si quieres.
+-- Este UPDATE marca como admin a cualquier usuario que ya lo fuera o que tenga ese email.
+update public.users
+set
     is_admin = true,
-    rank = 'Mando Supremo',
-    specialty = 'MANDO GLOBAL',
-    exp = 99999,
-    callsign = 'CENTCOM'
-where is_admin = true or role = 'admin' or email = 'mando@agogeelite.com';
+    role     = 'admin'
+where
+    is_admin = true
+    or role  = 'admin';
+
+-- Si ninguno de los anteriores coincide y quieres forzarlo por email, descomenta:
+-- update public.users set is_admin = true, role = 'admin' where email = 'TU_EMAIL_AQUI';
+
+-- ── VERIFICACIÓN: muestra las políticas activas ────────────────────────────────
+select tablename, policyname, cmd
+from pg_policies
+where schemaname = 'public'
+order by tablename, policyname;
 
 -- ==============================================================================
--- SCRIPT FINALIZADO. Ejecuta 'Run' y reinicia la aplicación Agoge Elite.
+-- FIN. Si ves filas en el SELECT de arriba, los permisos están activos. ✔
 -- ==============================================================================
