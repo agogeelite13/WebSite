@@ -235,8 +235,7 @@ const leaveClan = async () => {
     refreshData();
 };
 
-// Admin globals are now handled in js/admin.js via attachAdminGlobals
-admin.attachAdminGlobals(api, getNextSundayKey());
+// Admin globals are attached inside DOMContentLoaded and updateUI — do NOT call here
 
 const renderClanLeaderboard = (allUsers) => {
     const body = document.getElementById('clanLeaderboardBody');
@@ -483,7 +482,7 @@ const setupAuthUI = () => {
 const renderActiveMission = async () => {
     const sunKey = getNextSundayKey();
     const settings = await api.getMissionSettings(sunKey);
-    const enrolled = (await api.refreshEnrollments())[sunKey] || [];
+    const enrolled = (await api.getEnrollments())[sunKey] || [];
     
     // 1. Update Mission Briefing
     const sit = document.getElementById('opordSituation');
@@ -501,7 +500,7 @@ const renderActiveMission = async () => {
     // 2. Team Balance (Role Distribution)
     const roleStats = { assault: 0, medic: 0, support: 0, sniper: 0 };
     // Fetch user profiles for roles if not in enrollment
-    const profiles = await api.refreshProfiles();
+    const profiles = await api.getUsers();
     enrolled.forEach(e => {
         const p = profiles.find(pr => pr.email === e.user_email);
         const role = p?.specialty || 'assault';

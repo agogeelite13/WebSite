@@ -122,7 +122,7 @@ export const setupMissionConfig = async (api, nextSundayKey) => {
     });
 };
 
-const renderAdminPhotos = async (api) => {
+export const renderAdminPhotos = async (api) => {
     const photoList = document.getElementById('adminPhotoList');
     if (!photoList) return;
 

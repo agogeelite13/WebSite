@@ -35,6 +35,7 @@ export const api = {
     },
     async saveProfile(profile) {
         const { error } = await supabase.from('users').upsert(profile);
+        if (error) console.error('Supabase saveProfile Error:', error.message, error.details, error.hint);
         return !error;
     },
     async getEnrollments() {
@@ -53,10 +54,12 @@ export const api = {
             user_email: email,
             gear: gear
         });
+        if (error) console.error('Supabase enroll Error:', error.message, error.details, error.hint);
         return !error;
     },
     async unenroll(enrollmentId) {
         const { error } = await supabase.from('enrollments').delete().eq('id', enrollmentId);
+        if (error) console.error('Supabase unenroll Error:', error.message, error.details, error.hint);
         return !error;
     },
     async getClans() {
@@ -83,6 +86,7 @@ export const api = {
     },
     async saveMissionSettings(mission) {
         const { error } = await supabase.from('missions').upsert(mission);
+        if (error) console.error('Supabase saveMission Error:', error.message, error.details, error.hint);
         return !error;
     },
     async uploadCommunityPhoto(file, userId, caption) {
@@ -125,6 +129,7 @@ export const api = {
     },
     async updateCommunityPhotoStatus(id, newStatus) {
         const { error } = await supabase.from('community_photos').update({ status: newStatus }).eq('id', id);
+        if (error) console.error('Supabase updatePhoto Error:', error.message, error.details, error.hint);
         return !error;
     }
 };
