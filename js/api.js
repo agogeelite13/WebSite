@@ -57,6 +57,17 @@ export const api = {
         if (error) console.error('Supabase enroll Error:', error.message, error.details, error.hint);
         return !error;
     },
+    async enrollGuest(sunKey, name, email, gear) {
+        const { error } = await supabase.from('enrollments').insert({
+            sun_key: sunKey,
+            is_guest: true,
+            guest_name: name,
+            user_email: email,
+            gear: gear
+        });
+        if (error) console.error('Supabase enrollGuest Error:', error.message, error.details, error.hint);
+        return !error;
+    },
     async unenroll(enrollmentId) {
         const { error } = await supabase.from('enrollments').delete().eq('id', enrollmentId);
         if (error) console.error('Supabase unenroll Error:', error.message, error.details, error.hint);

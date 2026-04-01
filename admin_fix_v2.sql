@@ -1,12 +1,81 @@
 -- ==============================================================================
--- AGOGE ELITE - REPARACIÓN DEFINITIVA DE PERMISOS (V3)
+-- AGOGE ELITE - SETUP COMPLETO DE BASE DE DATOS (V4)
 -- Instrucciones:
---   1. Entra en tu Dashboard de Supabase → SQL Editor
---   2. Pega ESTE ARCHIVO COMPLETO y pulsa RUN
---   3. Recarga la web después
+--   1. Supabase Dashboard → SQL Editor → New query
+--   2. Pega este archivo completo y pulsa RUN
 -- ==============================================================================
 
--- ── 1. HABILITAR RLS EN TODAS LAS TABLAS ─────────────────────────────────────
+-- ── 1. CREAR TABLAS QUE FALTAN (IF NOT EXISTS = no rompe nada si ya existen) ──
+
+create table if not exists public.missions (
+    id         uuid    default gen_random_uuid() primary key,
+    created_at timestamptz default now(),
+    sun_key    text    not null unique,
+    situation  text,
+    mission    text,
+    gear_rules text,
+    map_url    text,
+    game_mode  text    default 'tdm'
+);
+
+create table if not exists public.enrollments (
+    id          uuid    default gen_random_uuid() primary key,
+    created_at  timestamptz default now(),
+    sun_key     text    not null,
+    user_id     uuid,
+    user_email  text,
+    gear        text    default 'own',
+    is_guest    boolean default false,
+    guest_name  text,
+    attended    boolean default false
+);
+
+create table if not exists public.users (
+    id              uuid    primary key,
+    created_at      timestamptz default now(),
+    email           text,
+    name            text,
+    callsign        text,
+    specialty       text    default 'assault',
+    faction         text    default 'none',
+    clan            text,
+    exp             integer default 0,
+    rank            text,
+    role            text    default 'user',
+    is_admin        boolean default false,
+    gear            text    default 'own',
+    "missionHistory" jsonb  default '[]'::jsonb,
+    medals          jsonb   default '[]'::jsonb
+);
+
+create table if not exists public.clans (
+    id           uuid    default gen_random_uuid() primary key,
+    created_at   timestamptz default now(),
+    name         text    not null unique,
+    leader_id    uuid,
+    leader_email text
+);
+
+create table if not exists public.votes (
+    id         uuid    default gen_random_uuid() primary key,
+    created_at timestamptz default now(),
+    sun_key    text    not null,
+    user_id    uuid,
+    user_email text,
+    mode       text,
+    unique(sun_key, user_email)
+);
+
+create table if not exists public.community_photos (
+    id         uuid    default gen_random_uuid() primary key,
+    created_at timestamptz default now(),
+    user_id    text    not null,
+    image_url  text    not null,
+    caption    text,
+    status     text    default 'pending'
+);
+
+-- ── 2. HABILITAR RLS EN TODAS LAS TABLAS ──────────────────────────────────────
 alter table public.users            enable row level security;
 alter table public.enrollments      enable row level security;
 alter table public.missions         enable row level security;
@@ -14,10 +83,9 @@ alter table public.community_photos enable row level security;
 alter table public.clans            enable row level security;
 alter table public.votes            enable row level security;
 
--- ── 2. BORRAR TODAS LAS POLÍTICAS PREVIAS (evita conflictos) ─────────────────
+-- ── 3. BORRAR POLÍTICAS PREVIAS (evita conflictos de nombre) ─────────────────
 do $$
-declare
-    r record;
+declare r record;
 begin
     for r in
         select policyname, tablename
@@ -29,12 +97,12 @@ begin
     end loop;
 end $$;
 
--- ── 3. POLÍTICAS ABIERTAS (lectura y escritura para todos los usuarios autenticados y anónimos) ──
+-- ── 4. CREAR POLÍTICAS ABIERTAS (admin + usuarios pueden leer y escribir) ─────
 -- USERS
-create policy "users_select"  on public.users for select using (true);
-create policy "users_insert"  on public.users for insert with check (true);
-create policy "users_update"  on public.users for update using (true) with check (true);
-create policy "users_delete"  on public.users for delete using (true);
+create policy "users_select" on public.users for select using (true);
+create policy "users_insert" on public.users for insert with check (true);
+create policy "users_update" on public.users for update using (true) with check (true);
+create policy "users_delete" on public.users for delete using (true);
 
 -- ENROLLMENTS
 create policy "enroll_select" on public.enrollments for select using (true);
@@ -66,26 +134,18 @@ create policy "votes_insert" on public.votes for insert with check (true);
 create policy "votes_update" on public.votes for update using (true) with check (true);
 create policy "votes_delete" on public.votes for delete using (true);
 
--- ── 4. MARCAR CUENTA ADMIN ────────────────────────────────────────────────────
--- Cambia el email por el tuyo si es diferente, y ejecuta solo esta parte si quieres.
--- Este UPDATE marca como admin a cualquier usuario que ya lo fuera o que tenga ese email.
+-- ── 5. MARCAR CUENTA ADMIN ────────────────────────────────────────────────────
 update public.users
-set
-    is_admin = true,
-    role     = 'admin'
-where
-    is_admin = true
-    or role  = 'admin';
+set is_admin = true, role = 'admin'
+where is_admin = true or role = 'admin';
 
--- Si ninguno de los anteriores coincide y quieres forzarlo por email, descomenta:
+-- Si quieres forzar por email (descomenta y pon TU email):
 -- update public.users set is_admin = true, role = 'admin' where email = 'TU_EMAIL_AQUI';
 
--- ── VERIFICACIÓN: muestra las políticas activas ────────────────────────────────
+-- ── VERIFICACIÓN FINAL ────────────────────────────────────────────────────────
 select tablename, policyname, cmd
 from pg_policies
 where schemaname = 'public'
 order by tablename, policyname;
-
--- ==============================================================================
--- FIN. Si ves filas en el SELECT de arriba, los permisos están activos. ✔
+-- Si ves filas = permisos activos ✔
 -- ==============================================================================

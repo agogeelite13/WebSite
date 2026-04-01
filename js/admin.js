@@ -68,7 +68,7 @@ export const updateAdminDashboard = async (api, nextSundayKey) => {
                 ? { callsign: entry.guest_name, name: entry.guest_name, gear: entry.gear }
                 : (allUsers.find(user => user.id === entry.user_id) || { callsign: entry.user_email, name: entry.user_email, gear: entry.gear });
             const gearStr    = u?.gear ? `<span style="color:var(--bronze);font-size:.7em;">(${gearMap[u.gear] || 'N/A'})</span>` : '';
-            const hasAttended = entry.attended === true || (Array.isArray(u?.missionHistory) && u.missionHistory.includes(nextSundayKey));
+            const hasAttended = entry.attended === true || (Array.isArray(u?.mission_history) && u.mission_history.includes(nextSundayKey));
 
             return `
                 <div class="admin-item">
@@ -135,10 +135,10 @@ const _attachDashboardListeners = (api, nextSundayKey) => {
                 alert('No se encontró el perfil del usuario.');
                 return;
             }
-            const history = Array.isArray(user.missionHistory) ? user.missionHistory : [];
+            const history = Array.isArray(user.mission_history) ? user.mission_history : [];
             if (!history.includes(sunKey)) history.push(sunKey);
             const newExp = (user.exp || 0) + 100;
-            const ok = await api.saveProfile({ ...user, exp: newExp, missionHistory: history });
+            const ok = await api.saveProfile({ ...user, exp: newExp, mission_history: history });
             if (ok) {
                 console.log('[ADMIN] Attendance confirmed. New XP:', newExp);
                 btn.textContent = 'CONFIRMADO';
@@ -340,11 +340,19 @@ export const attachAdminGlobals = (api, nextSundayKey) => {
         manualEnrollBtn.addEventListener('click', async () => {
             const userId = document.getElementById('manualEnrollId')?.value?.trim();
             const email  = document.getElementById('manualEnrollEmail')?.value?.trim();
-            if (!userId || !email) return alert('Rellena el ID y el email del operador.');
+            if (!userId) return alert('Rellena al menos el Nombre/ID del operador.');
             console.log('[ADMIN] Manual enroll:', userId, email);
             manualEnrollBtn.disabled = true;
             manualEnrollBtn.textContent = '...';
-            const ok = await api.enroll(nextSundayKey, userId, email, 'own');
+            
+            const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId);
+            let ok;
+            if (isUUID) {
+                ok = await api.enroll(nextSundayKey, userId, email || 'manual@agoge.local', 'own');
+            } else {
+                ok = await api.enrollGuest(nextSundayKey, userId, email || 'Invitado', 'own');
+            }
+            
             if (ok) {
                 console.log('[ADMIN] Manual enroll SUCCESS');
                 document.getElementById('manualEnrollId').value   = '';
@@ -378,10 +386,10 @@ export const attachAdminGlobals = (api, nextSundayKey) => {
         console.log('[ADMIN][window] adminConfirmAttendance:', userId, sunKey);
         const user = await api.getProfile(userId);
         if (!user) return alert('Perfil no encontrado.');
-        const history = Array.isArray(user.missionHistory) ? user.missionHistory : [];
+        const history = Array.isArray(user.mission_history) ? user.mission_history : [];
         if (!history.includes(sunKey)) history.push(sunKey);
         const newExp = (user.exp || 0) + 100;
-        const ok = await api.saveProfile({ ...user, exp: newExp, missionHistory: history });
+        const ok = await api.saveProfile({ ...user, exp: newExp, mission_history: history });
         if (ok) updateAdminDashboard(api, nextSundayKey);
         else alert('Error al guardar asistencia. Revisa los permisos en Supabase.');
     };

@@ -5,7 +5,7 @@
 import { initSupabase, api } from './js/api.js';
 import * as ui from './js/ui.js';
 import * as profile from './js/profile.js';
-import * as admin from './js/admin.js';
+import * as admin from './js/admin.js?v=70';
 
 'use strict';
 
