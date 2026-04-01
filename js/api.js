@@ -103,7 +103,8 @@ export const api = {
     async uploadCommunityPhoto(file, userId, caption) {
         // 1. Upload to Storage
         const fileExt = file.name.split('.').pop();
-        const fileName = `${userId}-${Date.now()}.${fileExt}`;
+        const safeUserId = String(userId).replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
+        const fileName = `${safeUserId}-${Date.now()}.${fileExt}`;
         const filePath = `${fileName}`;
 
         const { data: uploadData, error: uploadError } = await supabase.storage

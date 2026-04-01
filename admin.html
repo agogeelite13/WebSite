@@ -173,6 +173,22 @@
                                 <button type="submit" class="btn btn--primary btn--full">PUBLICAR ACTUALIZACIÓN</button>
                                 <p id="configFeedback" style="display:none; margin-top:10px; font-weight:bold;"></p>
                             </form>
+
+                            <button id="downloadManifestoBtn" class="btn btn--outline btn--full" style="margin-top:20px;">DESCARGAR MANIFIESTO (CSV)</button>
+
+                            <!-- PHOTO MODERATION (FASE 37) -->
+                            <h3 class="admin-section-title" style="margin-top:40px;">MODERACIÓN DE INTELIGENCIA VISUAL</h3>
+                            <div id="adminPhotoList" class="admin-photo-grid" style="display:grid; grid-template-columns: 1fr; gap:15px; margin-bottom:40px;">
+                                <!-- Pending photos injected via JS -->
+                                <p class="empty-msg" style="color:var(--text-muted); font-size:0.8rem;">No hay archivos pendientes de revisión.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
     <!-- Auth Modal Shared -->
     <div id="authModal" class="modal">
         <div class="modal__overlay" id="modalOverlay"></div>
@@ -232,20 +248,6 @@
             <p>OPERADOR ENCRIPTADO...</p>
         </div>
     </div>
-                            <button id="downloadManifestoBtn" class="btn btn--outline btn--full" style="margin-top:20px;">DESCARGAR MANIFIESTO (CSV)</button>
-
-                            <!-- PHOTO MODERATION (FASE 37) -->
-                            <h3 class="admin-section-title" style="margin-top:40px;">MODERACIÓN DE INTELIGENCIA VISUAL</h3>
-                            <div id="adminPhotoList" class="admin-photo-grid" style="display:grid; grid-template-columns: 1fr; gap:15px;">
-                                <!-- Pending photos injected via JS -->
-                                <p class="empty-msg" style="color:var(--text-muted); font-size:0.8rem;">No hay archivos pendientes de revisión.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
 
     <footer class="site-footer">
         <div class="container footer__inner">

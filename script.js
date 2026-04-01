@@ -126,7 +126,9 @@ const updateUI = async () => {
                 tfStatsId: 'tfStats',
                 upStatsId: 'upStats'
             });
-        } else if (path.includes('centro.html')) {
+        }
+
+        if (document.getElementById('approvedPhotosGrid')) {
             renderCommunityBoard();
         }
 
