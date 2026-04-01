@@ -346,10 +346,37 @@ export const attachAdminGlobals = (api, nextSundayKey) => {
             manualEnrollBtn.textContent = '...';
             
             const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId);
-            let ok;
+            
+            let finalUserId = null;
+            let finalEmail = email;
+
             if (isUUID) {
-                ok = await api.enroll(nextSundayKey, userId, email || 'manual@agoge.local', 'own');
+                finalUserId = userId;
             } else {
+                // Smart search: Check if this name/email matches an existing account
+                const usersList = await api.getUsers();
+                const qId = userId.toLowerCase();
+                const qEmail = email ? email.toLowerCase() : '';
+                
+                const matchedUser = usersList.find(u => 
+                    (qEmail && u.email && u.email.toLowerCase() === qEmail) ||
+                    (qId && u.callsign && u.callsign.toLowerCase() === qId) ||
+                    (qId && u.name     && u.name.toLowerCase()     === qId)
+                );
+
+                if (matchedUser) {
+                    console.log('[ADMIN] Matched manual input to existing user:', matchedUser.id);
+                    finalUserId = matchedUser.id;
+                    finalEmail  = matchedUser.email;
+                }
+            }
+
+            let ok;
+            if (finalUserId) {
+                // We have a real user ID
+                ok = await api.enroll(nextSundayKey, finalUserId, finalEmail || 'manual@agoge.local', 'own');
+            } else {
+                // Definitely a guest
                 ok = await api.enrollGuest(nextSundayKey, userId, email || 'Invitado', 'own');
             }
             
