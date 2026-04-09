@@ -6,11 +6,10 @@
  *   setupMissionConfig, renderAdminPhotos, attachAdminGlobals
  */
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // DASHBOARD: Renders users list + enrollment list
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export const updateAdminDashboard = async (api, nextSundayKey) => {
-    console.log('[ADMIN] updateAdminDashboard called for key:', nextSundayKey);
 
     const adminUserList   = document.getElementById('adminUserList');
     const adminEnrollList = document.getElementById('adminEnrollList');
@@ -18,7 +17,7 @@ export const updateAdminDashboard = async (api, nextSundayKey) => {
     const adminAforoProgress = document.getElementById('adminAforoProgress');
 
     if (!adminUserList || !adminEnrollList) {
-        console.warn('[ADMIN] adminUserList or adminEnrollList not found in DOM – skipping.');
+        console.warn('[ADMIN] adminUserList or adminEnrollList not found in DOM â€“ skipping.');
         return;
     }
 
@@ -26,8 +25,6 @@ export const updateAdminDashboard = async (api, nextSundayKey) => {
     const dbEnrollments      = await api.getEnrollments();
     const enrolledIdentifiers = dbEnrollments[nextSundayKey] || [];
 
-    console.log('[ADMIN] Users loaded:', allUsers.length);
-    console.log('[ADMIN] Enrolled for', nextSundayKey, ':', enrolledIdentifiers.length);
 
     // Capacity bar
     const maxAforo    = 20;
@@ -35,7 +32,7 @@ export const updateAdminDashboard = async (api, nextSundayKey) => {
     if (adminAforoCount)    adminAforoCount.textContent    = `${currentCount} / ${maxAforo}`;
     if (adminAforoProgress) adminAforoProgress.style.width = `${Math.min((currentCount / maxAforo) * 100, 100)}%`;
 
-    // ── Users list (with INSCRIBIR button) ──────────────────────────────────
+    // â”€â”€ Users list (with INSCRIBIR button) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     if (allUsers.length === 0) {
         adminUserList.innerHTML = '<tr><td colspan="4" style="padding:15px;color:#666;font-size:0.8rem;">No hay usuarios registrados.</td></tr>';
     } else {
@@ -43,9 +40,9 @@ export const updateAdminDashboard = async (api, nextSundayKey) => {
             const isEnrolled = enrolledIdentifiers.some(e => e.user_id === u.id);
             return `
                 <tr>
-                    <td>${u.callsign || u.name || '—'} <small style="opacity:.5">(${u.name || ''})</small></td>
-                    <td>${u.specialty || '—'}</td>
-                    <td style="color:${isEnrolled ? '#2ecc71' : '#aaa'}">${isEnrolled ? '✔ INSCRITO' : '—'}</td>
+                    <td>${u.callsign || u.name || 'â€”'} <small style="opacity:.5">(${u.name || ''})</small></td>
+                    <td>${u.specialty || 'â€”'}</td>
+                    <td style="color:${isEnrolled ? '#2ecc71' : '#aaa'}">${isEnrolled ? 'âœ” INSCRITO' : 'â€”'}</td>
                     <td>
                         <button
                             class="btn btn--primary btn--xs admin-enroll-btn"
@@ -58,11 +55,11 @@ export const updateAdminDashboard = async (api, nextSundayKey) => {
         }).join('');
     }
 
-    // ── Enrolled list (with ASISTIÓ + BORRAR buttons) ───────────────────────
+    // â”€â”€ Enrolled list (with ASISTIÃ“ + BORRAR buttons) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     if (enrolledIdentifiers.length === 0) {
-        adminEnrollList.innerHTML = '<p style="padding:15px;color:#666;font-size:0.8rem;">Nadie inscrito todavía.</p>';
+        adminEnrollList.innerHTML = '<p style="padding:15px;color:#666;font-size:0.8rem;">Nadie inscrito todavÃ­a.</p>';
     } else {
-        const gearMap = { own: 'PROPIA', complete: 'COMPLETO', replica: 'RÉPLICA', basic: 'BÁSICO' };
+        const gearMap = { own: 'PROPIA', complete: 'COMPLETO', replica: 'RÃ‰PLICA', basic: 'BÃSICO' };
         adminEnrollList.innerHTML = enrolledIdentifiers.map(entry => {
             const u = entry.is_guest
                 ? { callsign: entry.guest_name, name: entry.guest_name, gear: entry.gear }
@@ -83,7 +80,7 @@ export const updateAdminDashboard = async (api, nextSundayKey) => {
                                 data-sunkey="${nextSundayKey}"
                                 data-enrollid="${entry.id}"
                                 ${hasAttended ? 'disabled' : ''}>
-                                ${hasAttended ? 'CONFIRMADO' : 'ASISTIÓ'}
+                                ${hasAttended ? 'CONFIRMADO' : 'ASISTIÃ“'}
                             </button>` : ''}
                         <button class="btn btn--outline btn--xs admin-unenroll-btn"
                             data-enrollid="${entry.id}">
@@ -94,7 +91,7 @@ export const updateAdminDashboard = async (api, nextSundayKey) => {
         }).join('');
     }
 
-    // ── Attach event listeners (replaces window.onclick handlers) ───────────
+    // â”€â”€ Attach event listeners (replaces window.onclick handlers) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     _attachDashboardListeners(api, nextSundayKey);
 };
 
@@ -105,13 +102,11 @@ const _attachDashboardListeners = (api, nextSundayKey) => {
         btn.addEventListener('click', async () => {
             const userId = btn.dataset.uid;
             const email  = btn.dataset.email;
-            console.log('[ADMIN] Enrolling user:', userId, email);
-            btn.disabled = true;
+                    btn.disabled = true;
             btn.textContent = '...';
             const ok = await api.enroll(nextSundayKey, userId, email, 'own');
             if (ok) {
-                console.log('[ADMIN] Enroll SUCCESS');
-                updateAdminDashboard(api, nextSundayKey);
+                            updateAdminDashboard(api, nextSundayKey);
             } else {
                 console.error('[ADMIN] Enroll FAILED');
                 alert('Error al inscribir. Revisa los permisos en Supabase (ver SQL admin_fix_v2.sql).');
@@ -121,18 +116,17 @@ const _attachDashboardListeners = (api, nextSundayKey) => {
         });
     });
 
-    // ASISTIÓ buttons
+    // ASISTIÃ“ buttons
     document.querySelectorAll('.admin-attendance-btn').forEach(btn => {
         btn.addEventListener('click', async () => {
             const userId   = btn.dataset.uid;
             const sunKey   = btn.dataset.sunkey;
-            console.log('[ADMIN] Confirming attendance for user:', userId, 'mission:', sunKey);
-            btn.disabled = true;
+                    btn.disabled = true;
             btn.textContent = '...';
             const user = await api.getProfile(userId);
             if (!user) {
                 console.error('[ADMIN] getProfile returned null for', userId);
-                alert('No se encontró el perfil del usuario.');
+                alert('No se encontrÃ³ el perfil del usuario.');
                 return;
             }
             const history = Array.isArray(user.mission_history) ? user.mission_history : [];
@@ -140,14 +134,13 @@ const _attachDashboardListeners = (api, nextSundayKey) => {
             const newExp = (user.exp || 0) + 100;
             const ok = await api.saveProfile({ ...user, exp: newExp, mission_history: history });
             if (ok) {
-                console.log('[ADMIN] Attendance confirmed. New XP:', newExp);
-                btn.textContent = 'CONFIRMADO';
+                            btn.textContent = 'CONFIRMADO';
                 updateAdminDashboard(api, nextSundayKey);
             } else {
                 console.error('[ADMIN] Attendance save FAILED');
                 alert('Error al guardar asistencia. Revisa los permisos en Supabase.');
                 btn.disabled = false;
-                btn.textContent = 'ASISTIÓ';
+                btn.textContent = 'ASISTIÃ“';
             }
         });
     });
@@ -156,16 +149,14 @@ const _attachDashboardListeners = (api, nextSundayKey) => {
     document.querySelectorAll('.admin-unenroll-btn').forEach(btn => {
         btn.addEventListener('click', async () => {
             const enrollmentId = btn.dataset.enrollid;
-            console.log('[ADMIN] Unenrolling entry id:', enrollmentId);
-            btn.disabled = true;
+                    btn.disabled = true;
             btn.textContent = '...';
             const ok = await api.unenroll(enrollmentId);
             if (ok) {
-                console.log('[ADMIN] Unenroll SUCCESS');
-                updateAdminDashboard(api, nextSundayKey);
+                            updateAdminDashboard(api, nextSundayKey);
             } else {
                 console.error('[ADMIN] Unenroll FAILED');
-                alert('Error al borrar inscripción. Revisa los permisos en Supabase.');
+                alert('Error al borrar inscripciÃ³n. Revisa los permisos en Supabase.');
                 btn.disabled = false;
                 btn.textContent = 'BORRAR';
             }
@@ -173,15 +164,14 @@ const _attachDashboardListeners = (api, nextSundayKey) => {
     });
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // MANIFESTO DOWNLOAD
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export const downloadManifesto = async (api, nextSundayKey) => {
-    console.log('[ADMIN] downloadManifesto for:', nextSundayKey);
     const dbEnrollments = await api.getEnrollments();
     const list          = dbEnrollments[nextSundayKey] || [];
     const allUsers      = await api.getUsers();
-    const gearMap       = { own: 'PROPIA', complete: 'COMPLETO', replica: 'RÉPLICA', basic: 'BÁSICO' };
+    const gearMap       = { own: 'PROPIA', complete: 'COMPLETO', replica: 'RÃ‰PLICA', basic: 'BÃSICO' };
 
     let manifest  = `MANIFESTO AGOGE ELITE - ${nextSundayKey}\n`;
     manifest     += `TOTAL INSCRITOS: ${list.length}\n`;
@@ -190,7 +180,7 @@ export const downloadManifesto = async (api, nextSundayKey) => {
     list.forEach((entry, i) => {
         const u = entry.is_guest
             ? { callsign: entry.guest_name, name: entry.guest_name, gear: entry.gear }
-            : (allUsers.find(x => x.id === entry.user_id) || { callsign: '—', name: entry.user_email, gear: entry.gear });
+            : (allUsers.find(x => x.id === entry.user_id) || { callsign: 'â€”', name: entry.user_email, gear: entry.gear });
         const gearStr = gearMap[entry.gear || 'own'] || 'N/A';
         manifest += `${i + 1}. ${u?.callsign || 'N/A'} (${u?.name || entry.user_email}) - ${gearStr}\n`;
     });
@@ -206,11 +196,10 @@ export const downloadManifesto = async (api, nextSundayKey) => {
     URL.revokeObjectURL(url);
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // MISSION CONFIG FORM
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export const setupMissionConfig = async (api, nextSundayKey) => {
-    console.log('[ADMIN] setupMissionConfig for:', nextSundayKey);
     const form = document.getElementById('adminMissionForm');
     if (!form) return;
 
@@ -221,8 +210,7 @@ export const setupMissionConfig = async (api, nextSundayKey) => {
     // Load current settings
     const settings = await api.getMissionSettings(nextSundayKey);
     if (settings) {
-        console.log('[ADMIN] Loaded mission settings:', settings);
-        const el = id => document.getElementById(id);
+            const el = id => document.getElementById(id);
         if (el('confSituation')) el('confSituation').value = settings.situation  || '';
         if (el('confMission'))   el('confMission').value   = settings.mission    || '';
         if (el('confGear'))      el('confGear').value      = settings.gear_rules || '';
@@ -241,41 +229,37 @@ export const setupMissionConfig = async (api, nextSundayKey) => {
             map_url:   el('confMap')?.value        || '',
             game_mode: el('confMode')?.value       || 'tdm'
         };
-        console.log('[ADMIN] Saving mission config:', missionData);
-
+    
         const btn      = form.querySelector('[type="submit"]');
         const feedback = document.getElementById('configFeedback');
         if (btn) btn.disabled = true;
 
         const success = await api.saveMissionSettings(missionData);
         if (success) {
-            console.log('[ADMIN] Mission saved OK');
-            if (feedback) { feedback.style.display = 'block'; feedback.style.color = '#2ecc71'; feedback.textContent = '✔ OPORD publicada con éxito.'; }
-            else alert('¡Misión publicada con éxito!');
+                    if (feedback) { feedback.style.display = 'block'; feedback.style.color = '#2ecc71'; feedback.textContent = 'âœ” OPORD publicada con Ã©xito.'; }
+            else alert('Â¡MisiÃ³n publicada con Ã©xito!');
         } else {
             console.error('[ADMIN] Mission save FAILED');
-            if (feedback) { feedback.style.display = 'block'; feedback.style.color = 'var(--blood)'; feedback.textContent = '✖ Error al guardar. Revisa permisos Supabase.'; }
-            else alert('Error al publicar la misión. Revisa los permisos en Supabase (admin_fix_v2.sql).');
+            if (feedback) { feedback.style.display = 'block'; feedback.style.color = 'var(--blood)'; feedback.textContent = 'âœ– Error al guardar. Revisa permisos Supabase.'; }
+            else alert('Error al publicar la misiÃ³n. Revisa los permisos en Supabase (admin_fix_v2.sql).');
         }
         if (btn) btn.disabled = false;
     });
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // PHOTO MODERATION
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export const renderAdminPhotos = async (api) => {
-    console.log('[ADMIN] renderAdminPhotos called');
     const photoList = document.getElementById('adminPhotoList');
     if (!photoList) return;
 
     photoList.innerHTML = '<div style="text-align:center;font-size:.8rem;color:var(--text-muted);padding:10px;">Cargando inteligencia...</div>';
 
     const photos = await api.getCommunityPhotos('pending');
-    console.log('[ADMIN] Pending photos:', photos.length);
 
     if (photos.length === 0) {
-        photoList.innerHTML = '<div style="text-align:center;font-size:.8rem;color:var(--text-muted);padding:20px;">No hay archivos visuales pendientes de revisión.</div>';
+        photoList.innerHTML = '<div style="text-align:center;font-size:.8rem;color:var(--text-muted);padding:20px;">No hay archivos visuales pendientes de revisiÃ³n.</div>';
         return;
     }
 
@@ -306,8 +290,7 @@ export const renderAdminPhotos = async (api) => {
     photoList.querySelectorAll('.photo-approve-btn').forEach(btn => {
         btn.addEventListener('click', async () => {
             const id = btn.dataset.id;
-            console.log('[ADMIN] Approving photo id:', id);
-            btn.disabled = true; btn.textContent = '...';
+                    btn.disabled = true; btn.textContent = '...';
             const ok = await api.updateCommunityPhotoStatus(id, 'approved');
             if (ok) { console.log('[ADMIN] Photo approved'); renderAdminPhotos(api); }
             else    { alert('Error al aprobar foto.'); btn.disabled = false; btn.textContent = 'APROBAR'; }
@@ -317,8 +300,7 @@ export const renderAdminPhotos = async (api) => {
     photoList.querySelectorAll('.photo-reject-btn').forEach(btn => {
         btn.addEventListener('click', async () => {
             const id = btn.dataset.id;
-            console.log('[ADMIN] Rejecting photo id:', id);
-            btn.disabled = true; btn.textContent = '...';
+                    btn.disabled = true; btn.textContent = '...';
             const ok = await api.updateCommunityPhotoStatus(id, 'rejected');
             if (ok) { console.log('[ADMIN] Photo rejected'); renderAdminPhotos(api); }
             else    { alert('Error al denegar foto.'); btn.disabled = false; btn.textContent = 'DENEGAR'; }
@@ -326,11 +308,10 @@ export const renderAdminPhotos = async (api) => {
     });
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // ATTACH GLOBAL HANDLERS (for manual enrollment form in admin.html)
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export const attachAdminGlobals = (api, nextSundayKey) => {
-    console.log('[ADMIN] attachAdminGlobals called. sunKey:', nextSundayKey);
 
     // Manual enrollment form button (in admin.html HTML)
     const manualEnrollBtn = document.querySelector('[onclick*="adminEnrollUser"]');
@@ -341,8 +322,7 @@ export const attachAdminGlobals = (api, nextSundayKey) => {
             const userId = document.getElementById('manualEnrollId')?.value?.trim();
             const email  = document.getElementById('manualEnrollEmail')?.value?.trim();
             if (!userId) return alert('Rellena al menos el Nombre/ID del operador.');
-            console.log('[ADMIN] Manual enroll:', userId, email);
-            manualEnrollBtn.disabled = true;
+                    manualEnrollBtn.disabled = true;
             manualEnrollBtn.textContent = '...';
             
             const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId);
@@ -365,8 +345,7 @@ export const attachAdminGlobals = (api, nextSundayKey) => {
                 );
 
                 if (matchedUser) {
-                    console.log('[ADMIN] Matched manual input to existing user:', matchedUser.id);
-                    finalUserId = matchedUser.id;
+                                    finalUserId = matchedUser.id;
                     finalEmail  = matchedUser.email;
                 }
             }
@@ -381,8 +360,7 @@ export const attachAdminGlobals = (api, nextSundayKey) => {
             }
             
             if (ok) {
-                console.log('[ADMIN] Manual enroll SUCCESS');
-                document.getElementById('manualEnrollId').value   = '';
+                            document.getElementById('manualEnrollId').value   = '';
                 document.getElementById('manualEnrollEmail').value = '';
                 updateAdminDashboard(api, nextSundayKey);
             } else {
@@ -396,22 +374,19 @@ export const attachAdminGlobals = (api, nextSundayKey) => {
 
     // Also keep window globals as fallback for any remaining onclick= attrs
     window.adminEnrollUser = async (userId, email) => {
-        console.log('[ADMIN][window] adminEnrollUser:', userId, email);
-        const ok = await api.enroll(nextSundayKey, userId, email, 'own');
+            const ok = await api.enroll(nextSundayKey, userId, email, 'own');
         if (ok) updateAdminDashboard(api, nextSundayKey);
         else alert('Error al inscribir usuario.');
     };
 
     window.adminUnenrollUser = async (enrollmentId) => {
-        console.log('[ADMIN][window] adminUnenrollUser:', enrollmentId);
-        const ok = await api.unenroll(enrollmentId);
+            const ok = await api.unenroll(enrollmentId);
         if (ok) updateAdminDashboard(api, nextSundayKey);
-        else alert('Error al borrar inscripción.');
+        else alert('Error al borrar inscripciÃ³n.');
     };
 
     window.adminConfirmAttendance = async (userId, sunKey) => {
-        console.log('[ADMIN][window] adminConfirmAttendance:', userId, sunKey);
-        const user = await api.getProfile(userId);
+            const user = await api.getProfile(userId);
         if (!user) return alert('Perfil no encontrado.');
         const history = Array.isArray(user.mission_history) ? user.mission_history : [];
         if (!history.includes(sunKey)) history.push(sunKey);

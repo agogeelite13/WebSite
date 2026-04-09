@@ -1,6 +1,6 @@
 /* =============================================
-   AGOGE ELITE — Premium Stylesheet
-   Tactical Minimalist · Dark · Red Accent
+   AGOGE ELITE â€” Premium Stylesheet
+   Tactical Minimalist Â· Dark Â· Red Accent
    ============================================= */
 
 /* Body scroll lock when mobile menu is open */
@@ -1027,29 +1027,6 @@ p {
     box-shadow: var(--shadow-lg), var(--glow-bronze);
 }
 
-.equip-card__img-wrap {
-    overflow: hidden;
-    aspect-ratio: 16 / 10;
-    border-bottom: 2px solid var(--bronze-dark);
-}
-
-.equip-card__img-wrap img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.6s var(--ease);
-    filter: grayscale(100%) contrast(1.1);
-}
-
-.equip-card:hover .equip-card__img-wrap img {
-    transform: scale(1.1) rotate(1deg);
-    filter: grayscale(40%) contrast(1.2);
-}
-
-.equip-card__body {
-    padding: 32px;
-}
-
 .equip-card__title {
     font-family: var(--font-display);
     font-size: 1.3rem;
@@ -1057,25 +1034,6 @@ p {
     letter-spacing: 0.1em;
     color: var(--white);
     margin-bottom: 16px;
-}
-
-.equip-card__list {
-    margin-bottom: 24px;
-}
-
-.equip-card__list li {
-    font-size: 0.9rem;
-    color: #999;
-    padding: 8px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.equip-card__list li::before {
-    content: '\2023';
-    color: var(--bronze);
 }
 
 .equip-card__price {
@@ -1372,18 +1330,6 @@ h4,
 
 p,
 li,
-.font-body {
-    font-family: var(--font-body);
-    line-height: 1.6;
-    color: var(--text);
-}
-
-.lambda {
-    color: var(--red);
-    display: inline-block;
-    margin: 0 0.1em;
-}
-
 /* =============================================
    CONTACT
    ============================================= */
@@ -1932,7 +1878,7 @@ li,
     }
 
     /* =========================================
-       MOBILE MENU — App-Style Side Panel
+       MOBILE MENU â€” App-Style Side Panel
        ========================================= */
 
     .hamburger {
@@ -1983,7 +1929,7 @@ li,
         width: 100%;
     }
 
-    /* --- Dropdown trigger (CENTRO, OPERACIONES, LOGÍSTICA) --- */
+    /* --- Dropdown trigger (CENTRO, OPERACIONES, LOGÃSTICA) --- */
     .dropdown-trigger {
         display: flex;
         width: 100%;
@@ -2647,10 +2593,6 @@ select.form-input option {
     transition: all var(--duration);
 }
 
-.cal-cell--empty {
-    background: rgba(0, 0, 0, 0.1);
-}
-
 .cal-cell--sunday {
     color: var(--white);
     font-weight: 700;
@@ -2773,7 +2715,7 @@ select.form-input option {
     background: var(--red-dim);
 }
 
-/* Gallery item — pointer cursor for lightbox */
+/* Gallery item â€” pointer cursor for lightbox */
 .gallery-item {
     cursor: zoom-in;
 }
@@ -3071,7 +3013,7 @@ select.form-input option {
 
 
 /* =============================================
-   RESPONSIVE — NEW ELEMENTS
+   RESPONSIVE â€” NEW ELEMENTS
    ============================================= */
 @media (max-width: 1024px) {
     .stats-banner .container {
@@ -3197,16 +3139,6 @@ select.form-input option {
     margin: 0;
 }
 
-.admin-panel__close {
-    background: none;
-    border: none;
-    color: var(--text-muted);
-    font-size: 2rem;
-    cursor: pointer;
-    transition: color 0.3s;
-    line-height: 1;
-}
-
 .admin-panel__close:hover {
     color: var(--blood);
 }
@@ -3215,17 +3147,6 @@ select.form-input option {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 40px;
-}
-
-.admin-col__title {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
 }
 
 .admin-col__title::before {
@@ -3285,17 +3206,6 @@ select.form-input option {
 .admin-item__sub {
     font-size: 0.7rem;
     color: var(--text-muted);
-}
-
-.admin-item__status {
-    font-size: 0.65rem;
-    padding: 4px 8px;
-    border-radius: 2px;
-    background: rgba(205, 127, 50, 0.1);
-    color: var(--bronze-light);
-    text-transform: uppercase;
-    font-weight: 700;
-    letter-spacing: 0.1em;
 }
 
 .admin-item__status--enrolled {
@@ -3370,7 +3280,7 @@ select.form-input option {
 }
 
 .rank-badge::before {
-    content: '◈';
+    content: 'â—ˆ';
     color: var(--bronze-light);
 }
 
@@ -3384,7 +3294,7 @@ select.form-input option {
     border-color: #f1c40f;
 }
 
-.rank-badge[data-rank="élite"] {
+.rank-badge[data-rank="Ã©lite"] {
     color: var(--red-light);
     border-color: var(--red-light);
     box-shadow: 0 0 10px rgba(255, 68, 68, 0.3);
@@ -3476,32 +3386,6 @@ select.form-input option {
     margin: 0;
 }
 
-.profile-panel__close {
-    background: none;
-    border: none;
-    color: var(--text-muted);
-    font-size: 2rem;
-    cursor: pointer;
-    line-height: 1;
-}
-
-.profile-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 30px;
-}
-
-.profile-id-card {
-    display: flex;
-    gap: 20px;
-    background: rgba(20, 20, 20, 0.5);
-    padding: 20px;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    position: relative;
-    overflow: hidden;
-}
-
 .profile-id-card::after {
     content: 'OPERATOR ID CARD';
     position: absolute;
@@ -3513,47 +3397,6 @@ select.form-input option {
     opacity: 0.3;
 }
 
-.profile-photo {
-    width: 120px;
-    height: 120px;
-    border: 1px solid var(--bronze-dark);
-    padding: 4px;
-    background: #000;
-}
-
-.profile-photo img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: sepia(0.3) contrast(1.1);
-}
-
-.profile-details {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 12px;
-}
-
-.profile-row {
-    display: flex;
-    flex-direction: column;
-}
-
-.profile-label {
-    font-size: 0.55rem;
-    color: var(--text-muted);
-    letter-spacing: 0.1em;
-}
-
-.profile-val {
-    font-family: var(--font-display);
-    font-size: 0.9rem;
-    color: var(--white);
-    letter-spacing: 0.05em;
-}
-
 .status-active {
     color: #2ecc71;
     text-shadow: 0 0 5px rgba(46, 204, 113, 0.3);
@@ -3563,15 +3406,6 @@ select.form-input option {
     display: grid;
     grid-template-columns: 1fr;
     gap: 15px;
-}
-
-.profile-stat-box {
-    background: rgba(30, 30, 30, 0.5);
-    padding: 15px;
-    border-left: 3px solid var(--bronze);
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
 }
 
 .stat-box__label {
@@ -3684,11 +3518,7 @@ select.form-input option {
 }
 
 @media (max-width: 992px) {
-    .profile-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .nav__dropdown .dropdown-menu {
+.nav__dropdown .dropdown-menu {
         position: static;
         opacity: 1;
         visibility: visible;
@@ -3785,27 +3615,11 @@ select.form-input option {
 }
 
 /* Profile Edit & Advanced Stats */
-.profile-panel__header-actions {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-}
-
 .profile-edit-form {
     background: rgba(15, 15, 15, 0.8);
     padding: 20px;
     border: 1px dashed var(--bronze-dark);
     margin-bottom: 25px;
-}
-
-.gear-options {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-top: 10px;
-    background: rgba(0, 0, 0, 0.2);
-    padding: 10px;
-    border-radius: 4px;
 }
 
 .radio-label {
@@ -3822,12 +3636,6 @@ select.form-input option {
     accent-color: var(--bronze);
 }
 
-.edit-actions {
-    display: flex;
-    gap: 15px;
-    margin-top: 20px;
-}
-
 .mission-log {
     margin-top: 30px;
     padding: 15px;
@@ -3835,97 +3643,12 @@ select.form-input option {
     border: 1px solid var(--border);
 }
 
-.mission-log__title {
-    font-family: var(--font-display);
-    font-size: 0.8rem;
-    color: var(--bronze-light);
-    letter-spacing: 0.1em;
-    margin-bottom: 15px;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 5px;
-}
-
-.mission-log__list {
-    max-height: 150px;
-    overflow-y: auto;
-    font-size: 0.75rem;
-    color: var(--text-muted);
-}
-
-.log-entry {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
 .log-entry__date {
     color: var(--bronze);
 }
 
-.mission-log__empty {
-    opacity: 0.5;
-    font-style: italic;
-    text-align: center;
-    padding: 20px 0;
-}
-
 /* Admin Aforo (Capacity) Bar */
-.admin-panel__header-actions {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-}
-
-.admin-aforo-bar {
-    background: rgba(20, 20, 20, 0.8);
-    padding: 15px 20px;
-    border: 1px solid var(--bronze-dark);
-    margin-bottom: 25px;
-}
-
-.admin-aforo-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.aforo-label {
-    font-size: 0.65rem;
-    color: var(--text-muted);
-    letter-spacing: 0.15em;
-}
-
-.aforo-count {
-    font-family: var(--font-display);
-    font-size: 0.9rem;
-    color: var(--white);
-}
-
-.admin-aforo-progress {
-    height: 6px;
-    background: #111;
-    border-radius: 3px;
-    overflow: hidden;
-}
-
-.admin-aforo-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--bronze-dark), var(--bronze));
-    transition: width 0.5s ease;
-    box-shadow: 0 0 10px rgba(205, 127, 50, 0.5);
-}
-
 /* Clan & Group Styling */
-.clan-section {
-    margin-top: 30px;
-    padding: 20px;
-    background: rgba(20, 20, 20, 0.4);
-    border: 1px solid var(--border);
-    position: relative;
-}
-
 .clan-empty {
     text-align: center;
     padding: 20px 0;
@@ -3962,11 +3685,6 @@ select.form-input option {
     gap: 15px;
     align-items: center;
     margin-top: 10px;
-}
-
-.manual-field .form-input {
-    font-size: 0.8rem;
-    height: 40px;
 }
 
 @media (max-width: 768px) {
@@ -4039,21 +3757,6 @@ select.form-input option {
     align-items: center;
     justify-content: center;
     overflow: hidden;
-}
-
-.intel-map-placeholder {
-    text-align: center;
-    color: #3e6a71;
-    font-family: monospace;
-}
-
-.intel-map-placeholder p {
-    font-size: 0.9rem;
-    margin: 10px 0;
-}
-
-.intel-map-placeholder small {
-    opacity: 0.6;
 }
 
 .intel-briefing {
@@ -4187,27 +3890,6 @@ select.form-input option {
 }
 
 /* Phase Bravo: Tactical Mission Editor & Roles */
-.admin-mission-config {
-    background: rgba(0,0,0,0.3);
-    border-radius: 4px;
-    padding: 20px;
-}
-
-.admin-mission-config textarea.form-input {
-    background: rgba(20,20,20,0.8);
-    border-color: var(--border);
-    color: var(--white);
-    font-family: var(--font-body);
-    font-size: 0.8rem;
-    line-height: 1.4;
-    resize: none;
-}
-
-.admin-mission-config textarea.form-input:focus {
-    border-color: var(--bronze);
-    outline: none;
-}
-
 .role-selector-wrap select.form-input {
     appearance: none;
     -webkit-appearance: none;
@@ -4306,7 +3988,7 @@ select.form-input option {
    OVERFLOW PREVENTIONS & COMPACT UI FIXES 
    ============================================= */
 
-/* Botones: Ajuste din�mico de texto y min-width */
+/* Botones: Ajuste dinï¿½mico de texto y min-width */
 .btn {
     white-space: normal;
     word-break: break-word;
@@ -4420,15 +4102,6 @@ select.form-input option {
     pointer-events: auto !important;
 }
 
-.map-label {
-    fill: var(--white);
-    font-family: var(--font-display);
-    font-size: 14px;
-    font-weight: bold;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-    pointer-events: none;
-}
-
 .intel-briefing {
     background: rgba(20, 20, 20, 0.8);
     border: 1px solid var(--border);
@@ -4480,22 +4153,22 @@ select.form-input option {
 
 
 /* =============================================
-   REFINAMIENTOS DE DISE�O - INTEL BOARD (FASE 39)
+   REFINAMIENTOS DE DISEï¿½O - INTEL BOARD (FASE 39)
    ============================================= */
 
 .intel-board {
-    padding: 10px; /* Reducir padding exterior para dar m�s espacio */
+    padding: 10px; /* Reducir padding exterior para dar mï¿½s espacio */
 }
 
 .intel-grid {
-    max-width: 1400px; /* M�s ancho */
+    max-width: 1400px; /* Mï¿½s ancho */
     gap: 20px;
 }
 
 .intel-map-container {
     width: 100% !important;
-    max-width: 1100px !important; /* Mapa m�s grande */
-    aspect-ratio: 1200 / 800; /* Mantener proporci�n */
+    max-width: 1100px !important; /* Mapa mï¿½s grande */
+    aspect-ratio: 1200 / 800; /* Mantener proporciï¿½n */
     margin: 0 auto;
 }
 

@@ -5,9 +5,7 @@
 import { initSupabase, api } from './js/api.js';
 import * as ui from './js/ui.js';
 import * as profile from './js/profile.js';
-import * as admin from './js/admin.js?v=70';
-
-'use strict';
+import * as admin from './js/admin.js';
 
 // 1. GLOBAL STATE
 let supabase = null;
@@ -132,7 +130,7 @@ const updateUI = async () => {
             renderCommunityBoard();
         }
 
-        // Enrollment Logic (if in index.html)
+        // Enrollment Logic
         const sunKey = getNextSundayKey();
         const missionEnrollments = enrollments[sunKey] || [];
         const isEnrolled = missionEnrollments.some(e => e.user_id === currentUser.id);
@@ -166,8 +164,7 @@ const updateUI = async () => {
         }
 
         // Leaderboard (only if in index or logistica)
-        const path2 = window.location.pathname;
-        if (path2.includes('index.html') || path2 === '/' || path2.includes('logistica.html')) {
+        if (path.includes('index.html') || path === '/' || path.includes('logistica.html')) {
             const allUsers = await api.getUsers();
             profile.renderClanView(userProfile, clans, allUsers, {
                 leaderboardId: 'clanLeaderboardBody',
@@ -190,14 +187,11 @@ const updateUI = async () => {
         els.userMissionView?.classList.remove('hidden');
     }
 
-    const sunKey = getNextSundayKey();
-    const enrolledList = enrollments[sunKey] || [];
-    if (els.playerCount) els.playerCount.textContent = enrolledList.length;
-    if (els.nextMissionDate) els.nextMissionDate.textContent = getNextSunday();
-
-    // New: Remaining Slots Logic
+    // Remaining Slots Logic (works for logged-in and anonymous visitors)
+    const slotsSunKey = getNextSundayKey();
+    const slotsEnrolled = enrollments[slotsSunKey] || [];
     const maxAforo = 20;
-    const remaining = Math.max(0, maxAforo - enrolledList.length);
+    const remaining = Math.max(0, maxAforo - slotsEnrolled.length);
     const slotsEl = document.getElementById('slotsRemaining');
     if (slotsEl) {
         slotsEl.textContent = `PLAZAS DISPONIBLES: ${remaining}`;
@@ -237,55 +231,6 @@ const leaveClan = async () => {
     refreshData();
 };
 
-// Admin globals are attached inside DOMContentLoaded and updateUI — do NOT call here
-
-const renderClanLeaderboard = (allUsers) => {
-    const body = document.getElementById('clanLeaderboardBody');
-    if (!body) return;
-    const stats = clans.map(c => {
-        const m = allUsers.filter(u => u.clan === c.name);
-        const xp = m.reduce((s, u) => s + (u.exp || 0), 0);
-        return { name: c.name, count: m.length, xp, lvl: m.length ? xp / m.length : 0 };
-    }).sort((a,b) => b.xp - a.xp);
-
-    body.innerHTML = stats.map((s, i) => `
-        <tr>
-            <td class="leader-pos">#${i + 1}</td>
-            <td class="leader-clan-name">${s.name}</td>
-            <td class="leader-stat">${s.count}</td>
-            <td><span class="rank-pill">NIVEL ${Math.floor(s.lvl)}</span></td>
-            <td class="leader-stat">${s.xp} XP</td>
-        </tr>
-    `).join('');
-};
-
-const renderFactionLeaderboard = (allUsers) => {
-    const stats = {
-        taskforce: { xp: 0, count: 0 },
-        uprising: { xp: 0, count: 0 }
-    };
-
-    allUsers.forEach(u => {
-        if (stats[u.faction]) {
-            stats[u.faction].xp += (u.exp || 0) * 100; // XP from missions
-            stats[u.faction].count++;
-        }
-    });
-
-    const tfProgress = document.getElementById('tfProgress');
-    const upProgress = document.getElementById('upProgress');
-    const tfStats = document.getElementById('tfStats');
-    const upStats = document.getElementById('upStats');
-
-    const totalXP = stats.taskforce.xp + stats.uprising.xp || 1;
-    const tfPercent = (stats.taskforce.xp / totalXP) * 100;
-    const upPercent = (stats.uprising.xp / totalXP) * 100;
-
-    if (tfProgress) tfProgress.style.width = `${tfPercent}%`;
-    if (upProgress) upProgress.style.width = `${upPercent}%`;
-    if (tfStats) tfStats.textContent = `${stats.taskforce.xp} XP | ${stats.taskforce.count} OP`;
-    if (upStats) upStats.textContent = `${stats.uprising.xp} XP | ${stats.uprising.count} OP`;
-};
 
 
 const setupAuthUI = () => {
