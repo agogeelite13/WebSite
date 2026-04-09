@@ -30,14 +30,14 @@ export const renderMedals = (userProfile, enrollments, nextSundayKey) => {
             title: 'Hermandad de Armas',
             desc: 'Efectividad en equipo (Pertenece a un clan)',
             unlocked: hasClan,
-            icon: 'fas fa-users-crown'
+            img: 'medals/brotherhood.png'
         },
         {
             id: 'loyalty',
             title: 'Lealtad Agoge',
             desc: 'Compromiso total (Registrado)',
             unlocked: true,
-            icon: 'fas fa-helmet-battle'
+            img: 'medals/loyalty.png'
         }
     ];
 

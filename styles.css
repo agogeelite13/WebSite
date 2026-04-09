@@ -4397,3 +4397,54 @@ select.form-input option {
  box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
 }
 
+/* Gamification Medals */
+.medals-grid {
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.medal-slot {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.5);
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.medal-slot.unlocked {
+    border-color: var(--bronze);
+    box-shadow: 0 0 10px rgba(205, 127, 50, 0.3);
+}
+
+.medal-slot.unlocked:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px var(--bronze);
+    z-index: 2;
+}
+
+.medal-icon {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    padding: 2px;
+}
+
+.medal-icon.locked {
+    filter: grayscale(100%) brightness(50%) opacity(30%);
+}
+
+.medal-icon.unlocked {
+    filter: drop-shadow(0 0 2px var(--bronze));
+    animation: medalGlow 2s infinite alternate;
+}
+
