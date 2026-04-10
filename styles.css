@@ -136,6 +136,7 @@ button {
     /* Spacing */
     --section-py: 60px;
     --container: 1200px;
+    --container-pad: 30px;
     --gap: 30px;
 
     /* Shadows & Glows */
@@ -149,6 +150,14 @@ button {
     --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
     --duration: 0.4s;
 }
+
+/* --- GLOBAL LAYOUT --- */
+.main-content {
+    padding-top: 100px; /* Standardize header offset */
+    min-height: 80vh;
+}
+
+
 
 /* --- SCROLL PROGRESS BAR --- */
 .scroll-progress {
@@ -282,9 +291,12 @@ button {
 }
 
 .container {
+    width: 100%;
     max-width: var(--container);
-    margin: 0 auto;
-    padding: 0 20px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--container-pad);
+    padding-right: var(--container-pad);
 }
 
 /* --- SECTIONS --- */
@@ -371,6 +383,9 @@ p {
     line-height: 1.6;
     text-align: left;
     margin-bottom: 1.2rem;
+    max-width: 800px; /* Limiting width for readability in centered blocks */
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* --- BUTTONS --- */
@@ -3710,6 +3725,167 @@ select.form-input option {
 @media (max-width: 768px) {
     .admin-manual-form {
         grid-template-columns: 1fr;
+    }
+}
+
+/* =============================================
+   TACTICAL COMPONENTS & UTILITIES
+   ============================================= */
+
+/* Coming Soon & Status Banners */
+.coming-soon-banner {
+    text-align: center;
+    padding: 60px 40px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin: 40px auto;
+    max-width: 800px;
+}
+
+.coming-soon-banner h3 {
+    font-family: var(--font-display);
+    color: var(--bronze);
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+}
+
+.coming-soon-banner p {
+    color: var(--text-muted);
+    font-size: 1rem;
+    margin-bottom: 0px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Faction Balance & Ranking */
+.faction-ranking {
+    margin-top: 50px;
+    border-top: 1px solid var(--border);
+    padding-top: 50px;
+}
+
+.faction-ranking__title {
+    text-align: center;
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    color: var(--bronze);
+    margin-bottom: 30px;
+    letter-spacing: 2px;
+}
+
+.faction-progress-wrap {
+    display: flex;
+    height: 60px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.faction-bar {
+    width: 50%;
+    transition: width 1s ease-in-out;
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    font-family: var(--font-display);
+    padding: 0 20px;
+}
+
+.faction-bar--tf {
+    background: var(--white);
+    color: #000;
+}
+
+.faction-bar--up {
+    background: var(--red);
+    color: var(--white);
+    justify-content: flex-end;
+}
+
+.faction-stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 20px;
+    text-align: center;
+    font-size: 0.85rem;
+}
+
+.faction-stat__val {
+    font-weight: bold;
+    font-size: 1rem;
+    margin-bottom: 4px;
+}
+
+.faction-stat__label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+}
+
+/* Utility Layouts */
+.grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.u-margin-t-lg { margin-top: 40px; }
+.u-margin-t-md { margin-top: 20px; }
+.u-padding-t-lg { padding-top: 40px; }
+
+.flex-1 { flex: 1; }
+.u-text-center { text-align: center; }
+.u-text-left { text-align: left; }
+.u-text-muted { color: var(--text-muted); }
+.u-small { font-size: 0.8rem; }
+.u-bold { font-weight: bold; }
+.u-margin-t-sm { margin-top: 10px; }
+.u-margin-t-md { margin-top: 20px; }
+.u-margin-t-lg { margin-top: 40px; }
+.u-padding-t-lg { padding-top: 40px; }
+.hidden { display: none !important; }
+
+.grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+@media (max-width: 900px) {
+    .grid-3 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 600px) {
+    .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+    .grid-2, .faction-stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .faction-progress-wrap {
+        height: 50px;
+        font-size: 0.8rem;
     }
 }
 

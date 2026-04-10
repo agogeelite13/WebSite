@@ -86,20 +86,20 @@
         </div>
     </header>
 
-    <main class="main-content" style="padding-top:100px;">
+    <main class="main-content">
         <div class="container">
-            <div id="intelBoard" class="intel-board" style="position:relative; height:auto; background:transparent; backdrop-filter:none;">
+            <div id="intelBoard" class="intel-board">
                 <div class="intel-board__header">
                     <div class="intel-badge">CLASSIFIED / CONFIDENCIAL</div>
                     <h1 class="intel-board__title">CENTRO DE INTELIGENCIA TÁCTICA</h1>
                 </div>
                 
-                <div class="intel-grid" style="grid-template-columns: 1.2fr 1fr; gap:40px; align-items: start;">
-                    <div class="intel-map-wrap" style="background: rgba(0,0,0,0.4); border: 2px solid var(--border); border-radius: 8px; overflow: hidden; box-shadow: 0 0 30px rgba(0,0,0,0.5);">
-                        <div class="intel-map-container" style="aspect-ratio: 12/8; position:relative;">
+                <div class="intel-grid">
+                    <div class="intel-map-wrap">
+                        <div class="intel-map-container">
                             <div class="scan-line"></div>
-                            <img id="intelMapImg" src="img/agoge_tactical_map_final.png" alt="Mapa Táctico" class="intel-map" style="width:100%; height:100%; object-fit: cover; opacity: 0.8; filter: brightness(1.2) contrast(1.1) sepia(0.2) hue-rotate(-10deg);" loading="lazy">
-                            <svg id="mapHotspots" viewBox="0 0 1200 800" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none;"></svg>
+                            <img id="intelMapImg" src="img/agoge_tactical_map_final.png" alt="Mapa Táctico" class="intel-map" loading="lazy">
+                            <svg id="mapHotspots" viewBox="0 0 1200 800"></svg>
                             <div id="mapTooltip" class="map-tooltip hidden"></div>
                         </div>
                     </div>
@@ -120,12 +120,12 @@
                                 <p id="opordGear">Consultando logística...</p>
                             </div>
                             
-                            <div class="briefing-item team-balance-section" style="grid-column: span 3; margin-top:20px; border-top:1px solid rgba(255,255,255,0.1); padding-top:20px;">
+                            <div class="briefing-item briefing-item--full u-margin-t-md">
                                 <strong>DESPLIEGUE POR ROLES (ESTADO DE LA FUERZA):</strong>
                                 <div id="roleDistribution" class="role-distribution-grid"></div>
                             </div>
 
-                            <div class="briefing-item voting-section" style="grid-column: span 3;">
+                            <div class="briefing-item briefing-item--full">
                                 <strong>VOTACIÓN ESTRATÉGICA (OPERADOR):</strong>
                                 <div id="votingOptions" class="voting-options">
                                     <button class="vote-btn" data-mode="tdm">Eliminación por Equipos</button>

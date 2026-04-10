@@ -86,7 +86,7 @@
         </div>
     </header>
 
-    <main class="main-content" style="padding-top:100px; padding-bottom:50px;">
+    <main class="main-content">
         <div class="container">
             <div id="profilePanel" class="profile-panel">
                 <div class="profile-panel__header">
@@ -131,7 +131,7 @@
                                 </div>
                             </div>
 
-                            <div class="profile-exp-section" style="margin-top:30px;">
+                            <div class="profile-exp-section u-margin-t-md">
                                 <div class="exp-header">
                                     <span id="profLevel">NIVEL 1</span>
                                     <span id="profXPText">0 / 5 XP</span>
@@ -141,9 +141,9 @@
                                 </div>
                             </div>
 
-                            <div class="profile-actions" style="display:flex; gap:15px; margin-top:30px;">
-                                <button id="editProfileBtn" class="btn btn--outline" style="flex:1;">Configurar</button>
-                                <a href="misiones.html" class="btn btn--primary" style="flex:1; text-decoration:none; display:flex; align-items:center; justify-content:center;">Inteligencia</a>
+                            <div class="profile-actions">
+                                <button id="editProfileBtn" class="btn btn--outline flex-1">Configurar</button>
+                                <a href="misiones.html" class="btn btn--primary flex-1">Inteligencia</a>
                             </div>
                         </div>
 
@@ -151,7 +151,7 @@
                             <h4 class="sidebar-title">CONDECORACIONES</h4>
                             <div id="medalsList" class="medals-grid"></div>
 
-                            <h4 class="sidebar-title" style="margin-top:30px;">REGISTRO DE MISIONES</h4>
+                            <h4 class="sidebar-title u-margin-t-md">REGISTRO DE MISIONES</h4>
                             <div id="missionLogList" class="mission-log-list">
                                 <p class="empty-log">Sin registros actuales.</p>
                             </div>
@@ -189,28 +189,28 @@
                                 <option value="uprising">Uprising (Rebelión)</option>
                             </select>
                         </div>
-                        <div class="form-actions" style="display:flex; gap:10px; margin-top:20px;">
-                            <button type="submit" class="btn btn--primary" style="flex:1">Guardar Cambios</button>
-                            <button type="button" id="cancelEditBtn" class="btn btn--outline" style="flex:1">Cancelar</button>
+                        <div class="form-actions profile-actions">
+                            <button type="submit" class="btn btn--primary flex-1">Guardar Cambios</button>
+                            <button type="button" id="cancelEditBtn" class="btn btn--outline flex-1">Cancelar</button>
                         </div>
                     </form>
 
                     <!-- COMMUNITY BOARD UPLOAD (FASE 37) -->
-                    <div id="communityUploadSection" class="community-board-upload" style="margin-top:40px; border-top:2px solid var(--border); padding-top:30px;">
-                        <h3 class="section-title" style="color:var(--bronze); font-family:var(--font-display); letter-spacing:1px;">INTELIGENCIA VISUAL (SUBIR FOTOS)</h3>
-                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:20px;">Comparte tus mejores momentos en el campo. Las fotos serán revisadas por el Mando antes de aparecer en el muro.</p>
+                    <div id="communityUploadSection" class="community-board-upload">
+                        <h3 class="section-title">INTELIGENCIA VISUAL (SUBIR FOTOS)</h3>
+                        <p class="u-text-muted u-small">Comparte tus mejores momentos en el campo. Las fotos serán revisadas por el Mando antes de aparecer en el muro.</p>
                         
-                        <form id="uploadPhotoForm" class="upload-form" style="background:rgba(255,255,255,0.03); padding:20px; border:1px dashed var(--border); border-radius:8px;">
+                        <form id="uploadPhotoForm" class="upload-form">
                             <div class="form-group">
-                                <label for="photoUpload" style="display:block; margin-bottom:10px; font-weight:bold;">Seleccionar Imagen:</label>
-                                <input type="file" id="photoUpload" accept="image/*" required class="form-input" style="padding:10px; background:transparent;">
+                                <label for="photoUpload">Seleccionar Imagen:</label>
+                                <input type="file" id="photoUpload" accept="image/*" required class="form-input">
                             </div>
                             <div class="form-group">
-                                <label for="photoCaption" style="display:block; margin-bottom:10px; font-weight:bold;">Breve Descripción / Reporte:</label>
+                                <label for="photoCaption">Breve Descripción / Reporte:</label>
                                 <input type="text" id="photoCaption" placeholder="Ej: Asegurando el sector Alpha en la Op. Blackhawk" maxlength="100" class="form-input">
                             </div>
-                            <button type="submit" id="submitPhotoBtn" class="btn btn--primary" style="margin-top:10px;">ENVIAR A REVISIÓN</button>
-                            <p id="uploadFeedback" style="display:none; margin-top:15px; font-weight:bold; font-size:0.9rem;"></p>
+                            <button type="submit" id="submitPhotoBtn" class="btn btn--primary">ENVIAR A REVISIÓN</button>
+                            <p id="uploadFeedback" class="hidden u-margin-t-sm u-bold"></p>
                         </form>
                     </div>
                 </div>
