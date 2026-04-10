@@ -1972,6 +1972,18 @@ li,
     }
 
     /* Forzado de alineación de texto a la izquierda en bloques de datos */
+    .hero__content {
+        text-align: center !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    .hero__content * {
+        text-align: center !important;
+    }
+
     .form-group, .form-label, .admin-item__info, .prof-stat, .briefing-item {
         text-align: left;
         align-items: flex-start;
