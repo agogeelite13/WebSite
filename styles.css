@@ -400,16 +400,30 @@ p {
     margin-bottom: 1.2rem;
 }
 
-/* Section descriptions and centered text blocks */
+/* Section headers & hero content should have centered text for symmetry */
 .section__header p,
+.hero__eyebrow,
+.hero__subtitle,
 .hero__tagline,
-.about__body,
-.plan-card p,
-.card p,
-.mission-card p {
+.faction-ranking__title,
+.faction-stat__label,
+.coming-soon-banner p {
+    text-align: center !important;
     max-width: var(--text-max-width);
     margin-left: auto;
     margin-right: auto;
+}
+
+/* Specific body paragraphs that should be block-centered but left-aligned */
+.about__body,
+.plan-card p,
+.card p,
+.mission-card p,
+.rule-card p {
+    max-width: var(--text-max-width);
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
 }
 
 /* Standalone content paragraphs should be centered as a block */
@@ -820,7 +834,8 @@ p {
     letter-spacing: 0.4em;
     text-transform: uppercase;
     color: var(--bronze);
-    margin-bottom: 24px;
+    margin: 0 auto 24px;
+    text-align: center;
     opacity: 0;
     animation: heroFadeIn 0.8s 0.3s var(--ease) forwards;
 }
