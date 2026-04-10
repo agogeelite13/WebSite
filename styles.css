@@ -109,10 +109,10 @@ button {
 /* --- DESIGN TOKENS --- */
 :root {
     /* Colors - Neo Classical Spartan Palette */
-    --red: #8b0000;
-    /* Blood Red */
-    --red-light: #c0392b;
-    --red-dim: rgba(139, 0, 0, 0.2);
+    --red: #e53935;
+    /* Brighter Tactical Red */
+    --red-light: #ef5350;
+    --red-dim: rgba(229, 57, 53, 0.2);
     --bronze: #cd7f32;
     --bronze-light: #e6a57e;
     --bronze-dark: #8b4513;
@@ -513,6 +513,7 @@ p {
     height: 36px;
     object-fit: contain;
     border-radius: 2px;
+    mix-blend-mode: screen; /* Simulacion de transparencia quitando fondo negro */
 }
 
 .header__logo span {
@@ -4447,4 +4448,64 @@ select.form-input option {
     filter: drop-shadow(0 0 2px var(--bronze));
     animation: medalGlow 2s infinite alternate;
 }
+
+/* Rank Frames & Avatars */
+.operator-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    border: 2px solid transparent;
+}
+
+.operator-avatar-frame {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    padding: 5px;
+    border-radius: 55px; /* circular containing frame */
+    transition: all 0.5s ease;
+}
+
+/* Frame specific rank styling */
+.operator-avatar-frame.frame-recluta {
+    border: 2px solid #555;
+    box-shadow: 0 0 5px rgba(85,85,85,0.4);
+    background: radial-gradient(circle, rgba(85,85,85,0.1) 0%, transparent 70%);
+}
+.operator-avatar-frame.frame-operador {
+    border: 2px solid #3498db;
+    box-shadow: 0 0 8px rgba(52,152,219,0.5);
+    background: radial-gradient(circle, rgba(52,152,219,0.1) 0%, transparent 70%);
+}
+.operator-avatar-frame.frame-veterano {
+    border: 2px solid #f1c40f;
+    box-shadow: 0 0 12px rgba(241,196,15,0.5);
+    background: radial-gradient(circle, rgba(241,196,15,0.1) 0%, transparent 70%);
+}
+.operator-avatar-frame.frame-elite {
+    border: 2px solid var(--red-light);
+    box-shadow: 0 0 15px rgba(255, 68, 68, 0.6);
+    background: radial-gradient(circle, rgba(255,68,68,0.15) 0%, transparent 70%);
+}
+.operator-avatar-frame.frame-mando {
+    border: 2px dashed #d4af37;
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.7);
+    background: radial-gradient(circle, rgba(212,175,55,0.2) 0%, transparent 70%);
+    animation: medalGlow 2s infinite alternate;
+}
+
+/* Fallback Image Adjustments */
+.operator-avatar-frame.frame-veterano .operator-avatar {
+    filter: sepia(0.8) hue-rotate(15deg) saturate(2);
+}
+.operator-avatar-frame.frame-elite .operator-avatar {
+    filter: sepia(1) hue-rotate(-50deg) saturate(4) brightness(0.9);
+}
+.operator-avatar-frame.frame-mando .operator-avatar {
+    filter: sepia(1) hue-rotate(10deg) saturate(3) brightness(1.2) contrast(1.2);
+}
+
 

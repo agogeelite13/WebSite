@@ -103,10 +103,14 @@ export const updateProfileView = (userProfile) => {
 
     let rank = 'RECLUTA';
     let tier = 'standard';
+    let frameClass = 'frame-recluta';
+    let avatarSrc = 'avatars/avatar_recluta.png';
 
     if (userProfile.role === 'admin') {
         rank = 'COMANDANTE SUPREMO';
         tier = 'supreme';
+        frameClass = 'frame-mando';
+        avatarSrc = 'avatars/avatar_operador.png';
         const profilePanel = document.getElementById('profilePanel');
         if (profilePanel) {
             profilePanel.classList.add('admin-mode');
@@ -123,17 +127,31 @@ export const updateProfileView = (userProfile) => {
         if (missions >= 10) {
             rank = 'ÉLITE';
             tier = 'elite';
+            frameClass = 'frame-elite';
+            avatarSrc = 'avatars/avatar_operador.png';
         } else if (missions >= 6) {
             rank = 'VETERANO';
             tier = 'standard';
+            frameClass = 'frame-veterano';
+            avatarSrc = 'avatars/avatar_operador.png';
         } else if (missions >= 3) {
             rank = 'OPERADOR';
             tier = 'standard';
+            frameClass = 'frame-operador';
+            avatarSrc = 'avatars/avatar_operador.png';
         }
         
         if (elements.profLevel) elements.profLevel.textContent = `NIVEL ${level}`;
         if (elements.profXPText) elements.profXPText.textContent = `${currentLevelXP} / 5 XP`;
         if (elements.profXPFill) elements.profXPFill.style.width = `${xpPercent}%`;
+    }
+
+    const avatarImg = document.getElementById('profAvatar');
+    const avatarFrame = document.getElementById('operatorAvatarFrame');
+    if (avatarImg) avatarImg.src = avatarSrc;
+    if (avatarFrame) {
+        avatarFrame.className = 'operator-avatar-frame';
+        avatarFrame.classList.add(frameClass);
     }
 
     const profilePanel = document.getElementById('profilePanel');
