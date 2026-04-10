@@ -134,10 +134,13 @@ button {
     --font-body: 'Inter', sans-serif;
 
     /* Spacing */
-    --section-py: 60px;
+    --section-py: 80px;
     --container: 1200px;
     --container-pad: 30px;
     --gap: 30px;
+
+    /* Max widths for readability */
+    --text-max-width: 800px;
 
     /* Shadows & Glows */
     --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.5);
@@ -300,25 +303,29 @@ button {
 }
 
 /* --- SECTIONS --- */
+.container {
+    width: 100% !important;
+    max-width: var(--container) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: var(--container-pad) !important;
+    padding-right: var(--container-pad) !important;
+}
+
 .section {
     padding: var(--section-py) 0;
     border-bottom: 1px solid var(--border);
     position: relative;
-}
-
-.section--dark {
-    background-color: transparent;
-}
-
-.section--mid {
-    background-color: rgba(20, 20, 20, 0.5);
-    backdrop-filter: blur(5px);
+    overflow: hidden; /* Prevent horizontal scroll from inner elements */
 }
 
 .section__header {
     text-align: center;
-    margin-bottom: 80px;
-    position: relative;
+    margin: 0 auto 60px;
+    max-width: var(--text-max-width);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .section__header::after {
@@ -339,11 +346,11 @@ button {
     letter-spacing: 0.25em;
     text-transform: uppercase;
     color: var(--bronze);
-    margin-bottom: 16px;
+    margin: 0 auto 16px;
     padding: 6px 16px;
     border: 1px solid var(--bronze-dark);
-    position: relative;
     background: rgba(0, 0, 0, 0.3);
+    width: fit-content;
 }
 
 .section__label::before {
@@ -372,7 +379,15 @@ h4,
     font-weight: 700;
     letter-spacing: 0.05em;
     color: var(--white);
-    text-align: center; /* Solicitud: Títulos centrados */
+}
+
+.section__header h1,
+.section__header h2,
+.section__header h3,
+.section__header h4,
+.section__title,
+.hero__title {
+    text-align: center;
 }
 
 p {
@@ -383,7 +398,23 @@ p {
     line-height: 1.6;
     text-align: left;
     margin-bottom: 1.2rem;
-    max-width: 800px; /* Limiting width for readability in centered blocks */
+}
+
+/* Section descriptions and centered text blocks */
+.section__header p,
+.hero__tagline,
+.about__body,
+.plan-card p,
+.card p,
+.mission-card p {
+    max-width: var(--text-max-width);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Standalone content paragraphs should be centered as a block */
+.container > p {
+    max-width: var(--text-max-width);
     margin-left: auto;
     margin-right: auto;
 }
@@ -763,7 +794,9 @@ p {
 .hero__content {
     position: relative;
     z-index: 1;
+    width: 100%;
     max-width: 900px;
+    margin: 0 auto;
     padding: 0 40px;
     animation: heroFadeIn 1.5s var(--ease) both;
 }
@@ -895,11 +928,19 @@ p {
     align-items: center;
 }
 
+.about__text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
 .about__body {
     color: var(--text-muted);
-    margin-bottom: 16px;
+    margin-bottom: 1.5rem;
     font-size: 1rem;
     line-height: 1.8;
+    text-align: left;
+    max-width: none !important; /* Allow the block to fill the grid column */
 }
 
 .about__card {
@@ -963,6 +1004,9 @@ p {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: var(--gap);
+    margin: 40px auto;
+    max-width: var(--container);
+    justify-content: center;
 }
 
 .card {
@@ -1032,9 +1076,11 @@ p {
    ============================================= */
 .equip-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: var(--gap);
-    margin-bottom: 32px;
+    margin: 0 auto 32px;
+    max-width: var(--container);
+    justify-content: center;
 }
 
 .equip-card {
@@ -1089,7 +1135,9 @@ p {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: var(--gap);
-    margin-bottom: 64px;
+    margin: 0 auto 64px;
+    max-width: var(--container);
+    justify-content: center;
     align-items: stretch;
 }
 
@@ -1307,12 +1355,14 @@ p {
    ============================================= */
 .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 300px);
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     gap: 20px;
     padding: 20px;
     background: rgba(0, 0, 0, 0.2);
     border: 1px solid var(--border);
+    margin: 0 auto;
+    max-width: var(--container);
+    justify-content: center;
 }
 
 .gallery-item {
@@ -2183,9 +2233,11 @@ li,
    ============================================= */
 .testimonials-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: var(--gap);
-    margin-top: 48px;
+    margin: 48px auto 0;
+    max-width: var(--container);
+    justify-content: center;
 }
 
 .testimonial-card {
@@ -2255,9 +2307,12 @@ li,
    ============================================= */
 .insta-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px;
     padding: 20px;
+    margin: 0 auto;
+    max-width: var(--container);
+    justify-content: center;
     background: rgba(0, 0, 0, 0.2);
     border: 1px solid var(--border);
 }
@@ -2306,8 +2361,10 @@ li,
 }
 
 .insta-action {
-    text-align: center;
+    display: flex;
+    justify-content: center;
     margin-top: 40px;
+    width: 100%;
 }
 
 /* =============================================
@@ -3822,6 +3879,10 @@ select.form-input option {
     margin-bottom: 4px;
 }
 
+.faction-stat__val--up {
+    color: var(--red);
+}
+
 .faction-stat__label {
     font-size: 0.65rem;
     text-transform: uppercase;
@@ -4002,9 +4063,11 @@ select.form-input option {
 /* Supply Showcase (Phase 19) */
 .supply-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 30px;
-    margin-top: 40px;
+    margin: 40px auto 0;
+    max-width: var(--container);
+    justify-content: center;
 }
 
 .supply-card {
@@ -4319,8 +4382,8 @@ select.form-input option {
 
 .briefing-content {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
     text-align: left;
 }
 
@@ -4357,7 +4420,9 @@ select.form-input option {
 }
 
 .intel-grid {
-    max-width: 1400px; /* Mï¿½s ancho */
+    max-width: var(--container);
+    margin-left: auto;
+    margin-right: auto;
     gap: 20px;
 }
 
@@ -4376,7 +4441,7 @@ select.form-input option {
 }
 
 .briefing-content {
-    grid-template-columns: repeat(3, 1fr); /* 3 columnas en desktop para aprovechar ancho */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 30px;
 }
 
