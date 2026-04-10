@@ -73,6 +73,7 @@ body {
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
     max-width: 100vw;
+    text-align: center; /* Solicitud: todo centrado */
 }
 
 p, span, h1, h2, h3, h4, a, li, .admin-item__info {
@@ -461,8 +462,8 @@ p {
 }
 
 .btn--secondary:hover {
-    border-color: var(--red);
-    color: var(--red-light);
+    border-color: var(--white);
+    color: var(--white);
 }
 
 .btn--full {
@@ -509,11 +510,13 @@ p {
 }
 
 .header__logo img {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     object-fit: contain;
-    border-radius: 2px;
-    mix-blend-mode: screen; /* Simulacion de transparencia quitando fondo negro */
+    border-radius: 50%; /* Badge form */
+    background: #ffffff; /* Fuerzo fondo blanco para que cualquier logo destaque perfecto */
+    padding: 3px;
+    box-shadow: 0 0 10px rgba(255,255,255,0.2);
 }
 
 .header__logo span {
@@ -789,7 +792,7 @@ p {
     font-weight: 400;
     letter-spacing: 0.5em;
     text-transform: uppercase;
-    color: var(--red);
+    color: var(--white);
     margin-bottom: 24px;
     opacity: 0;
     animation: heroFadeIn 1s 0.7s var(--ease) forwards;
@@ -1193,7 +1196,7 @@ p {
 }
 
 .private-hire:hover {
-    border-left-color: var(--red);
+    border-left-color: var(--white);
     box-shadow: var(--shadow-md);
 }
 
@@ -1212,7 +1215,7 @@ p {
 .private-hire__price {
     font-family: var(--font-display);
     font-size: 2rem;
-    color: var(--red-light);
+    color: var(--white);
     font-weight: 700;
     margin: 12px 0;
 }
@@ -1547,7 +1550,7 @@ li,
 }
 
 .footer__contact a:hover {
-    color: var(--red-light);
+    color: var(--white);
 }
 
 .footer__bottom {
@@ -1742,7 +1745,7 @@ li,
 }
 
 .footer__contact a:hover {
-    color: var(--red-light);
+    color: var(--white);
 }
 
 .footer__bottom {
@@ -2339,7 +2342,7 @@ li,
 
 .faq-item.is-open .faq-icon {
     transform: rotate(45deg);
-    color: var(--red);
+    color: var(--white);
 }
 
 .faq-answer {
@@ -2455,7 +2458,7 @@ select.form-input option {
     font-family: var(--font-display);
     font-size: clamp(2.5rem, 5vw, 4rem);
     font-weight: 700;
-    color: var(--red-light);
+    color: var(--white);
     line-height: 1;
     display: block;
 }
@@ -2571,7 +2574,7 @@ select.form-input option {
 }
 
 .cal-days-header span:last-child {
-    color: var(--red);
+    color: var(--white);
 }
 
 .cal-grid {
@@ -2712,7 +2715,7 @@ select.form-input option {
 }
 
 .lightbox__close:hover {
-    border-color: var(--red);
+    border-color: var(--white);
     background: var(--red-dim);
 }
 
@@ -2789,7 +2792,7 @@ select.form-input option {
 
 .user-menu__logout {
     font-size: 0.7rem;
-    color: var(--red-light);
+    color: var(--white);
     text-transform: uppercase;
     letter-spacing: 0.1em;
     padding: 4px 8px;
@@ -2968,7 +2971,7 @@ select.form-input option {
     display: block;
     font-family: var(--font-display);
     font-size: 3rem;
-    color: var(--red-light);
+    color: var(--white);
     line-height: 1;
 }
 
@@ -3296,8 +3299,8 @@ select.form-input option {
 }
 
 .rank-badge[data-rank="Ã©lite"] {
-    color: var(--red-light);
-    border-color: var(--red-light);
+    color: var(--white);
+    border-color: var(--white);
     box-shadow: 0 0 10px rgba(255, 68, 68, 0.3);
 }
 
@@ -3580,7 +3583,7 @@ select.form-input option {
 .scan-content h3 {
     font-size: 1.5rem;
     letter-spacing: 0.3em;
-    color: var(--red-light);
+    color: var(--white);
     margin-bottom: 8px;
 }
 
