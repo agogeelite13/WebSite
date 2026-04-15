@@ -139,8 +139,8 @@ button {
     --container-pad: 30px;
     --gap: 30px;
 
-    /* Max widths for readability */
-    --text-max-width: 800px;
+    /* Max widths for readability - increased to minimize line counts */
+    --text-max-width: 1000px;
 
     /* Shadows & Glows */
     --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.5);
@@ -388,6 +388,7 @@ h4,
 .section__title,
 .hero__title {
     text-align: center;
+    text-wrap: balance;
 }
 
 p {
@@ -422,6 +423,7 @@ p {
 .rule-card p,
 .intel-briefing p {
     text-align: inherit;
+    hyphens: none !important;
 }
 
 /* Ensure these are block-centered if their containers are centered */
