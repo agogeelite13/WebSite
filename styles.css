@@ -396,8 +396,8 @@ p {
     font-size: 1.05rem;
     color: #a0a0a0;
     line-height: 1.6;
-    text-align: left;
     margin-bottom: 1.2rem;
+    text-wrap: pretty;
 }
 
 /* Section headers & hero content should have centered text for symmetry */
@@ -414,7 +414,19 @@ p {
     margin-right: auto;
 }
 
-/* Specific body paragraphs that should be block-centered but left-aligned */
+/* Narrative blocks that should be justified for a premium look */
+.about__body,
+.card__body,
+.plan-card p,
+.mission-card p,
+.rule-card p,
+.intel-briefing p {
+    text-align: justify;
+    text-justify: inter-word;
+    hyphens: auto;
+}
+
+/* Ensure these are block-centered if their containers are centered */
 .about__body,
 .plan-card p,
 .card p,
@@ -423,6 +435,13 @@ p {
     max-width: var(--text-max-width);
     margin-left: auto;
     margin-right: auto;
+}
+
+/* If the header is left-aligned, paragraphs should follow left-aligned starting point */
+.about__text,
+.card,
+.plan-card,
+.mission-card {
     text-align: left;
 }
 
