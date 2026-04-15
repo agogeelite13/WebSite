@@ -139,8 +139,8 @@ button {
     --container-pad: 40px;
     --gap: 40px;
 
-    /* Max widths for readability - further expanded to minimize line counts */
-    --text-max-width: 1200px;
+    /* Max widths for readability - near-fluid for widescreen optimization */
+    --text-max-width: 1320px;
 
     /* Shadows & Glows */
     --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.5);
@@ -432,7 +432,7 @@ p {
 .card p,
 .mission-card p,
 .rule-card p {
-    max-width: var(--text-max-width);
+    max-width: 100%; /* Allow filling the column/centered container fully */
 }
 
 /* If the container has specific alignment, children follow */
@@ -1046,7 +1046,7 @@ p {
     background: linear-gradient(135deg, var(--bg-surface) 0%, #171717 100%);
     border: 1px solid var(--border);
     border-radius: 0;
-    padding: 32px 24px;
+    padding: 48px 40px;
     transition: all var(--duration) var(--ease);
     position: relative;
     overflow: hidden;
@@ -1178,10 +1178,10 @@ p {
     background: linear-gradient(180deg, var(--bg-surface) 0%, rgba(13, 13, 13, 1) 100%);
     border: 1px solid var(--border);
     border-radius: 0;
-    padding: 32px 24px;
+    padding: 48px 40px;
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 32px;
     position: relative;
     transition: all var(--duration) var(--ease);
     box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.5);
