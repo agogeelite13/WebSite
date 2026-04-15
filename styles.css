@@ -414,16 +414,14 @@ p {
     margin-right: auto;
 }
 
-/* Narrative blocks that should be justified for a premium look */
+/* Match paragraph alignment to parent/header alignment */
 .about__body,
 .card__body,
 .plan-card p,
 .mission-card p,
 .rule-card p,
 .intel-briefing p {
-    text-align: justify;
-    text-justify: inter-word;
-    hyphens: auto;
+    text-align: inherit;
 }
 
 /* Ensure these are block-centered if their containers are centered */
@@ -433,11 +431,9 @@ p {
 .mission-card p,
 .rule-card p {
     max-width: var(--text-max-width);
-    margin-left: auto;
-    margin-right: auto;
 }
 
-/* If the header is left-aligned, paragraphs should follow left-aligned starting point */
+/* If the container has specific alignment, children follow */
 .about__text,
 .card,
 .plan-card,
@@ -445,11 +441,12 @@ p {
     text-align: left;
 }
 
-/* Standalone content paragraphs should be centered as a block */
+/* For containers that are centered, ensure margins are auto */
 .container > p {
     max-width: var(--text-max-width);
     margin-left: auto;
     margin-right: auto;
+    text-align: center;
 }
 
 /* --- BUTTONS --- */
