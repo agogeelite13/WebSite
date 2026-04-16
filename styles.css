@@ -910,7 +910,7 @@ p {
     font-family: var(--font-body);
     font-size: 1.1rem;
     color: #a0a0a0;
-    max-width: 600px;
+    max-width: 1200px;
     margin: 0 auto 56px;
     opacity: 0;
     animation: heroFadeIn 1s 0.9s var(--ease) forwards;
@@ -989,14 +989,13 @@ p {
     justify-content: center;
 }
 
-.about__intro-text {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
+.about__intro-spanning {
+    grid-column: 1 / -1;
     text-align: center;
+    margin-bottom: 40px;
 }
 
-.about__intro-text .about__body {
+.about__intro-spanning .about__body {
     text-align: center;
     max-width: var(--text-max-width);
     margin-left: auto;
@@ -1008,7 +1007,7 @@ p {
     margin-bottom: 1.5rem;
     font-size: 1rem;
     line-height: 1.8;
-    text-align: inherit;
+    text-align: left;
 }
 
 .about__card {
