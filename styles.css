@@ -423,7 +423,7 @@ p {
 .mission-card p,
 .rule-card p,
 .intel-briefing p {
-    text-align: inherit;
+    text-align: center;
     hyphens: none !important;
 }
 
@@ -4861,4 +4861,28 @@ select.form-input option {
     filter: sepia(1) hue-rotate(10deg) saturate(3) brightness(1.2) contrast(1.2);
 }
 
+/* =============================================
+   MANDATORY TACTICAL CENTERING OVERRIDE
+   ============================================= */
+.about__body,
+.about__intro-spanning .about__body,
+.coming-soon-banner p,
+.hero__tagline,
+.hero__eyebrow {
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    width: 100% !important;
+    display: block !important;
+    max-width: 100% !important;
+}
 
+.hero__actions {
+    justify-content: center !important;
+    width: 100% !important;
+}
+
+.leaderboard-table th, 
+.leaderboard-table td {
+    text-align: center !important;
+}
