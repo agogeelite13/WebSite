@@ -136,7 +136,7 @@ export const api = {
         return dbData;
     },
     async getCommunityPhotos(status = 'approved') {
-        const { data } = await supabase.from('community_photos').select('*, users(callsign)').eq('status', status).order('created_at', { ascending: false });
+        const { data } = await supabase.from('community_photos').select('*').eq('status', status).order('created_at', { ascending: false });
         return data || [];
     },
     async updateCommunityPhotoStatus(id, newStatus) {

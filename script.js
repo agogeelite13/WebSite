@@ -519,7 +519,7 @@ const renderCommunityBoard = async () => {
             <div class="community-card__img-wrap" style="aspect-ratio:1/1; overflow:hidden; position:relative;">
                 <img src="${photo.image_url}" alt="Intel" style="width:100%; height:100%; object-fit:cover; transition:transform 0.5s ease;" loading="lazy">
                 <div class="community-card__overlay" style="position:absolute; bottom:0; left:0; width:100%; padding:15px; background:linear-gradient(transparent, rgba(0,0,0,0.8));">
-                    <span class="community-card__user" style="font-size:0.7rem; color:var(--bronze); font-weight:bold; text-transform:uppercase;">OP: ${photo.users?.callsign || photo.user_id.split('-')[0]}</span>
+                    <span class="community-card__user" style="font-size:0.7rem; color:var(--bronze); font-weight:bold; text-transform:uppercase;">OP: ${photo.users?.callsign || (photo.user_id ? photo.user_id.split('-')[0] : 'ANÓNIMO')}</span>
                 </div>
             </div>
             <div class="community-card__content" style="padding:15px;">

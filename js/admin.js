@@ -272,7 +272,7 @@ export const renderAdminPhotos = async (api) => {
             <img src="${photo.image_url}" alt="Intel"
                  style="width:100%;height:150px;object-fit:cover;border:1px solid var(--border);border-radius:4px;margin-bottom:10px;">
             <div style="font-size:.75rem;color:var(--text-muted);margin-bottom:5px;">
-                <span style="color:var(--bronze-light);">OP:</span> ${photo.users?.callsign || photo.user_id.split('-')[0]}
+                <span style="color:var(--bronze-light);">OP:</span> ${photo.users?.callsign || (photo.user_id ? photo.user_id.split('-')[0] : 'ANÓNIMO')}
             </div>
             <div style="font-size:.8rem;line-height:1.2;margin-bottom:15px;">"${photo.caption || ''}"</div>
             <div style="display:flex;justify-content:space-between;gap:8px;">
