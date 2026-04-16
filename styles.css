@@ -423,7 +423,7 @@ p {
 .mission-card p,
 .rule-card p,
 .intel-briefing p {
-    text-align: center;
+    text-align: left;
     hyphens: none !important;
 }
 
@@ -4864,7 +4864,6 @@ select.form-input option {
 /* =============================================
    MANDATORY TACTICAL CENTERING OVERRIDE
    ============================================= */
-.about__body,
 .about__intro-spanning .about__body,
 .coming-soon-banner p,
 .hero__tagline,
