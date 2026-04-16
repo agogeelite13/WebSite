@@ -408,7 +408,8 @@ p {
 .hero__tagline,
 .faction-ranking__title,
 .faction-stat__label,
-.coming-soon-banner p {
+.coming-soon-banner p,
+.about__intro-text {
     text-align: center !important;
     max-width: var(--text-max-width);
     margin-left: auto;
@@ -451,7 +452,13 @@ p {
     text-align: center;
 }
 
-/* --- BUTTONS --- */
+/* Leaderboard alignment */
+.leaderboard-wrap th {
+    text-align: center;
+}
+.leaderboard-wrap td {
+    padding: 16px;
+}
 .btn {
     display: flex;
     align-items: center;
@@ -1121,6 +1128,10 @@ p {
     border: 1px solid var(--border);
     border-radius: 0;
     overflow: hidden;
+    padding: 32px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
     transition: all var(--duration) var(--ease);
 }
 
