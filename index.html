@@ -39,36 +39,6 @@
     <link rel="stylesheet" href="layout-system.css?v=100">
     <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        /* Emergency Force Horizontal Layout */
-        #contact {
-            min-height: 100vh !important;
-            display: flex !important;
-            flex-direction: column !important;
-            justify-content: center !important;
-            padding: 100px 0 !important;
-        }
-        .contact-grid {
-            display: grid !important;
-            grid-template-columns: 1fr 1fr 1fr !important;
-            gap: 40px !important; /* Reduced gap slightly for better fit */
-            width: 100% !important;
-            align-items: stretch !important;
-        }
-        .contact-grid > * {
-            height: 100% !important;
-            min-width: 0 !important; /* Allow shrinking to fit 3 columns */
-        }
-        .map-wrap {
-            height: 100% !important;
-            min-height: 500px !important;
-        }
-        @media (max-width: 1100px) {
-            .contact-grid {
-                grid-template-columns: 1fr !important;
-            }
-        }
-    </style>
 </head>
 
 <body>
@@ -296,7 +266,7 @@
                         <h2 class="section__title" id="contactHeading">Únete a la operación</h2>
                     </header>
 
-                    <div class="contact-grid reveal">
+                    <div class="contact-grid-tactical reveal">
                         <div class="contact-info">
                             <p>¿Listo para entrar en combate? Escríbenos para reservar tu plaza o consultar cualquier
                                 duda sobre tarifas, alquiler de nave o partidas privadas.</p>
@@ -516,6 +486,40 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script type="module" src="script.js"></script>
+    <style>
+        /* FINAL FORCE - HORIZONTAL CONTACT DASHBOARD */
+        #contact {
+            min-height: 100vh !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            padding: 120px 0 !important;
+            width: 100% !important;
+        }
+        .contact-grid-tactical {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr 1fr !important;
+            gap: 40px !important;
+            width: 100% !important;
+            align-items: stretch !important;
+        }
+        .contact-grid-tactical > * {
+            height: 100% !important;
+            min-width: 0 !important;
+            background: rgba(255, 255, 255, 0.03) !important;
+            padding: 30px !important;
+            border: 1px solid var(--border) !important;
+        }
+        .contact-grid-tactical .map-wrap {
+            padding: 0 !important;
+            min-height: 500px !important;
+        }
+        @media (max-width: 1100px) {
+            .contact-grid-tactical {
+                grid-template-columns: 1fr !important;
+            }
+        }
+    </style>
 </body>
 
 </html>
