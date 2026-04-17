@@ -905,6 +905,8 @@ p {
     margin-bottom: 24px;
     opacity: 0;
     animation: heroFadeIn 1s 0.7s var(--ease) forwards;
+    width: 100%;
+    text-align: center;
 }
 
 .hero__tagline {
@@ -2612,9 +2614,11 @@ select.form-input option {
 .section__subtitle {
     font-size: 1rem;
     color: var(--text-muted);
-    max-width: 560px;
+    max-width: 100%;
+    width: 100%;
     margin: 12px auto 0;
     line-height: 1.7;
+    text-align: center;
 }
 
 /* =============================================
