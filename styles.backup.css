@@ -134,14 +134,14 @@ button {
     --font-display: 'Cinzel', serif;
     --font-body: 'Inter', sans-serif;
 
-    /* Spacing - Standardized Layout */
+    /* Spacing - Expanded for Widescreen */
     --section-py: 80px;
-    --container: 1200px;
+    --container: 1440px;
     --container-pad: 40px;
     --gap: 40px;
 
-    /* Max widths for readability */
-    --text-max-width: 900px;
+    /* Max widths for readability - near-fluid for widescreen optimization */
+    --text-max-width: 1320px;
 
     /* Shadows & Glows */
     --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.5);
@@ -304,6 +304,15 @@ button {
 }
 
 /* --- SECTIONS --- */
+.container {
+    width: 100% !important;
+    max-width: var(--container) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: var(--container-pad) !important;
+    padding-right: var(--container-pad) !important;
+}
+
 .section {
     padding: var(--section-py) 0;
     border-bottom: 1px solid var(--border);
@@ -4857,321 +4866,375 @@ select.form-input option {
 .operator-avatar-frame.frame-mando .operator-avatar {
     filter: sepia(1) hue-rotate(10deg) saturate(3) brightness(1.2) contrast(1.2);
 }
-.operator-id-tag {
- position: absolute;
- bottom: 5px;
- left: 5px;
- font-size: 0.5rem;
- color: var(--bronze);
- font-family: monospace;
- letter-spacing: 1px;
-}
-
-/* Glow Ranges */
-.profile-panel[data-tier="supreme"] {
- border-color: #d4af37;
- box-shadow: 0 0 40px rgba(212, 175, 55, 0.15);
-}
-
-.profile-panel[data-tier="elite"] {
- border-color: var(--bronze);
- box-shadow: 0 0 30px rgba(205, 127, 50, 0.1);
-}
-
-/* Stats Premium */
-.profile-stats-grid {
- display: grid;
- grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
- gap: 15px;
-}
-
-.prof-stat {
- background: rgba(255,255,255,0.03);
- padding: 15px;
- border-left: 3px solid var(--border);
- transition: all 0.3s ease;
-}
-
-.prof-stat:hover {
- background: rgba(205, 127, 50, 0.05);
- border-left-color: var(--bronze);
- transform: translateX(5px);
-}
-
-.prof-stat__label {
- display: block;
- font-size: 0.65rem;
- color: var(--text-muted);
- text-transform: uppercase;
- letter-spacing: 1px;
- margin-bottom: 5px;
-}
-
-.prof-stat__value {
- font-family: var(--font-display);
- font-size: 1rem;
- color: var(--white);
-}
-
-/* Exp Bar Premium */
-.exp-bar {
- height: 6px;
- background: rgba(0,0,0,0.5);
- border-radius: 0;
- border: 1px solid rgba(255,255,255,0.1);
-}
-
-.exp-bar__fill {
- background: linear-gradient(90deg, var(--bronze-dark), var(--bronze)) !important;
- position: relative;
- box-shadow: 0 0 10px var(--bronze);
-}
-
-/* Supreme Mode Extra */
-.admin-mode .profile-panel {
- background: radial-gradient(circle at top right, rgba(212, 175, 55, 0.05), transparent), rgba(10, 10, 10, 0.9) !important;
-}
-
-.admin-mode .profile-callsign {
- color: #d4af37 !important;
- text-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
-}
-
-.supreme-badge {
- background: #d4af37 !important;
- color: #000 !important;
- box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
-}
-
-/* Gamification Medals */
-.medals-grid {
-    display: flex;
-    gap: 15px;
-    margin-top: 15px;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.medal-slot {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: rgba(0, 0, 0, 0.5);
-    border: 2px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    transition: all 0.3s ease;
-}
-
-.medal-slot.unlocked {
-    border-color: var(--bronze);
-    box-shadow: 0 0 10px rgba(205, 127, 50, 0.3);
-}
-
-.medal-slot.unlocked:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 15px var(--bronze);
-    z-index: 2;
-}
-
-.medal-icon {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 50%;
-    transition: all 0.3s ease;
-    padding: 2px;
-}
-
-.medal-icon.locked {
-    filter: grayscale(100%) brightness(50%) opacity(30%);
-}
-
-.medal-icon.unlocked {
-    filter: drop-shadow(0 0 2px var(--bronze));
-    animation: medalGlow 2s infinite alternate;
-}
-
-/* Rank Frames & Avatars */
-.operator-avatar {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    object-fit: cover;
-    display: block;
-    border: 2px solid transparent;
-}
-
-.operator-avatar-frame {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: relative;
-    padding: 5px;
-    border-radius: 55px; /* circular containing frame */
-    transition: all 0.5s ease;
-}
-
-/* Frame specific rank styling */
-.operator-avatar-frame.frame-recluta {
-    border: 2px solid #555;
-    box-shadow: 0 0 5px rgba(85,85,85,0.4);
-    background: radial-gradient(circle, rgba(85,85,85,0.1) 0%, transparent 70%);
-}
-.operator-avatar-frame.frame-operador {
-    border: 2px solid #3498db;
-    box-shadow: 0 0 8px rgba(52,152,219,0.5);
-    background: radial-gradient(circle, rgba(52,152,219,0.1) 0%, transparent 70%);
-}
-.operator-avatar-frame.frame-veterano {
-    border: 2px solid #f1c40f;
-    box-shadow: 0 0 12px rgba(241,196,15,0.5);
-    background: radial-gradient(circle, rgba(241,196,15,0.1) 0%, transparent 70%);
-}
-.operator-avatar-frame.frame-elite {
-    border: 2px solid var(--red-light);
-    box-shadow: 0 0 15px rgba(255, 68, 68, 0.6);
-    background: radial-gradient(circle, rgba(255,68,68,0.15) 0%, transparent 70%);
-}
-.operator-avatar-frame.frame-mando {
-    border: 2px dashed #d4af37;
-    box-shadow: 0 0 20px rgba(212, 175, 55, 0.7);
-    background: radial-gradient(circle, rgba(212,175,55,0.2) 0%, transparent 70%);
-    animation: medalGlow 2s infinite alternate;
-}
-
-/* Fallback Image Adjustments */
-.operator-avatar-frame.frame-veterano .operator-avatar {
-    filter: sepia(0.8) hue-rotate(15deg) saturate(2);
-}
-.operator-avatar-frame.frame-elite .operator-avatar {
-    filter: sepia(1) hue-rotate(-50deg) saturate(4) brightness(0.9);
-}
-.operator-avatar-frame.frame-mando .operator-avatar {
-    filter: sepia(1) hue-rotate(10deg) saturate(3) brightness(1.2) contrast(1.2);
-}
-
 
 /* =============================================
-   AGOGE ELITE CORE LAYOUT & COMPONENTS
-   Clean, Maintainable Architecture
+   MANDATORY TACTICAL CENTERING OVERRIDE
+   ============================================= */
+.about__intro-spanning .about__body,
+.coming-soon-banner p,
+.hero__tagline,
+.hero__eyebrow {
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    width: 100% !important;
+    display: block !important;
+    max-width: 100% !important;
+}
+
+.hero__actions {
+    justify-content: center !important;
+    width: 100% !important;
+}
+
+.leaderboard-table th, 
+.leaderboard-table td {
+    text-align: center !important;
+}
+
+/* =============================================
+   GLOBAL LAYOUT ALIGNMENT SYSTEM
+   Body centered by default.
+   Containers auto-centered.
+   Cards/boxes: container centered, text inside left-aligned.
    ============================================= */
 
-/* 1. LAYOUT CONTAINERS */
+/* ---- 1. PAGE-LEVEL: CENTERED BY DEFAULT ---- */
+
+/* All main sections, hero, counters center their content */
+.section,
+.hero,
+.stats-banner,
+.section--dashboard,
+.section--mid {
+    text-align: center;
+}
+
+/* Section headers, titles, subtitles, labels — always centered */
+.section__header,
+.section__title,
+.section__subtitle,
+.section__label,
+.hero__content,
+.hero__title,
+.hero__subtitle,
+.hero__tagline,
+.hero__eyebrow {
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+/* Standalone paragraphs directly inside .container or .section should be centered */
+.section > .container > p,
+.container > p:not([class]) {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Stat items, counters — centered */
+.stat-item,
+.stat-item__num,
+.stat-item__label,
+.countdown-item {
+    text-align: center;
+}
+
+/* Standalone buttons outside cards should be centered */
+.hero__actions,
+.section__header + .btn,
+.insta-action {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ---- 2. CONTAINERS: AUTO-CENTERED ---- */
 .container {
     width: 100%;
     max-width: var(--container);
     margin: 0 auto;
-    padding: 0 var(--container-pad);
+    padding-left: var(--container-pad);
+    padding-right: var(--container-pad);
     box-sizing: border-box;
 }
 
-/* 2. SECTION TYPOGRAPHY & ALIGNMENT */
-.section__header {
-    text-align: center;
-    margin: 0 auto 50px;
+/* Flex containers for general layout should center children */
+.dashboard__grid,
+.portal-grid,
+.clan-actions {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
     align-items: center;
+}
+
+/* Grid containers center their block */
+.cards-grid,
+.plans-grid,
+.equip-grid,
+.rules-grid,
+.testimonials-grid,
+.supply-grid,
+.gallery-grid,
+.insta-grid {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ---- 3. CARDS & BOXES: LEFT-ALIGNED INTERNALS ---- */
+
+/* Card/box containers: centered on page, full-width within parent, internal left-alignment */
+.card,
+.plan-card,
+.rule-card,
+.equip-card,
+.testimonial-card,
+.supply-card,
+.about__card,
+.cal-info-box,
+.faq-item,
+.intel-briefing,
+.mission-card,
+.admin-panel,
+.profile-panel,
+.contact-form,
+.coming-soon-banner,
+.private-hire,
+.intel-board,
+.community-card,
+.portal-card {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    text-align: left;
+}
+
+/* All text inside cards/boxes: left-aligned, full-width */
+.card h3, .card h4, .card p, .card li, .card span,
+.plan-card h3, .plan-card h4, .plan-card p, .plan-card li,
+.rule-card h3, .rule-card h4, .rule-card p,
+.equip-card h3, .equip-card h4, .equip-card p,
+.about__card h3, .about__card h4, .about__card p,
+.cal-info-box h3, .cal-info-box h4, .cal-info-box p,
+.faq-answer p,
+.intel-briefing p,
+.mission-card p,
+.admin-panel p, .admin-panel h3,
+.profile-panel p,
+.contact-form p, .contact-form label,
+.private-hire p, .private-hire h3,
+.intel-board p,
+.portal-card p, .portal-card h3 {
+    text-align: left;
     width: 100%;
 }
 
-.section__label {
-    display: inline-block;
-    color: var(--red);
-    font-size: 0.85rem;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 12px;
+/* Card titles that should remain left-aligned */
+.card__title,
+.equip-card__title,
+.rule-card__title,
+.about__card-title,
+.private-hire__title,
+.briefing-title {
+    text-align: left;
 }
 
-.section__title {
-    font-family: var(--font-display);
-    font-size: clamp(2rem, 4vw, 3rem);
-    color: var(--white);
-    line-height: 1.1;
-    margin-bottom: 15px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+/* Card body text: left-aligned, fill container */
+.card__body,
+.about__body,
+.plan-card__features,
+.plan-card__features li,
+.rule-card p,
+.equip-card p,
+.testimonial-text,
+.briefing-item,
+.briefing-item p,
+.faq-answer p {
+    text-align: left;
+    width: 100%;
+    max-width: 100%;
 }
 
-.section__subtitle {
-    font-family: var(--font-body);
-    font-size: 1rem;
-    color: var(--text-muted);
-    line-height: 1.6;
-    max-width: 600px;
-    margin: 0 auto;
+/* Form groups inside cards — always left */
+.form-group,
+.form-group label,
+.form-label,
+.radio-group,
+.waiver-wrap {
+    text-align: left;
 }
 
-/* 3. EXTRACTED INLINE STYLES: PORTAL PILLARS */
-.portal-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 30px;
-    margin-top: 40px;
+/* Contact details and info blocks */
+.contact-info,
+.contact-info p,
+.contact-details,
+.contact-details li {
+    text-align: left;
 }
 
-.portal-card {
-    display: block;
-    text-decoration: none;
-    background: var(--bg-surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    text-align: left; /* Ensure text inside cards is readable */
+/* Admin/Profile specific internal text */
+.admin-panel__content,
+.admin-grid,
+.admin-item,
+.admin-item__info,
+.admin-section-title,
+.profile-panel__content,
+.profile-view-grid,
+.profile-stats-grid,
+.prof-stat,
+.prof-stat__label,
+.prof-stat__value,
+.profile-header-info,
+.profile-callsign,
+.profile-real-name {
+    text-align: left;
 }
 
-.portal-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 40px rgba(0,0,0,0.7);
-    border-color: var(--bronze);
+/* ---- 4. EXCEPTIONS: ELEMENTS THAT MUST STAY CENTERED ---- */
+
+/* Plan card name and price stay centered (design choice) */
+.plan-card__name,
+.plan-card__price,
+.plan-card__amount,
+.plan-card__period,
+.plan-card__badge {
+    text-align: center;
 }
 
-.portal-card__img {
-    height: 200px;
-    background-size: cover;
-    background-position: center;
-    border-bottom: 1px solid var(--border);
+/* Supply card info stays centered */
+.supply-card__info,
+.supply-card__title,
+.supply-card__price {
+    text-align: center;
 }
 
-.portal-card__content {
-    padding: 30px;
+/* Testimonial author stays left but the card quote mark should not shift */
+.testimonial-author {
+    text-align: left;
 }
 
-.portal-card__title {
-    color: var(--bronze);
-    font-family: var(--font-display);
-    font-size: 1.4rem;
-    letter-spacing: 2px;
-    margin-bottom: 15px;
-    text-transform: uppercase;
+/* Footer bottom and modal titles stay centered */
+.footer__bottom,
+.footer__bottom p,
+.modal__title,
+.modal__footer,
+.modal__intro {
+    text-align: center;
 }
 
-.portal-card__desc {
-    color: var(--text);
-    font-size: 0.95rem;
-    line-height: 1.6;
-    margin-bottom: 20px;
+/* Calendar specific centered elements */
+.cal-header,
+.cal-cell {
+    text-align: center;
 }
 
-.portal-card__link {
-    color: var(--bronze);
-    font-family: var(--font-display);
-    font-size: 0.85rem;
-    letter-spacing: 2px;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: gap 0.3s ease;
+/* Enrollment status stays centered */
+.enroll-status {
+    text-align: center;
 }
 
-.portal-card:hover .portal-card__link {
-    gap: 12px;
+/* Coming-soon banner internal text stays centered (special case) */
+.coming-soon-banner,
+.coming-soon-banner h3,
+.coming-soon-banner p {
+    text-align: center;
 }
 
+/* ---- 5. RESPONSIVE ADJUSTMENTS ---- */
+@media (max-width: 768px) {
+    /* Cards on mobile still left-align content */
+    .card,
+    .plan-card,
+    .rule-card,
+    .equip-card,
+    .about__card,
+    .testimonial-card,
+    .supply-card,
+    .mission-card,
+    .faq-item,
+    .private-hire,
+    .portal-card {
+        text-align: left;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* Page-level elements remain centered on mobile */
+    .section__header,
+    .section__title,
+    .section__subtitle,
+    .section__label,
+    .hero__content,
+    .hero__title,
+    .hero__subtitle,
+    .hero__tagline,
+    .hero__eyebrow,
+    .stat-item,
+    .footer__bottom,
+    .footer__bottom p {
+        text-align: center;
+    }
+
+    /* Flex containers center on mobile */
+    .hero__actions {
+        justify-content: center;
+    }
+}
+
+/* =============================================
+   NUCLEAR GLOBAL CENTERING OVERRIDE
+   Forces ALL page-level text to span full width
+   so text-align:center works edge-to-edge.
+   This is the LAST rule — maximum specificity.
+   ============================================= */
+
+/* Every page-level element must be full-width for centering to work */
+.hero__eyebrow,
+.hero__title,
+.hero__subtitle,
+.hero__tagline,
+.hero__actions,
+.section__header,
+.section__title,
+.section__subtitle,
+.section__label,
+.about__intro-text,
+.coming-soon-banner h3,
+.coming-soon-banner p,
+.faction-ranking__title,
+.footer__bottom p,
+.equip-note,
+.stat-item,
+.enroll-status {
+    width: 100% !important;
+    max-width: 100% !important;
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+/* Section header flex container: children must stretch full width */
+.section__header {
+    width: 100% !important;
+    max-width: 100% !important;
+    align-items: stretch !important;
+}
+
+/* Force section__header children to take full width */
+.section__header > * {
+    width: 100% !important;
+    max-width: 100% !important;
+    text-align: center !important;
+}
+
+/* Hero content flex: children full-width */
+.hero__content > * {
+    width: 100% !important;
+    max-width: 100% !important;
+    text-align: center !important;
+}

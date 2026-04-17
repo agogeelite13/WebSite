@@ -101,8 +101,8 @@
                         <div id="userMenu" class="user-menu hidden">
                             <span id="userName" class="user-menu__name"></span>
                             <div class="user-menu__actions">
-                                <a href="perfil.html" class="user-menu__btn" style="text-decoration:none;">Mi Perfil</a>
-                                <a href="admin.html" id="navAdminLink" class="nav__link nav__link--auth hidden" style="margin:0; padding:10px;">ADMIN</a>
+                                <a href="perfil.html" class="user-menu__btn" >Mi Perfil</a>
+                                <a href="admin.html" id="navAdminLink" class="nav__link nav__link--auth hidden" >ADMIN</a>
                                 <button id="logoutBtn" class="user-menu__logout">Cerrar Sesión</button>
                             </div>
                         </div>
@@ -224,40 +224,35 @@
                     <header class="section__header reveal">
                         <span class="section__label">Puntos de acceso</span>
                         <h2 class="section__title">Navegación Táctica</h2>
-                        <p class="section__subtitle">Accede a los departamentos especializados de nuestro campo.</p>
-                    </header>
-                    <div class="portal-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:30px; margin-top:40px;">
+                        <p class="section__subtitle">Accede a los departamentos especializados de nuestro c                    <div class="portal-grid">
                         <!-- CARD 1: CENTRO -->
-                        <a href="centro.html" class="portal-card reveal" style="text-decoration:none; display:block; background:var(--bg-card); border:1px solid var(--border); border-radius:12px; overflow:hidden; transition:all 0.4s cubic-bezier(0.4, 0, 0.2, 1); position:relative; box-shadow:0 10px 40px rgba(0,0,0,0.3);">
-                            <div class="portal-card__img" style="height:200px; background:linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.8)), url('https://placehold.co/600x400/222/a88b54?text=CENTRO+DE+OPERACIONES'); background-size:cover; background-position:center;"></div>
-                            <div class="portal-card__content" style="padding:40px; border-top:1px solid var(--border);">
-                                <h3 style="color:var(--bronze); font-family:var(--font-display); letter-spacing:2px; margin-bottom:15px; font-size:1.4rem;">CENTRO</h3>
-                                <p style="color:var(--text-muted); font-size:0.95rem; line-height:1.6; margin-bottom:20px;">Nosotros, Galería, Opiniones y Dudas (FAQ).</p>
-                                <span class="portal-link" style="color:var(--bronze); font-family:var(--font-display); font-size:0.8rem; letter-spacing:2px; display:inline-flex; align-items:center; gap:10px;">ACCEDER AL ÁREA <span style="font-size:1.2rem;">&rarr;</span></span>
+                        <a href="centro.html" class="portal-card reveal">
+                            <div class="portal-card__img" style="background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.8)), url('https://placehold.co/600x400/222/a88b54?text=CENTRO+DE+OPERACIONES');"></div>
+                            <div class="portal-card__content">
+                                <h3 class="portal-card__title">CENTRO</h3>
+                                <p class="portal-card__desc">Nosotros, Galera, Opiniones y Dudas (FAQ).</p>
+                                <span class="portal-card__link">ACCEDER AL REA <span>&rarr;</span></span>
                             </div>
                         </a>
                         <!-- CARD 2: OPERACIONES -->
-                        <a href="operaciones.html" class="portal-card reveal reveal--delay" style="text-decoration:none; display:block; background:var(--bg-card); border:1px solid var(--border); border-radius:12px; overflow:hidden; transition:all 0.4s cubic-bezier(0.4, 0, 0.2, 1); position:relative; box-shadow:0 10px 40px rgba(0,0,0,0.3);">
-                            <div class="portal-card__img" style="height:200px; background:linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.8)), url('https://placehold.co/600x400/222/a88b54?text=DEPARTAMENTO+DE+MISIONES'); background-size:cover; background-position:center;"></div>
-                            <div class="portal-card__content" style="padding:40px; border-top:1px solid var(--border);">
-                                <h3 style="color:var(--bronze); font-family:var(--font-display); letter-spacing:2px; margin-bottom:15px; font-size:1.4rem;">OPERACIONES</h3>
-                                <p style="color:var(--text-muted); font-size:0.95rem; line-height:1.6; margin-bottom:20px;">Misiones (Intel), Partidas, Calendario y Tarifas.</p>
-                                <span class="portal-link" style="color:var(--bronze); font-family:var(--font-display); font-size:0.8rem; letter-spacing:2px; display:inline-flex; align-items:center; gap:10px;">VER DESPLIEGUE <span style="font-size:1.2rem;">&rarr;</span></span>
+                        <a href="operaciones.html" class="portal-card reveal reveal--delay">
+                            <div class="portal-card__img" style="background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.8)), url('https://placehold.co/600x400/222/a88b54?text=DEPARTAMENTO+DE+MISIONES');"></div>
+                            <div class="portal-card__content">
+                                <h3 class="portal-card__title">OPERACIONES</h3>
+                                <p class="portal-card__desc">Misiones (Intel), Partidas, Calendario y Tarifas.</p>
+                                <span class="portal-card__link">VER DESPLIEGUE <span>&rarr;</span></span>
                             </div>
                         </a>
-                        <!-- CARD 3: LOGÍSTICA -->
-                        <a href="logistica.html" class="portal-card reveal reveal--delay-2" style="text-decoration:none; display:block; background:var(--bg-card); border:1px solid var(--border); border-radius:12px; overflow:hidden; transition:all 0.4s cubic-bezier(0.4, 0, 0.2, 1); position:relative; box-shadow:0 10px 40px rgba(0,0,0,0.3);">
-                            <div class="portal-card__img" style="height:200px; background:linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.8)), url('https://placehold.co/600x400/222/a88b54?text=LOGISTICA+Y+SUMINISTROS'); background-size:cover; background-position:center;"></div>
-                            <div class="portal-card__content" style="padding:40px; border-top:1px solid var(--border);">
-                                <h3 style="color:var(--bronze); font-family:var(--font-display); letter-spacing:2px; margin-bottom:15px; font-size:1.4rem;">LOGÍSTICA</h3>
-                                <p style="color:var(--text-muted); font-size:0.95rem; line-height:1.6; margin-bottom:20px;">Alquiler, Normativa, Suministros y Ranking Clanes.</p>
-                                <span class="portal-link" style="color:var(--bronze); font-family:var(--font-display); font-size:0.8rem; letter-spacing:2px; display:inline-flex; align-items:center; gap:10px;">ACCEDER AL ARSENAL <span style="font-size:1.2rem;">&rarr;</span></span>
+                        <!-- CARD 3: LOGSTICA -->
+                        <a href="logistica.html" class="portal-card reveal reveal--delay-2">
+                            <div class="portal-card__img" style="background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.8)), url('https://placehold.co/600x400/222/a88b54?text=LOGISTICA+Y+SUMINISTROS');"></div>
+                            <div class="portal-card__content">
+                                <h3 class="portal-card__title">LOGSTICA</h3>
+                                <p class="portal-card__desc">Alquiler, Normativa, Suministros y Ranking Clanes.</p>
+                                <span class="portal-card__link">ACCEDER AL ARSENAL <span>&rarr;</span></span>
                             </div>
                         </a>
                     </div>
-                </div>
-            </section>
-v>
                 </div>
             </section>
 
