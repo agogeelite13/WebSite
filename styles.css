@@ -126,6 +126,134 @@ button {
     --border: rgba(205, 127, 50, 0.15);
     /* Bronze border */
     --text: #d4d4d4;
+/* =============================================
+   AGOGE ELITE â€” Premium Stylesheet
+   Tactical Minimalist Â· Dark Â· Red Accent
+   ============================================= */
+
+/* Body scroll lock when mobile menu is open */
+body.nav-open {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+}
+
+/* Dark overlay behind mobile menu */
+.nav-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 2500;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.nav-overlay.is-visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Active nav link */
+.nav__link--active {
+    color: var(--white) !important;
+}
+
+.nav__link--active::after {
+    content: '';
+    display: block;
+    width: 4px;
+    height: 4px;
+    background: var(--red);
+    border-radius: 50%;
+    margin: 2px auto 0;
+}
+
+/* Sent button state */
+.btn--sent {
+    background: #2ecc71 !important;
+    box-shadow: none !important;
+}
+
+/* --- IMPORTS & RESET --- */
+*,
+*::before,
+*::after {
+    box-sizing: border-box !important;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+    scroll-padding-top: 100px;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    width: 100% !important;
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    line-height: 1.5 !important;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    text-align: left;
+}
+
+p, span, h1, h2, h3, h4, a, li, .admin-item__info {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+ul {
+    list-style: none;
+}
+
+address {
+    font-style: normal;
+}
+
+button {
+    cursor: pointer;
+    font-family: inherit;
+    border: none;
+    background: none;
+}
+
+/* --- DESIGN TOKENS --- */
+:root {
+    /* Colors - Neo Classical Spartan Palette */
+    --red: #e53935;
+    /* Brighter Tactical Red */
+    --red-light: #ef5350;
+    --red-dim: rgba(229, 57, 53, 0.2);
+    --bronze: #cd7f32;
+    --bronze-light: #e6a57e;
+    --bronze-dark: #8b4513;
+    --bg: #0d0d0d;
+    /* Deep Charcoal */
+    --bg-mid: #141414;
+    --bg-surface: #1e1e1e;
+    --border: rgba(205, 127, 50, 0.15);
+    /* Bronze border */
+    --text: #d4d4d4;
     --text-muted: #888;
     --white: #ffffff;
     --gold: #ffd700;
@@ -134,14 +262,14 @@ button {
     --font-display: 'Cinzel', serif;
     --font-body: 'Inter', sans-serif;
 
-    /* Spacing - Fluid Layout */
-    --section-py: 80px;
-    --container: 100%;
-    --container-pad: 5%;
-    --gap: 40px;
+    /* Spacing - Fluid Widescreen Layout */
+    --section-py: 100px;
+    --container: 1800px;
+    --container-pad: 40px;
+    --gap: 50px;
 
     /* Max widths for readability */
-    --text-max-width: 90%;
+    --text-max-width: 1200px;
 
     /* Shadows & Glows */
     --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.5);
@@ -295,12 +423,13 @@ button {
 }
 
 .container {
-    width: 100%;
+    width: 95%;
     max-width: var(--container);
     margin-left: auto;
     margin-right: auto;
     padding-left: var(--container-pad);
     padding-right: var(--container-pad);
+    position: relative;
 }
 
 /* --- SECTIONS --- */
@@ -313,12 +442,12 @@ button {
 
 .section__header {
     text-align: center;
-    margin: 0 auto 60px;
+    margin: 0 auto 80px;
     width: 100%;
-    max-width: 100%;
+    max-width: var(--text-max-width);
     display: flex;
     flex-direction: column;
-    align-items: stretch;
+    align-items: center;
 }
 
 .section__header::after {
@@ -2094,7 +2223,7 @@ li,
         width: 100%;
     }
 
-    /* --- Dropdown trigger (CENTRO, OPERACIONES, LOGÃSTICA) --- */
+    /* --- Dropdown trigger (CENTRO, OPERACIONES, LOGÃ STICA) --- */
     .dropdown-trigger {
         display: flex;
         width: 100%;
@@ -4849,201 +4978,6 @@ select.form-input option {
 .operator-avatar-frame.frame-mando .operator-avatar {
     filter: sepia(1) hue-rotate(10deg) saturate(3) brightness(1.2) contrast(1.2);
 }
-.operator-id-tag {
- position: absolute;
- bottom: 5px;
- left: 5px;
- font-size: 0.5rem;
- color: var(--bronze);
- font-family: monospace;
- letter-spacing: 1px;
-}
-
-/* Glow Ranges */
-.profile-panel[data-tier="supreme"] {
- border-color: #d4af37;
- box-shadow: 0 0 40px rgba(212, 175, 55, 0.15);
-}
-
-.profile-panel[data-tier="elite"] {
- border-color: var(--bronze);
- box-shadow: 0 0 30px rgba(205, 127, 50, 0.1);
-}
-
-/* Stats Premium */
-.profile-stats-grid {
- display: grid;
- grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
- gap: 15px;
-}
-
-.prof-stat {
- background: rgba(255,255,255,0.03);
- padding: 15px;
- border-left: 3px solid var(--border);
- transition: all 0.3s ease;
-}
-
-.prof-stat:hover {
- background: rgba(205, 127, 50, 0.05);
- border-left-color: var(--bronze);
- transform: translateX(5px);
-}
-
-.prof-stat__label {
- display: block;
- font-size: 0.65rem;
- color: var(--text-muted);
- text-transform: uppercase;
- letter-spacing: 1px;
- margin-bottom: 5px;
-}
-
-.prof-stat__value {
- font-family: var(--font-display);
- font-size: 1rem;
- color: var(--white);
-}
-
-/* Exp Bar Premium */
-.exp-bar {
- height: 6px;
- background: rgba(0,0,0,0.5);
- border-radius: 0;
- border: 1px solid rgba(255,255,255,0.1);
-}
-
-.exp-bar__fill {
- background: linear-gradient(90deg, var(--bronze-dark), var(--bronze)) !important;
- position: relative;
- box-shadow: 0 0 10px var(--bronze);
-}
-
-/* Supreme Mode Extra */
-.admin-mode .profile-panel {
- background: radial-gradient(circle at top right, rgba(212, 175, 55, 0.05), transparent), rgba(10, 10, 10, 0.9) !important;
-}
-
-.admin-mode .profile-callsign {
- color: #d4af37 !important;
- text-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
-}
-
-.supreme-badge {
- background: #d4af37 !important;
- color: #000 !important;
- box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
-}
-
-/* Gamification Medals */
-.medals-grid {
-    display: flex;
-    gap: 15px;
-    margin-top: 15px;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.medal-slot {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: rgba(0, 0, 0, 0.5);
-    border: 2px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    transition: all 0.3s ease;
-}
-
-.medal-slot.unlocked {
-    border-color: var(--bronze);
-    box-shadow: 0 0 10px rgba(205, 127, 50, 0.3);
-}
-
-.medal-slot.unlocked:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 15px var(--bronze);
-    z-index: 2;
-}
-
-.medal-icon {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 50%;
-    transition: all 0.3s ease;
-    padding: 2px;
-}
-
-.medal-icon.locked {
-    filter: grayscale(100%) brightness(50%) opacity(30%);
-}
-
-.medal-icon.unlocked {
-    filter: drop-shadow(0 0 2px var(--bronze));
-    animation: medalGlow 2s infinite alternate;
-}
-
-/* Rank Frames & Avatars */
-.operator-avatar {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    object-fit: cover;
-    display: block;
-    border: 2px solid transparent;
-}
-
-.operator-avatar-frame {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: relative;
-    padding: 5px;
-    border-radius: 55px; /* circular containing frame */
-    transition: all 0.5s ease;
-}
-
-/* Frame specific rank styling */
-.operator-avatar-frame.frame-recluta {
-    border: 2px solid #555;
-    box-shadow: 0 0 5px rgba(85,85,85,0.4);
-    background: radial-gradient(circle, rgba(85,85,85,0.1) 0%, transparent 70%);
-}
-.operator-avatar-frame.frame-operador {
-    border: 2px solid #3498db;
-    box-shadow: 0 0 8px rgba(52,152,219,0.5);
-    background: radial-gradient(circle, rgba(52,152,219,0.1) 0%, transparent 70%);
-}
-.operator-avatar-frame.frame-veterano {
-    border: 2px solid #f1c40f;
-    box-shadow: 0 0 12px rgba(241,196,15,0.5);
-    background: radial-gradient(circle, rgba(241,196,15,0.1) 0%, transparent 70%);
-}
-.operator-avatar-frame.frame-elite {
-    border: 2px solid var(--red-light);
-    box-shadow: 0 0 15px rgba(255, 68, 68, 0.6);
-    background: radial-gradient(circle, rgba(255,68,68,0.15) 0%, transparent 70%);
-}
-.operator-avatar-frame.frame-mando {
-    border: 2px dashed #d4af37;
-    box-shadow: 0 0 20px rgba(212, 175, 55, 0.7);
-    background: radial-gradient(circle, rgba(212,175,55,0.2) 0%, transparent 70%);
-    animation: medalGlow 2s infinite alternate;
-}
-
-/* Fallback Image Adjustments */
-.operator-avatar-frame.frame-veterano .operator-avatar {
-    filter: sepia(0.8) hue-rotate(15deg) saturate(2);
-}
-.operator-avatar-frame.frame-elite .operator-avatar {
-    filter: sepia(1) hue-rotate(-50deg) saturate(4) brightness(0.9);
-}
-.operator-avatar-frame.frame-mando .operator-avatar {
-    filter: sepia(1) hue-rotate(10deg) saturate(3) brightness(1.2) contrast(1.2);
-}
 
 
 /* =============================================
@@ -5053,11 +4987,13 @@ select.form-input option {
 
 /* 1. LAYOUT CONTAINERS */
 .container {
-    width: 100%;
+    width: 95%;
     max-width: var(--container);
-    margin: 0 auto;
-    padding: 0 var(--container-pad);
-    box-sizing: border-box;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--container-pad);
+    padding-right: var(--container-pad);
+    position: relative;
 }
 
 /* 2. SECTION TYPOGRAPHY & ALIGNMENT */
@@ -5168,137 +5104,5 @@ select.form-input option {
 }
 
 
-/* =============================================
-   MANDATORY LAYOUT ALIGNMENTS (USER OVERRIDE)
-   ============================================= */
-
-/* 1. Global Centered Foundation with Wide Reach */
-html, body {
-    text-align: left !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    overflow-x: hidden !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-/* 2. Ultra-Wide Centered Container */
-.container {
-    width: 95% !important;
-    max-width: 1800px !important; 
-    margin-left: auto !important;
-    margin-right: auto !important;
-    padding-left: 20px !important;
-    padding-right: 20px !important;
-    box-sizing: border-box !important;
-}
-
-/* 3. Centered Component Group (Headers & Hero) */
-.hero,
-.hero__content,
-.hero__eyebrow,
-.hero__title,
-.hero__subtitle,
-.hero__tagline,
-.hero__actions,
-.section__header,
-.section__label,
-.section__title,
-.section__subtitle,
-.footer__bottom,
-.top-bar {
-    text-align: center !important;
-    width: 100% !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-    max-width: none !important;
-}
-
-.section__subtitle {
-    max-width: 1200px !important; 
-    margin: 0 auto !important;
-}
-
-/* 4. Massive Grid Expansion */
-.portal-grid,
-.cards-grid,
-.plans-grid,
-.rules-grid,
-.equip-grid,
-.about__grid,
-.dashboard__grid,
-.intel-grid,
-.contact-grid,
-.footer__inner {
-    display: grid !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    justify-content: stretch !important;
-    justify-items: stretch !important;
-    margin: 60px 0 !important;
-    text-align: left !important;
-    gap: 40px !important;
-}
-
-/* 5. Force Cards and Boxes to fill their space */
-.card,
-.plan-card,
-.rule-card,
-.about__card,
-.portal-card,
-.private-hire,
-.mission-card,
-.equip-card,
-.contact-info,
-.contact-form {
-    text-align: left !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    display: block !important;
-    margin: 0 !important;
-}
-
-/* 6. Text Alignment within boxes */
-.card *, 
-.plan-card *, 
-.rule-card *, 
-.about__card *, 
-.portal-card *, 
-.contact-info *, 
-.contact-form *,
-.private-hire *,
-.mission-card *,
-.equip-card * {
-    text-align: left !important;
-}
-
-/* 7. Specific fixes for the contact section to make it WIDE */
-.contact-grid {
-    grid-template-columns: 1fr 1fr !important;
-}
-
-.contact-info p {
-    font-size: 1.2rem !important;
-    line-height: 1.8 !important;
-    width: 100% !important;
-    max-width: 100% !important;
-}
-
-.contact-details li {
-    display: flex !important;
-    justify-content: flex-start !important;
-    width: 100% !important;
-    margin-bottom: 20px !important;
-    font-size: 1.1rem !important;
-}
-
-/* Ensure section headers are properly centered */
-.section__header {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: 100% !important;
-    margin-bottom: 80px !important;
-}
+/* Fin del archivo */
 
