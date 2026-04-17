@@ -139,82 +139,46 @@
     margin: 0 !important;
 }
 
-/* --- CONTACT SECTION: SPLIT-SCREEN DASHBOARD --- */
+/* --- CONTACT DASHBOARD: 3-COLUMN BALANCED --- */
 #contact {
-    min-height: 100vh !important;
-    display: flex !important;
-    flex-direction: row !important;
-    padding: 0 !important;
-    overflow: hidden !important;
-    background: var(--bg) !important;
-}
-
-#contact .container--full {
-    display: flex !important;
-    width: 100% !important;
-    max-width: none !important;
-    padding: 0 !important;
-    height: 100vh !important;
+    min-height: auto !important;
+    display: block !important;
 }
 
 .contact-grid {
-    display: flex !important;
+    display: grid !important;
+    grid-template-columns: 1.2fr 1fr 1.3fr !important; /* Balanced columns */
+    gap: 40px !important;
     width: 100% !important;
+    align-items: stretch !important;
+    margin-top: 40px !important;
+}
+
+.contact-grid > * {
+    background: rgba(255, 255, 255, 0.02) !important;
+    padding: 30px !important;
+    border: 1px solid var(--border) !important;
+}
+
+/* Fix specific items */
+.contact-details li {
+    padding: 15px 0 !important;
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 1px solid rgba(255,255,255,0.05) !important;
+}
+
+.contact-grid .map-wrap {
+    padding: 0 !important;
     height: 100% !important;
-    gap: 0 !important;
-}
-
-/* Left Side: Info & Form */
-.contact-side--info {
-    flex: 1.2 !important;
-    padding: 80px 8% !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important;
-    border-right: 1px solid var(--border);
-    overflow-y: auto;
-}
-
-.contact-side--info .section__header {
-    text-align: left !important;
-    align-items: flex-start !important;
-    margin-bottom: 40px !important;
-}
-
-/* Right Side: Massive Map */
-.contact-side--map {
-    flex: 1.5 !important;
-    position: relative !important;
-    height: 100% !important;
-}
-
-.contact-side--map .map-wrap {
-    height: 100% !important;
-    width: 100% !important;
+    min-height: 400px !important;
     margin: 0 !important;
     border: none !important;
 }
 
-.contact-side--map iframe {
-    width: 100% !important;
-    height: 100% !important;
-    border: none !important;
-}
-
 @media (max-width: 1200px) {
-    #contact {
-        flex-direction: column !important;
-        height: auto !important;
-    }
-    #contact .container--full {
-        flex-direction: column !important;
-        height: auto !important;
-    }
-    .contact-side--info {
-        padding: 60px 5% !important;
-    }
-    .contact-side--map {
-        height: 400px !important;
+    .contact-grid {
+        grid-template-columns: 1fr !important;
     }
 }
 
