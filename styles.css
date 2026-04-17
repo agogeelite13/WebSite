@@ -5222,7 +5222,7 @@ select.form-input option {
 .section__header {
     width: 100% !important;
     max-width: 100% !important;
-    align-items: center !important;
+    align-items: stretch !important;
 }
 
 /* Force section__header children to take full width */
