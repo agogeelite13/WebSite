@@ -75,7 +75,7 @@ body {
     overflow-x: hidden !important;
     width: 100% !important;
     max-width: 100% !important;
-    text-align: center;
+    text-align: left;
 }
 
 p, span, h1, h2, h3, h4, a, li, .admin-item__info {
@@ -427,14 +427,6 @@ p {
 .mission-card p,
 .rule-card p {
     max-width: 100%; /* Allow filling the column/centered container fully */
-}
-
-/* Containers that follow parent alignment */
-.about__text,
-.card,
-.plan-card,
-.mission-card {
-    text-align: inherit;
 }
 
 /* For containers that are centered, ensure margins are auto */
@@ -5173,5 +5165,61 @@ select.form-input option {
 
 .portal-card:hover .portal-card__link {
     gap: 12px;
+}
+
+
+/* =============================================
+   MANDATORY LAYOUT ALIGNMENTS (USER OVERRIDE)
+   ============================================= */
+
+/* Center Alignment for Headers & Hero */
+.hero,
+.hero__content,
+.hero__eyebrow,
+.hero__title,
+.hero__subtitle,
+.hero__tagline,
+.hero__actions,
+.section__header,
+.section__label,
+.section__title,
+.section__subtitle,
+.footer__bottom,
+.top-bar {
+  text-align: center;
+}
+
+/* Left Alignment for Cards & Containers */
+.card,
+.plan-card,
+.rule-card,
+.about__card,
+.portal-card,
+.contact-form,
+.contact-details li,
+.private-hire,
+.mission-card,
+.equip-card {
+  text-align: left;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Full Width and Left Align for Card Texts */
+.card p,
+.card h3,
+.plan-card p,
+.plan-card li,
+.rule-card p,
+.about__card p,
+.portal-card p,
+.contact-form label,
+.contact-details span,
+.contact-details a,
+.private-hire p,
+.mission-card p,
+.equip-card p {
+  width: 100%;
+  text-align: left;
 }
 
