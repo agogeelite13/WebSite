@@ -139,46 +139,49 @@
     margin: 0 !important;
 }
 
-/* --- CONTACT DASHBOARD: 3-COLUMN BALANCED --- */
+/* --- CONTACT DASHBOARD: 3-COLUMN HORIZONTAL BALANCED --- */
 #contact {
-    min-height: auto !important;
-    display: block !important;
+    min-height: 80vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    padding: 120px 0 !important;
 }
 
 .contact-grid {
     display: grid !important;
-    grid-template-columns: 1.2fr 1fr 1.3fr !important; /* Balanced columns */
-    gap: 40px !important;
+    grid-template-columns: repeat(3, 1fr) !important; /* Strict 3-column horizontal */
+    gap: 60px !important;
     width: 100% !important;
     align-items: stretch !important;
-    margin-top: 40px !important;
+    margin-top: 50px !important;
 }
 
 .contact-grid > * {
-    background: rgba(255, 255, 255, 0.02) !important;
-    padding: 30px !important;
+    background: rgba(255, 255, 255, 0.03) !important;
+    padding: 40px !important;
     border: 1px solid var(--border) !important;
+    display: flex !important;
+    flex-direction: column !important;
 }
 
-/* Fix specific items */
-.contact-details li {
-    padding: 15px 0 !important;
-    background: transparent !important;
-    border: none !important;
-    border-bottom: 1px solid rgba(255,255,255,0.05) !important;
-}
-
+/* Map specific to fill its column */
 .contact-grid .map-wrap {
     padding: 0 !important;
     height: 100% !important;
-    min-height: 400px !important;
-    margin: 0 !important;
+    min-height: 450px !important;
+    border: none !important;
+}
+
+.contact-grid .map-wrap iframe {
+    flex: 1 !important;
+    height: 100% !important;
     border: none !important;
 }
 
 @media (max-width: 1200px) {
     .contact-grid {
-        grid-template-columns: 1fr !important;
+        grid-template-columns: 1fr !important; /* Stack only on tablet/mobile */
     }
 }
 
