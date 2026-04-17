@@ -1,0 +1,118 @@
+/* =============================================
+   AGOGE ELITE — Premium Stylesheet
+   Tactical Minimalist · Dark · Red Accent
+   ============================================= */
+
+/* Body scroll lock when mobile menu is open */
+body.nav-open {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+}
+
+/* Dark overlay behind mobile menu */
+.nav-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 2500;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.nav-overlay.is-visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Active nav link */
+.nav__link--active {
+    color: var(--white) !important;
+}
+
+.nav__link--active::after {
+    content: '';
+    display: block;
+    width: 4px;
+    height: 4px;
+    background: var(--red);
+    border-radius: 50%;
+    margin: 2px auto 0;
+}
+
+/* Sent button state */
+.btn--sent {
+    background: #2ecc71 !important;
+    box-shadow: none !important;
+}
+
+/* --- IMPORTS & RESET --- */
+*,
+*::before,
+*::after {
+    box-sizing: border-box !important;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+    scroll-padding-top: 100px;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    width: 100% !important;
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    line-height: 1.5 !important;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    text-align: left;
+}
+
+p, span, h1, h2, h3, h4, a, li, .admin-item__info {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+ul {
+    list-style: none;
+}
+
+address {
+    font-style: normal;
+}
+
+button {
+    cursor: pointer;
+    font-family: inherit;
+    border: none;
+    background: none;
+}
+
+/* --- DESIGN TOKENS --- */
+:root {
+    /* Colors - Neo Classical Spartan Palette */
+    --red: #e53935;
+    /* Brighter Tactical Red */
+    --red-light: #ef5350;
+    --red-dim: rgba(229, 57, 53, 0.2);
