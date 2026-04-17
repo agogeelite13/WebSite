@@ -140,41 +140,41 @@
 }
 
 /* --- CONTACT GRID MASSIVE EXPANSION --- */
-#contact {
-    min-height: 100vh !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important;
-}
-
 #contact .container--full {
     width: 100% !important;
-    max-width: 100% !important; /* Truly 100% */
-    padding: 0 4% !important;
+    max-width: none !important;
+    padding: 0 !important;
+}
+
+#contact .section__header {
+    text-align: left !important;
+    align-items: flex-start !important;
+    max-width: 92% !important;
+    margin-left: 4% !important;
 }
 
 .contact-grid {
     display: grid !important;
-    grid-template-columns: 1fr 1.2fr 1.5fr !important; /* Wide proportions */
-    gap: 80px !important;
+    grid-template-columns: 1.2fr 1fr 1.5fr !important; /* Balanced for widescreen */
+    gap: 0 !important; /* Remove gap to handle with padding */
     width: 100% !important;
     align-items: stretch !important;
 }
 
 .contact-grid > * {
-    width: 100% !important;
-    max-width: none !important;
+    padding: 60px 4% !important; /* Internal padding for spacing */
+    border-right: 1px solid var(--border);
 }
 
-/* Make labels much larger and wider */
+.contact-grid > *:last-child {
+    border-right: none;
+}
+
+/* Specific item adjustments */
 .contact-details li {
-    padding: 30px !important;
+    padding: 24px !important;
     width: 100% !important;
     background: rgba(255, 255, 255, 0.04) !important;
-}
-
-.contact-details li a {
-    font-size: 1.2rem !important;
 }
 
 /* Map inside grid massive */
@@ -182,18 +182,21 @@
     margin-top: 0 !important;
     height: 100% !important;
     min-height: 500px !important;
-    display: flex !important;
-    flex-direction: column !important;
+    border: none !important;
 }
 
 .contact-grid .map-wrap iframe {
     flex: 1 !important;
+    height: 100% !important;
 }
 
 @media (max-width: 1200px) {
     .contact-grid {
         grid-template-columns: 1fr !important;
-        gap: 60px !important;
+    }
+    .contact-grid > * {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
     }
 }
 
