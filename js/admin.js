@@ -256,33 +256,44 @@ export const renderAdminPhotos = async (api) => {
 
     photoList.innerHTML = '<div style="text-align:center;font-size:.8rem;color:var(--text-muted);padding:10px;">Cargando inteligencia...</div>';
 
-    const photos = await api.getCommunityPhotos('pending');
+    // Fetch both pending and approved to allow deleting from mural
+    const pending = await api.getCommunityPhotos('pending');
+    const approved = await api.getCommunityPhotos('approved');
+    const photos = [...pending, ...approved].sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
 
     if (photos.length === 0) {
-        photoList.innerHTML = '<div style="text-align:center;font-size:.8rem;color:var(--text-muted);padding:20px;">No hay archivos visuales pendientes de revisiÃ³n.</div>';
+        photoList.innerHTML = '<div style="text-align:center;font-size:.8rem;color:var(--text-muted);padding:20px;">No hay archivos visuales registrados.</div>';
         return;
     }
 
     photoList.innerHTML = '';
     photos.forEach(photo => {
+        const isApproved = photo.status === 'approved';
         const div = document.createElement('div');
         div.className = 'admin-item';
-        div.style.cssText = 'flex-direction:column;align-items:stretch;padding:10px;background:rgba(0,0,0,.5);margin-bottom:10px;border-left:3px solid var(--bronze);';
+        div.style.cssText = `flex-direction:column;align-items:stretch;padding:10px;background:rgba(0,0,0,.5);margin-bottom:15px;border-left:3px solid ${isApproved ? '#2ecc71' : 'var(--bronze)'};`;
         div.innerHTML = `
-            <img src="${photo.image_url}" alt="Intel"
-                 style="width:100%;height:150px;object-fit:cover;border:1px solid var(--border);border-radius:4px;margin-bottom:10px;">
+            <div style="position:relative;">
+                <img src="${photo.image_url}" alt="Intel"
+                     style="width:100%;height:150px;object-fit:cover;border:1px solid var(--border);border-radius:4px;margin-bottom:10px;">
+                <span style="position:absolute;top:5px;right:5px;background:${isApproved ? '#2ecc71' : 'var(--bronze)'};color:black;font-size:0.6rem;padding:2px 6px;border-radius:2px;font-weight:bold;">
+                    ${isApproved ? 'EN MURAL' : 'PENDIENTE'}
+                </span>
+            </div>
             <div style="font-size:.75rem;color:var(--text-muted);margin-bottom:5px;">
                 <span style="color:var(--bronze-light);">OP:</span> ${photo.users?.callsign || (photo.user_id ? photo.user_id.split('-')[0] : 'ANÓNIMO')}
             </div>
             <div style="font-size:.8rem;line-height:1.2;margin-bottom:15px;">"${photo.caption || ''}"</div>
             <div style="display:flex;flex-direction:column;gap:8px;">
                 <div style="display:flex;gap:8px;">
+                    ${!isApproved ? `
                     <button class="btn btn--xs photo-reject-btn"
                         data-id="${photo.id}"
                         style="background:var(--blood);color:var(--white);flex:1;">DENEGAR</button>
                     <button class="btn btn--outline btn--xs photo-approve-btn"
                         data-id="${photo.id}"
                         style="border-color:#2ecc71;color:#2ecc71;flex:1;">APROBAR</button>
+                    ` : '<span style="color:#2ecc71;font-size:0.7rem;text-align:center;width:100%;">Esta foto ya es pública en el mural.</span>'}
                 </div>
                 <button class="btn btn--xs photo-delete-btn"
                     data-id="${photo.id}"

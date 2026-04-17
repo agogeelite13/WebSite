@@ -58,6 +58,13 @@
     position: relative !important;
 }
 
+.container--full {
+    width: 100% !important;
+    max-width: none !important;
+    padding-left: 2% !important;
+    padding-right: 2% !important;
+}
+
 /* --- SECTIONS --- */
 .section {
     padding: var(--section-py) 0 !important;
