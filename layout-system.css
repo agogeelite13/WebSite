@@ -151,7 +151,7 @@
 .contact-grid {
     display: grid !important;
     grid-template-columns: repeat(3, 1fr) !important; /* Strict 3-column horizontal */
-    gap: 60px !important;
+    gap: 40px !important;
     width: 100% !important;
     align-items: stretch !important;
     margin-top: 50px !important;
@@ -159,10 +159,11 @@
 
 .contact-grid > * {
     background: rgba(255, 255, 255, 0.03) !important;
-    padding: 40px !important;
+    padding: 30px !important;
     border: 1px solid var(--border) !important;
     display: flex !important;
     flex-direction: column !important;
+    min-width: 0 !important; /* Force fit */
 }
 
 /* Map specific to fill its column */

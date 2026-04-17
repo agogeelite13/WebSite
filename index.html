@@ -35,8 +35,8 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Oswald:wght@400;600;700&family=Inter:wght@300;400;500&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=89">
-    <link rel="stylesheet" href="layout-system.css?v=89">
+    <link rel="stylesheet" href="styles.css?v=100">
+    <link rel="stylesheet" href="layout-system.css?v=100">
     <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -51,12 +51,13 @@
         .contact-grid {
             display: grid !important;
             grid-template-columns: 1fr 1fr 1fr !important;
-            gap: 60px !important;
+            gap: 40px !important; /* Reduced gap slightly for better fit */
             width: 100% !important;
             align-items: stretch !important;
         }
         .contact-grid > * {
             height: 100% !important;
+            min-width: 0 !important; /* Allow shrinking to fit 3 columns */
         }
         .map-wrap {
             height: 100% !important;
