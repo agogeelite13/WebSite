@@ -142,10 +142,23 @@
 /* --- CONTACT GRID EXPANSION --- */
 .contact-grid {
     display: grid !important;
-    grid-template-columns: 1fr 1.2fr !important; /* Slightly larger form column */
-    gap: 100px !important;
+    grid-template-columns: 1fr 1fr 1fr !important; /* Triple column: Info | Form | Map */
+    gap: 60px !important;
     width: 100% !important;
-    align-items: start !important;
+    align-items: stretch !important;
+}
+
+/* Ensure map inside grid takes full height */
+.contact-grid .map-wrap {
+    margin-top: 0 !important;
+    height: 100% !important;
+    min-height: 450px !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.contact-grid .map-wrap iframe {
+    flex: 1 !important;
 }
 
 @media (max-width: 1200px) {
