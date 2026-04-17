@@ -25,12 +25,12 @@
 
     /* Spacing - Fluid Widescreen Layout */
     --section-py: 120px;
-    --container: 1800px;
-    --container-pad: 5%;
+    --container: 100%; /* Massive expansion */
+    --container-pad: 3%;
     --gap: 60px;
 
     /* Max widths for readability */
-    --text-max-width: 1200px;
+    --text-max-width: 1600px; /* Relaxed for widescreen */
 
     /* Grid System - "BIG BOXES" CONFIGURATION */
     --grid-min-item-width: 500px; /* Force larger boxes on desktop */
