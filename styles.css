@@ -5172,7 +5172,7 @@ select.form-input option {
    MANDATORY LAYOUT ALIGNMENTS (USER OVERRIDE)
    ============================================= */
 
-/* 1. Global Reset & Full Width Foundation */
+/* 1. Global Centered Foundation with Wide Reach */
 html, body {
     text-align: left !important;
     width: 100% !important;
@@ -5182,17 +5182,18 @@ html, body {
     padding: 0 !important;
 }
 
-/* 2. Nuclear Fluid Container (NO MAX WIDTH) */
+/* 2. Ultra-Wide Centered Container */
 .container {
-    width: 100% !important;
-    max-width: none !important; 
-    margin: 0 !important;
-    padding-left: 5% !important;
-    padding-right: 5% !important;
+    width: 95% !important;
+    max-width: 1800px !important; 
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
     box-sizing: border-box !important;
 }
 
-/* 3. Centered Components (Headers & Hero ONLY) */
+/* 3. Centered Component Group (Headers & Hero) */
 .hero,
 .hero__content,
 .hero__eyebrow,
@@ -5214,11 +5215,11 @@ html, body {
 }
 
 .section__subtitle {
-    max-width: 1200px !important; /* Slightly restricted for readability but centered */
+    max-width: 1200px !important; 
     margin: 0 auto !important;
 }
 
-/* 4. Full Width Grid Expansion (EVERY GRID) */
+/* 4. Massive Grid Expansion */
 .portal-grid,
 .cards-grid,
 .plans-grid,
@@ -5239,7 +5240,7 @@ html, body {
     gap: 40px !important;
 }
 
-/* 5. Card & Box Integrity (Force Left & Full Width) */
+/* 5. Force Cards and Boxes to fill their space */
 .card,
 .plan-card,
 .rule-card,
@@ -5257,7 +5258,7 @@ html, body {
     margin: 0 !important;
 }
 
-/* 6. Deep Internal Alignment Force */
+/* 6. Text Alignment within boxes */
 .card *, 
 .plan-card *, 
 .rule-card *, 
@@ -5269,30 +5270,35 @@ html, body {
 .mission-card *,
 .equip-card * {
     text-align: left !important;
-    max-width: 100% !important;
 }
 
-/* 7. Specific fixes for the contact section seen in screenshot */
+/* 7. Specific fixes for the contact section to make it WIDE */
+.contact-grid {
+    grid-template-columns: 1fr 1fr !important;
+}
+
 .contact-info p {
     font-size: 1.2rem !important;
-    line-height: 1.6 !important;
+    line-height: 1.8 !important;
     width: 100% !important;
+    max-width: 100% !important;
 }
 
 .contact-details li {
     display: flex !important;
     justify-content: flex-start !important;
     width: 100% !important;
-    margin-bottom: 15px !important;
+    margin-bottom: 20px !important;
+    font-size: 1.1rem !important;
 }
 
-/* Ensure section headers maintain structure */
+/* Ensure section headers are properly centered */
 .section__header {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
     width: 100% !important;
-    margin-bottom: 60px !important;
+    margin-bottom: 80px !important;
 }
 
