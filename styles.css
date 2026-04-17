@@ -134,14 +134,14 @@ button {
     --font-display: 'Cinzel', serif;
     --font-body: 'Inter', sans-serif;
 
-    /* Spacing - Standardized Layout */
+    /* Spacing - Fluid Layout */
     --section-py: 80px;
-    --container: 1200px;
-    --container-pad: 40px;
+    --container: 100%;
+    --container-pad: 5%;
     --gap: 40px;
 
     /* Max widths for readability */
-    --text-max-width: 900px;
+    --text-max-width: 90%;
 
     /* Shadows & Glows */
     --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.5);
@@ -5172,7 +5172,27 @@ select.form-input option {
    MANDATORY LAYOUT ALIGNMENTS (USER OVERRIDE)
    ============================================= */
 
-/* Center Alignment for Headers & Hero */
+/* 1. Global Reset & Full Width Foundation */
+html, body {
+    text-align: left !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* 2. Nuclear Fluid Container (NO MAX WIDTH) */
+.container {
+    width: 100% !important;
+    max-width: none !important; 
+    margin: 0 !important;
+    padding-left: 5% !important;
+    padding-right: 5% !important;
+    box-sizing: border-box !important;
+}
+
+/* 3. Centered Components (Headers & Hero ONLY) */
 .hero,
 .hero__content,
 .hero__eyebrow,
@@ -5186,40 +5206,93 @@ select.form-input option {
 .section__subtitle,
 .footer__bottom,
 .top-bar {
-  text-align: center;
+    text-align: center !important;
+    width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-width: none !important;
 }
 
-/* Left Alignment for Cards & Containers */
+.section__subtitle {
+    max-width: 1200px !important; /* Slightly restricted for readability but centered */
+    margin: 0 auto !important;
+}
+
+/* 4. Full Width Grid Expansion (EVERY GRID) */
+.portal-grid,
+.cards-grid,
+.plans-grid,
+.rules-grid,
+.equip-grid,
+.about__grid,
+.dashboard__grid,
+.intel-grid,
+.contact-grid,
+.footer__inner {
+    display: grid !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    justify-content: stretch !important;
+    justify-items: stretch !important;
+    margin: 60px 0 !important;
+    text-align: left !important;
+    gap: 40px !important;
+}
+
+/* 5. Card & Box Integrity (Force Left & Full Width) */
 .card,
 .plan-card,
 .rule-card,
 .about__card,
 .portal-card,
-.contact-form,
-.contact-details li,
 .private-hire,
 .mission-card,
-.equip-card {
-  text-align: left;
-  width: 100%;
-  max-width: 100%;
+.equip-card,
+.contact-info,
+.contact-form {
+    text-align: left !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    display: block !important;
+    margin: 0 !important;
 }
 
-/* Full Width and Left Align for Card Texts */
-.card p,
-.card h3,
-.plan-card p,
-.plan-card li,
-.rule-card p,
-.about__card p,
-.portal-card p,
-.contact-form label,
-.contact-details span,
-.contact-details a,
-.private-hire p,
-.mission-card p,
-.equip-card p {
-  width: 100%;
-  text-align: left;
+/* 6. Deep Internal Alignment Force */
+.card *, 
+.plan-card *, 
+.rule-card *, 
+.about__card *, 
+.portal-card *, 
+.contact-info *, 
+.contact-form *,
+.private-hire *,
+.mission-card *,
+.equip-card * {
+    text-align: left !important;
+    max-width: 100% !important;
+}
+
+/* 7. Specific fixes for the contact section seen in screenshot */
+.contact-info p {
+    font-size: 1.2rem !important;
+    line-height: 1.6 !important;
+    width: 100% !important;
+}
+
+.contact-details li {
+    display: flex !important;
+    justify-content: flex-start !important;
+    width: 100% !important;
+    margin-bottom: 15px !important;
+}
+
+/* Ensure section headers maintain structure */
+.section__header {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    margin-bottom: 60px !important;
 }
 
