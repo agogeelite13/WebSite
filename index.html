@@ -260,30 +260,27 @@
             </section>
 
             <section id="contact" class="section section--dark" aria-labelledby="contactHeading">
-                <div class="container--full">
-                    <header class="section__header reveal">
-                        <span class="section__label">Contacto</span>
-                        <h2 class="section__title" id="contactHeading">Únete a la operación</h2>
-                    </header>
-                    <div class="contact-grid reveal">
-                        <div class="contact-info">
-                            <p>¿Listo para entrar en combate? Escríbenos para reservar tu plaza o consultar cualquier
-                                duda
-                                sobre tarifas, alquiler de nave o partidas privadas.</p>
-                            <ul class="contact-details" aria-label="Datos de contacto">
-                                <li><span class="contact-label">Email</span><a
-                                        href="mailto:agogeelite13@gmail.com">agogeelite13@gmail.com</a></li>
-                                <li><span class="contact-label">WhatsApp</span><a href="https://wa.me/34691868419"
-                                        target="_blank" rel="noopener">+34 691 868 419</a></li>
-                                <li><span class="contact-label">Instagram</span><a
-                                        href="https://www.instagram.com/agoge.elite" target="_blank"
-                                        rel="noopener">@agoge.elite</a></li>
-                                <li><span class="contact-label">Ubicación</span><a
-                                        href="https://maps.app.goo.gl/qJNjiiSeFnfwz217A" target="_blank"
-                                        rel="noopener">Cam.
-                                        de Palomares, 300 — Valladolid</a></li>
-                            </ul>
-                        </div>
+                <div class="contact-grid reveal">
+                    <div class="contact-side--info">
+                        <header class="section__header">
+                            <span class="section__label">Contacto</span>
+                            <h2 class="section__title" id="contactHeading">Únete a la operación</h2>
+                        </header>
+
+                        <p>¿Listo para entrar en combate? Escríbenos para reservar tu plaza o consultar cualquier
+                            duda
+                            sobre tarifas, alquiler de nave o partidas privadas.</p>
+                        
+                        <ul class="contact-details" aria-label="Datos de contacto" style="margin-bottom:40px;">
+                            <li><span class="contact-label">Email</span><a
+                                    href="mailto:agogeelite13@gmail.com">agogeelite13@gmail.com</a></li>
+                            <li><span class="contact-label">WhatsApp</span><a href="https://wa.me/34691868419"
+                                    target="_blank" rel="noopener">+34 691 868 419</a></li>
+                            <li><span class="contact-label">Instagram</span><a
+                                    href="https://www.instagram.com/agoge.elite" target="_blank"
+                                    rel="noopener">@agoge.elite</a></li>
+                        </ul>
+
                         <form class="contact-form" aria-label="Formulario de contacto" novalidate>
                             <div class="form-group">
                                 <label for="tipoMision" class="form-label">Tipo de Misión</label>
@@ -311,16 +308,18 @@
                             </div>
                             <button type="submit" class="btn btn--primary btn--full">Enviar mensaje</button>
                         </form>
+                    </div>
 
-                        <!-- Google Maps now INSIDE the grid -->
-                        <div class="map-wrap reveal">
+                    <!-- Right Side: Massive Map -->
+                    <div class="contact-side--map">
+                        <div class="map-wrap">
                             <iframe
                                 src="https://www.google.com/maps?q=Camino+de+Palomares,+300,+47011+Valladolid&output=embed"
-                                width="100%" height="350" style="border:0;" allowfullscreen="" loading="lazy"
+                                width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
                                 referrerpolicy="no-referrer-when-downgrade" title="Ubicación Agoge Elite en Google Maps"
                                 aria-label="Mapa de Google mostrando la ubicación"></iframe>
                             <a href="https://maps.app.goo.gl/qJNjiiSeFnfwz217A" class="map-link btn btn--secondary"
-                                target="_blank" rel="noopener">Abrir en Google Maps</a>
+                                target="_blank" rel="noopener" style="position:absolute; bottom:20px; left:20px;">Abrir en Google Maps</a>
                         </div>
                     </div>
                 </div>
