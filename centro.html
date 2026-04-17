@@ -36,10 +36,10 @@
                             CENTRO <span class="dropdown-arrow"></span>
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a href="centro.html" class="nav__link nav__link--active">Nosotros</a></li>
-                            <li><a href="centro.html#gallery" class="nav__link">Galería</a></li>
-                            <li><a href="centro.html#testimonios" class="nav__link">Opiniones</a></li>
-                            <li><a href="centro.html#faq" class="nav__link">Dudas (FAQ)</a></li>
+                            <li><a href="#about" class="nav__link">Nosotros</a></li>
+                            <li><a href="#gallery" class="nav__link">Galería</a></li>
+                            <li><a href="#testimonios" class="nav__link">Opiniones</a></li>
+                            <li><a href="#faq" class="nav__link">Dudas (FAQ)</a></li>
                         </ul>
                     </li>
                     <li class="nav__item nav__dropdown">
@@ -47,7 +47,7 @@
                             OPERACIONES <span class="dropdown-arrow"></span>
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a href="misiones.html" class="nav__link">Misiones (Intel)</a></li>
+                            <li><a href="operaciones.html#intel" class="nav__link">Misiones (Intel)</a></li>
                             <li><a href="operaciones.html#games" class="nav__link">Partidas</a></li>
                             <li><a href="operaciones.html#calendario" class="nav__link">Calendario</a></li>
                             <li><a href="operaciones.html#tarifas" class="nav__link">Tarifas</a></li>
@@ -64,8 +64,9 @@
                             <li><a href="logistica.html#leaderboard" class="nav__link">Ranking Clanes</a></li>
                         </ul>
                     </li>
+                    <li><a href="index.html#contact" class="nav__link nav__link--cta">Contacto</a></li>
                     <li class="nav__auth-wrap">
-                        <button id="authTrigger" class="nav__link nav__link--auth">Acceso</button>
+                        <button id="authTrigger" class="nav__link nav__link--auth">Acceso Operador</button>
                         <div id="userMenu" class="user-menu hidden">
                             <span id="userName" class="user-menu__name"></span>
                             <div class="user-menu__actions">
@@ -93,7 +94,7 @@
                 <div class="about__grid">
                     <div class="about__text reveal about__intro-spanning">
                         <span class="section__label">Quiénes somos</span>
-                        <h2 class="section__title">Un campo construido sobre disciplina</h2>
+                        <h2 class="section__title">Nosotros</h2>
                         <p class="about__body">Agoge Elite es un campo de airsoft CQB indoor ubicado en Valladolid. Operamos en una nave adaptada para combate en espacios cerrados, con un enfoque prioritario en la seguridad, la disciplina y el realismo táctico.</p>
                         <p class="about__body">Somos una asociación orientada a ofrecer partidas organizadas, dinámicas y profesionales tanto para jugadores habituales como para nuevos reclutas.</p>
                     </div>
@@ -116,7 +117,7 @@
             <div class="container">
                 <header class="section__header reveal">
                     <span class="section__label">El campo</span>
-                    <h2 class="section__title">Galería Operacional</h2>
+                    <h2 class="section__title">Galería</h2>
                 </header>
                 <div class="gallery-grid">
                     <figure class="gallery-item reveal"><img src="https://placehold.co/800x600/111/333?text=CQB+HALL" alt="Interior" loading="lazy"></figure>
@@ -124,15 +125,26 @@
                     <figure class="gallery-item reveal"><img src="https://placehold.co/800x600/111/222?text=TACTICAL+ZONE" alt="Tactical" loading="lazy"></figure>
                     <figure class="gallery-item reveal reveal--delay"><img src="https://placehold.co/800x600/111/555?text=KILL+HOUSE" alt="Killhouse" loading="lazy"></figure>
                 </div>
+
+                <!-- SUB-SECTION: COMMUNITY FEED -->
+                <div id="communityBoard" class="community-gallery-wrap u-margin-t-lg">
+                    <h3 class="intel-section-title u-text-center" style="margin-bottom:30px; font-family:var(--font-display); color:var(--bronze); letter-spacing:2px;">GALERÍA DE LA COMUNIDAD</h3>
+                    <div id="approvedPhotosGrid" class="community-grid reveal">
+                        <!-- Photos injected via JS -->
+                        <div class="loading-msg" style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--bronze);">
+                            <div class="scan-spinner" style="margin: 0 auto 15px;"></div>
+                            <p>ACCEDIENDO A ARCHIVOS CLASIFICADOS...</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <!-- TESTIMONIALS -->
         <section id="testimonios" class="section section--dark">
             <div class="container">
                 <header class="section__header reveal">
                     <span class="section__label">Operadores</span>
-                    <h2 class="section__title">Opiniones del Frente</h2>
+                    <h2 class="section__title">Opiniones</h2>
                 </header>
                 <div class="testimonials-grid reveal">
                     <article class="testimonial-card">
@@ -156,7 +168,7 @@
             <div class="container">
                 <header class="section__header reveal">
                     <span class="section__label">Información</span>
-                    <h2 class="section__title">Dudas Frecuentes</h2>
+                    <h2 class="section__title">Dudas (FAQ)</h2>
                 </header>
                 <div class="faq-accordion reveal">
                     <details class="faq-item"><summary class="faq-question">¿Cuál es la edad mínima?</summary><div class="faq-answer">La edad mínima para operar es de 16 años con autorización paterna.</div></details>
@@ -165,30 +177,37 @@
                 </div>
             </div>
         </section>
-
-        <!-- COMMUNITY BOARD (NEW PHASE 43) -->
-        <section id="communityBoard" class="section section--dark">
-            <div class="container">
-                <header class="section__header reveal">
-                    <span class="section__label">Comunidad</span>
-                    <h2 class="section__title">Tablón de Operadores</h2>
-                    <p class="section__subtitle" style="color:var(--text-muted); font-size:1.1rem; max-width:600px; margin:10px auto;">Inteligencia visual recopilada directamente desde el frente por nuestros operadores.</p>
-                </header>
-                
-                <div id="approvedPhotosGrid" class="community-grid reveal reveal--delay">
-                    <!-- Photos injected via JS -->
-                    <div class="loading-msg" style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--bronze);">
-                        <div class="scan-spinner" style="margin: 0 auto 15px;"></div>
-                        <p>ACCEDIENDO A ARCHIVOS CLASIFICADOS...</p>
-                    </div>
-                </div>
-            </div>
-        </section>
     </main>
 
-    <footer class="site-footer">
+    <footer class="site-footer" role="contentinfo">
         <div class="container footer__inner">
-            <p>&copy; 2024 AGOGE ELITE. Sistema de Gestión Táctica v4.1.0</p>
+            <div class="footer__brand">
+                <a href="index.html#hero" aria-label="Inicio Agoge Elite"><img src="logo.jpg" alt="Logo Agoge Elite" width="48" height="48"></a>
+                <p class="footer__tagline">EL PRECIO DE LA VICTORIA ES LA DISCIPLINA.</p>
+            </div>
+            <nav class="footer__nav" aria-label="Navegación pie de página">
+                <ul role="list">
+                    <li><a href="#about">Nosotros</a></li>
+                    <li><a href="operaciones.html#games">Partidas</a></li>
+                    <li><a href="operaciones.html#tarifas">Tarifas</a></li>
+                    <li><a href="logistica.html#rules">Normativa</a></li>
+                    <li><a href="index.html#contact">Contacto</a></li>
+                </ul>
+            </nav>
+            <address class="footer__contact">
+                <p>Cam. de Palomares, 300</p>
+                <p>47011 Valladolid, España</p>
+                <a href="mailto:agogeelite13@gmail.com">agogeelite13@gmail.com</a>
+                <a href="https://www.instagram.com/agoge.elite" target="_blank" rel="noopener" class="footer__instagram">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16" aria-hidden="true">
+                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                    </svg>
+                    @agoge.elite
+                </a>
+            </address>
+        </div>
+        <div class="footer__bottom">
+            <p>&copy; 2025 Agoge Elite &ndash; CQB Airsoft Camp. Todos los derechos reservados.</p>
         </div>
     </footer>
 

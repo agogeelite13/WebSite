@@ -267,7 +267,7 @@ export const renderAdminPhotos = async (api) => {
     photos.forEach(photo => {
         const div = document.createElement('div');
         div.className = 'admin-item';
-        div.style.cssText = 'flex-direction:column;align-items:stretch;padding:10px;background:rgba(0,0,0,.5);margin-bottom:10px;';
+        div.style.cssText = 'flex-direction:column;align-items:stretch;padding:10px;background:rgba(0,0,0,.5);margin-bottom:10px;border-left:3px solid var(--bronze);';
         div.innerHTML = `
             <img src="${photo.image_url}" alt="Intel"
                  style="width:100%;height:150px;object-fit:cover;border:1px solid var(--border);border-radius:4px;margin-bottom:10px;">
@@ -275,13 +275,19 @@ export const renderAdminPhotos = async (api) => {
                 <span style="color:var(--bronze-light);">OP:</span> ${photo.users?.callsign || (photo.user_id ? photo.user_id.split('-')[0] : 'ANÓNIMO')}
             </div>
             <div style="font-size:.8rem;line-height:1.2;margin-bottom:15px;">"${photo.caption || ''}"</div>
-            <div style="display:flex;justify-content:space-between;gap:8px;">
-                <button class="btn btn--xs photo-reject-btn"
+            <div style="display:flex;flex-direction:column;gap:8px;">
+                <div style="display:flex;gap:8px;">
+                    <button class="btn btn--xs photo-reject-btn"
+                        data-id="${photo.id}"
+                        style="background:var(--blood);color:var(--white);flex:1;">DENEGAR</button>
+                    <button class="btn btn--outline btn--xs photo-approve-btn"
+                        data-id="${photo.id}"
+                        style="border-color:#2ecc71;color:#2ecc71;flex:1;">APROBAR</button>
+                </div>
+                <button class="btn btn--xs photo-delete-btn"
                     data-id="${photo.id}"
-                    style="background:var(--blood);color:var(--white);flex:1;">DENEGAR</button>
-                <button class="btn btn--outline btn--xs photo-approve-btn"
-                    data-id="${photo.id}"
-                    style="border-color:#2ecc71;color:#2ecc71;flex:1;">APROBAR</button>
+                    data-url="${photo.image_url}"
+                    style="background:transparent;border:1px solid var(--blood);color:var(--blood);font-size:0.65rem;">BORRAR PERMANENTEMENTE</button>
             </div>`;
         photoList.appendChild(div);
     });
@@ -304,6 +310,18 @@ export const renderAdminPhotos = async (api) => {
             const ok = await api.updateCommunityPhotoStatus(id, 'rejected');
             if (ok) { console.log('[ADMIN] Photo rejected'); renderAdminPhotos(api); }
             else    { alert('Error al denegar foto.'); btn.disabled = false; btn.textContent = 'DENEGAR'; }
+        });
+    });
+
+    photoList.querySelectorAll('.photo-delete-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            if (!confirm('¿Seguro que quieres borrar esta foto permanentemente del sistema?')) return;
+            const id = btn.dataset.id;
+            const url = btn.dataset.url;
+            btn.disabled = true; btn.textContent = 'BORRANDO...';
+            const ok = await api.deleteCommunityPhoto(id, url);
+            if (ok) { console.log('[ADMIN] Photo deleted'); renderAdminPhotos(api); }
+            else    { alert('Error al borrar foto.'); btn.disabled = false; btn.textContent = 'BORRAR PERMANENTEMENTE'; }
         });
     });
 };

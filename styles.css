@@ -75,6 +75,7 @@ body {
     overflow-x: hidden !important;
     width: 100% !important;
     max-width: 100% !important;
+    text-align: center;
 }
 
 p, span, h1, h2, h3, h4, a, li, .admin-item__info {
@@ -4884,4 +4885,298 @@ select.form-input option {
 .leaderboard-table th, 
 .leaderboard-table td {
     text-align: center !important;
+}
+
+/* =============================================
+   GLOBAL LAYOUT ALIGNMENT SYSTEM
+   Body centered by default.
+   Containers auto-centered.
+   Cards/boxes: container centered, text inside left-aligned.
+   ============================================= */
+
+/* ---- 1. PAGE-LEVEL: CENTERED BY DEFAULT ---- */
+
+/* All main sections, hero, counters center their content */
+.section,
+.hero,
+.stats-banner,
+.section--dashboard,
+.section--mid {
+    text-align: center;
+}
+
+/* Section headers, titles, subtitles, labels — always centered */
+.section__header,
+.section__title,
+.section__subtitle,
+.section__label,
+.hero__content,
+.hero__title,
+.hero__subtitle,
+.hero__tagline,
+.hero__eyebrow {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Standalone paragraphs directly inside .container or .section should be centered */
+.section > .container > p,
+.container > p:not([class]) {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Stat items, counters — centered */
+.stat-item,
+.stat-item__num,
+.stat-item__label,
+.countdown-item {
+    text-align: center;
+}
+
+/* Standalone buttons outside cards should be centered */
+.hero__actions,
+.section__header + .btn,
+.insta-action {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ---- 2. CONTAINERS: AUTO-CENTERED ---- */
+.container {
+    width: 100%;
+    max-width: var(--container);
+    margin: 0 auto;
+    padding-left: var(--container-pad);
+    padding-right: var(--container-pad);
+    box-sizing: border-box;
+}
+
+/* Flex containers for general layout should center children */
+.dashboard__grid,
+.portal-grid,
+.clan-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Grid containers center their block */
+.cards-grid,
+.plans-grid,
+.equip-grid,
+.rules-grid,
+.testimonials-grid,
+.supply-grid,
+.gallery-grid,
+.insta-grid {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ---- 3. CARDS & BOXES: LEFT-ALIGNED INTERNALS ---- */
+
+/* Card/box containers: centered on page, full-width within parent, internal left-alignment */
+.card,
+.plan-card,
+.rule-card,
+.equip-card,
+.testimonial-card,
+.supply-card,
+.about__card,
+.cal-info-box,
+.faq-item,
+.intel-briefing,
+.mission-card,
+.admin-panel,
+.profile-panel,
+.contact-form,
+.coming-soon-banner,
+.private-hire,
+.intel-board,
+.community-card,
+.portal-card {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    text-align: left;
+}
+
+/* All text inside cards/boxes: left-aligned, full-width */
+.card h3, .card h4, .card p, .card li, .card span,
+.plan-card h3, .plan-card h4, .plan-card p, .plan-card li,
+.rule-card h3, .rule-card h4, .rule-card p,
+.equip-card h3, .equip-card h4, .equip-card p,
+.about__card h3, .about__card h4, .about__card p,
+.cal-info-box h3, .cal-info-box h4, .cal-info-box p,
+.faq-answer p,
+.intel-briefing p,
+.mission-card p,
+.admin-panel p, .admin-panel h3,
+.profile-panel p,
+.contact-form p, .contact-form label,
+.private-hire p, .private-hire h3,
+.intel-board p,
+.portal-card p, .portal-card h3 {
+    text-align: left;
+    width: 100%;
+}
+
+/* Card titles that should remain left-aligned */
+.card__title,
+.equip-card__title,
+.rule-card__title,
+.about__card-title,
+.private-hire__title,
+.briefing-title {
+    text-align: left;
+}
+
+/* Card body text: left-aligned, fill container */
+.card__body,
+.about__body,
+.plan-card__features,
+.plan-card__features li,
+.rule-card p,
+.equip-card p,
+.testimonial-text,
+.briefing-item,
+.briefing-item p,
+.faq-answer p {
+    text-align: left;
+    width: 100%;
+    max-width: 100%;
+}
+
+/* Form groups inside cards — always left */
+.form-group,
+.form-group label,
+.form-label,
+.radio-group,
+.waiver-wrap {
+    text-align: left;
+}
+
+/* Contact details and info blocks */
+.contact-info,
+.contact-info p,
+.contact-details,
+.contact-details li {
+    text-align: left;
+}
+
+/* Admin/Profile specific internal text */
+.admin-panel__content,
+.admin-grid,
+.admin-item,
+.admin-item__info,
+.admin-section-title,
+.profile-panel__content,
+.profile-view-grid,
+.profile-stats-grid,
+.prof-stat,
+.prof-stat__label,
+.prof-stat__value,
+.profile-header-info,
+.profile-callsign,
+.profile-real-name {
+    text-align: left;
+}
+
+/* ---- 4. EXCEPTIONS: ELEMENTS THAT MUST STAY CENTERED ---- */
+
+/* Plan card name and price stay centered (design choice) */
+.plan-card__name,
+.plan-card__price,
+.plan-card__amount,
+.plan-card__period,
+.plan-card__badge {
+    text-align: center;
+}
+
+/* Supply card info stays centered */
+.supply-card__info,
+.supply-card__title,
+.supply-card__price {
+    text-align: center;
+}
+
+/* Testimonial author stays left but the card quote mark should not shift */
+.testimonial-author {
+    text-align: left;
+}
+
+/* Footer bottom and modal titles stay centered */
+.footer__bottom,
+.footer__bottom p,
+.modal__title,
+.modal__footer,
+.modal__intro {
+    text-align: center;
+}
+
+/* Calendar specific centered elements */
+.cal-header,
+.cal-cell {
+    text-align: center;
+}
+
+/* Enrollment status stays centered */
+.enroll-status {
+    text-align: center;
+}
+
+/* Coming-soon banner internal text stays centered (special case) */
+.coming-soon-banner,
+.coming-soon-banner h3,
+.coming-soon-banner p {
+    text-align: center;
+}
+
+/* ---- 5. RESPONSIVE ADJUSTMENTS ---- */
+@media (max-width: 768px) {
+    /* Cards on mobile still left-align content */
+    .card,
+    .plan-card,
+    .rule-card,
+    .equip-card,
+    .about__card,
+    .testimonial-card,
+    .supply-card,
+    .mission-card,
+    .faq-item,
+    .private-hire,
+    .portal-card {
+        text-align: left;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* Page-level elements remain centered on mobile */
+    .section__header,
+    .section__title,
+    .section__subtitle,
+    .section__label,
+    .hero__content,
+    .hero__title,
+    .hero__subtitle,
+    .hero__tagline,
+    .hero__eyebrow,
+    .stat-item,
+    .footer__bottom,
+    .footer__bottom p {
+        text-align: center;
+    }
+
+    /* Flex containers center on mobile */
+    .hero__actions {
+        justify-content: center;
+    }
 }

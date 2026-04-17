@@ -36,7 +36,7 @@
                             CENTRO <span class="dropdown-arrow"></span>
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a href="centro.html" class="nav__link">Nosotros</a></li>
+                            <li><a href="centro.html#about" class="nav__link">Nosotros</a></li>
                             <li><a href="centro.html#gallery" class="nav__link">Galería</a></li>
                             <li><a href="centro.html#testimonios" class="nav__link">Opiniones</a></li>
                             <li><a href="centro.html#faq" class="nav__link">Dudas (FAQ)</a></li>
@@ -47,7 +47,7 @@
                             OPERACIONES <span class="dropdown-arrow"></span>
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a href="misiones.html" class="nav__link">Misiones (Intel)</a></li>
+                            <li><a href="operaciones.html#intel" class="nav__link">Misiones (Intel)</a></li>
                             <li><a href="operaciones.html#games" class="nav__link">Partidas</a></li>
                             <li><a href="operaciones.html#calendario" class="nav__link">Calendario</a></li>
                             <li><a href="operaciones.html#tarifas" class="nav__link">Tarifas</a></li>
@@ -58,14 +58,15 @@
                             LOGÍSTICA <span class="dropdown-arrow"></span>
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a href="logistica.html#equipment" class="nav__link nav__link--active">Alquiler</a></li>
-                            <li><a href="logistica.html#rules" class="nav__link">Normativa</a></li>
-                            <li><a href="logistica.html#supplies" class="nav__link">Suministros</a></li>
-                            <li><a href="logistica.html#leaderboard" class="nav__link">Ranking Clanes</a></li>
+                            <li><a href="#equipment" class="nav__link">Alquiler</a></li>
+                            <li><a href="#rules" class="nav__link">Normativa</a></li>
+                            <li><a href="#supplies" class="nav__link">Suministros</a></li>
+                            <li><a href="#leaderboard" class="nav__link">Ranking Clanes</a></li>
                         </ul>
                     </li>
+                    <li><a href="index.html#contact" class="nav__link nav__link--cta">Contacto</a></li>
                     <li class="nav__auth-wrap">
-                        <button id="authTrigger" class="nav__link nav__link--auth">Acceso</button>
+                        <button id="authTrigger" class="nav__link nav__link--auth">Acceso Operador</button>
                         <div id="userMenu" class="user-menu hidden">
                             <span id="userName" class="user-menu__name"></span>
                             <div class="user-menu__actions">
@@ -92,7 +93,7 @@
             <div class="container">
                 <header class="section__header reveal">
                     <span class="section__label">Equipación</span>
-                    <h2 class="section__title">Alquiler de Equipación</h2>
+                    <h2 class="section__title">Alquiler</h2>
                 </header>
                 <div class="equip-grid">
                     <article class="equip-card reveal">
@@ -116,12 +117,38 @@
             </div>
         </section>
 
+        <!-- RULES -->
+        <section id="rules" class="section section--mid">
+            <div class="container">
+                <header class="section__header reveal">
+                    <span class="section__label">Seguridad</span>
+                    <h2 class="section__title">Normativa</h2>
+                    <p class="section__subtitle">El cumplimiento de estas normas es innegociable para todos los operadores.</p>
+                </header>
+                <div class="rules-grid">
+                    <article class="rule-card reveal"><h3>1. Protección Primaria</h3><p>Uso de gafas de seguridad homologadas obligatorio en todo el recinto de juego. Prohibido quitárselas salvo en zonas frías acotadas.</p></article>
+                    <article class="rule-card reveal"><h3>2. Protección Bucal</h3><p>Se recomienda encarecidamente el uso de máscaras bucales; la organización no se hace responsable de accidentes dentales por no usarlas.</p></article>
+                    <article class="rule-card reveal"><h3>3. Impactos de Rebote</h3><p>Si un jugador tiene certeza (mínimo 90%) de que el impacto es de rebote, no se dará por muerto.</p></article>
+                    <article class="rule-card reveal"><h3>4. Distancia de Juego</h3><p>Distancia mínima 0 metros. Se disparará a zonas protegidas o se aplicará "muerto por toque" con arma blanca simulada.</p></article>
+                    <article class="rule-card reveal"><h3>5. Eliminación Mutua</h3><p>Si dos participantes se disparan a menos de 1 metro de forma simultánea, ambos se dan de baja inmediatamente.</p></article>
+                    <article class="rule-card reveal"><h3>6. Zonas de Descanso</h3><p>Prohibido disparar o reglar réplicas en zonas de descanso. Habrá una zona específica de tiro (Crono) para ello.</p></article>
+                    <article class="rule-card reveal"><h3>7. Puntualidad Operativa</h3><p>Máxima puntualidad requerida para el inicio de misiones. Los retrasos afectan a la duración total de la jornada.</p></article>
+                    <article class="rule-card reveal"><h3>8. Cadena de Mando</h3><p>La organización tiene la última palabra a la hora de tomar decisiones tácticas o aplicar medidas disciplinarias.</p></article>
+                    <article class="rule-card reveal"><h3>9. Código de Honor</h3><p>Prohibidas peleas, insultos o ser "inmortal". Un impacto recibido en cualquier parte del cuerpo o equipo = un jugador eliminado.</p></article>
+                    <article class="rule-card reveal"><h3>10. Tiro sin Encarar</h3><p>Queda totalmente prohibido abrir fuego sin encarar la réplica (disparos "a la libanesa" o por encima de coberturas).</p></article>
+                    <article class="rule-card reveal"><h3>11. Uso de Granadas</h3><p>Permitidas granadas mecánicas o de gas (no pirotecnia). Uso limitado a 1 granada por persona para evitar saturación del área.</p></article>
+                    <article class="rule-card reveal"><h3>12. Entorno Civil</h3><p>Prohibido el porte, uso o manipulación de réplicas fuera del recinto vallado de la nave Agoge.</p></article>
+                    <article class="rule-card reveal"><h3>13. Tolerancia Cero</h3><p>Prohibido fumar, el consumo de bebidas alcohólicas o de cualquier tipo de estupefaciente dentro de las instalaciones.</p></article>
+                </div>
+            </div>
+        </section>
+
         <!-- SUPPLIES -->
         <section id="supplies" class="section section--mid">
             <div class="container">
                 <header class="section__header reveal">
                     <span class="section__label">Logística</span>
-                    <h2 class="section__title">Suministros Oficiales</h2>
+                    <h2 class="section__title">Suministros</h2>
                 </header>
                 <div class="coming-soon-banner reveal">
                     <h3>PRÓXIMAMENTE</h3>
@@ -135,7 +162,7 @@
             <div class="container">
                 <header class="section__header reveal">
                     <span class="section__label">Competición</span>
-                    <h2 class="section__title">Ranking de Fuerzas de Tareas</h2>
+                    <h2 class="section__title">Ranking Clanes</h2>
                 </header>
                 <div class="leaderboard-wrap reveal">
                     <table class="leaderboard-table">
@@ -148,25 +175,37 @@
             </div>
         </section>
 
-        <!-- RULES -->
-        <section id="rules" class="section section--mid">
-            <div class="container">
-                <header class="section__header reveal">
-                    <span class="section__label">Seguridad</span>
-                    <h2 class="section__title">Normativa Básica</h2>
-                </header>
-                <div class="rules-grid">
-                    <article class="rule-card reveal"><h3>1. Protección Primaria</h3><p>Uso de gafas de seguridad homologadas obligatorio.</p></article>
-                    <article class="rule-card reveal"><h3>2. Protección Bucal</h3><p>Se recomienda el uso de máscaras bucales.</p></article>
-                    <article class="rule-card reveal"><h3>3. Código de Honor</h3><p>Un impacto recibido = un jugador eliminado.</p></article>
-                </div>
-            </div>
-        </section>
     </main>
 
-    <footer class="site-footer">
+    <footer class="site-footer" role="contentinfo">
         <div class="container footer__inner">
-            <p>&copy; 2024 AGOGE ELITE. Sistema de Gestión Táctica v4.1.0</p>
+            <div class="footer__brand">
+                <a href="index.html#hero" aria-label="Inicio Agoge Elite"><img src="logo.jpg" alt="Logo Agoge Elite" width="48" height="48"></a>
+                <p class="footer__tagline">EL PRECIO DE LA VICTORIA ES LA DISCIPLINA.</p>
+            </div>
+            <nav class="footer__nav" aria-label="Navegación pie de página">
+                <ul role="list">
+                    <li><a href="centro.html#about">Nosotros</a></li>
+                    <li><a href="operaciones.html#games">Partidas</a></li>
+                    <li><a href="operaciones.html#tarifas">Tarifas</a></li>
+                    <li><a href="#rules">Normativa</a></li>
+                    <li><a href="index.html#contact">Contacto</a></li>
+                </ul>
+            </nav>
+            <address class="footer__contact">
+                <p>Cam. de Palomares, 300</p>
+                <p>47011 Valladolid, España</p>
+                <a href="mailto:agogeelite13@gmail.com">agogeelite13@gmail.com</a>
+                <a href="https://www.instagram.com/agoge.elite" target="_blank" rel="noopener" class="footer__instagram">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16" aria-hidden="true">
+                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                    </svg>
+                    @agoge.elite
+                </a>
+            </address>
+        </div>
+        <div class="footer__bottom">
+            <p>&copy; 2025 Agoge Elite &ndash; CQB Airsoft Camp. Todos los derechos reservados.</p>
         </div>
     </footer>
 

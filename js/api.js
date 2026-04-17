@@ -143,5 +143,26 @@ export const api = {
         const { error } = await supabase.from('community_photos').update({ status: newStatus }).eq('id', id);
         if (error) console.error('Supabase updatePhoto Error:', error.message, error.details, error.hint);
         return !error;
+    },
+    async deleteCommunityPhoto(id, imageUrl) {
+        try {
+            // 1. Delete from DB
+            const { error: dbError } = await supabase.from('community_photos').delete().eq('id', id);
+            if (dbError) throw dbError;
+
+            // 2. Extract path and delete from Storage
+            // URL format typically: .../storage/v1/object/public/community_photos/filename.jpg
+            const pathParts = imageUrl.split('/community_photos/');
+            if (pathParts.length > 1) {
+                const filePath = pathParts[1];
+                const { error: storageError } = await supabase.storage.from('community_photos').remove([filePath]);
+                if (storageError) console.warn('Storage delete warning:', storageError);
+            }
+
+            return true;
+        } catch (error) {
+            console.error('Delete photo error:', error);
+            return false;
+        }
     }
 };

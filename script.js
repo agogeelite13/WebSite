@@ -111,7 +111,7 @@ const updateUI = async () => {
             document.getElementById('downloadManifestoBtn')?.addEventListener('click', () => {
                 admin.downloadManifesto(api, sunKey);
             });
-        } else if (path.includes('misiones.html')) {
+        } else if (path.includes('operaciones.html')) {
             renderActiveMission();
             renderVoting();
             setupVotingListeners();
@@ -583,7 +583,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const path = window.location.pathname;
     const sunKey = getNextSundayKey();
     
-    if (path.includes('misiones.html')) {
+    if (path.includes('operaciones.html')) {
         profile.initMissionVoting();
         ui.initTacticalMap();
     } else if (path.includes('admin.html')) {

@@ -20,9 +20,7 @@
             <div class="top-bar__ticker"><p>ACCESO AUTORIZADO — CALENDARIO DE OPERACIONES — AGOGE ELITE</p></div>
             <span class="top-bar__date" id="topBarDate"></span>
         </div>
-    </div>
-
-    <header class="site-header scrolled" id="siteHeader">
+    </di    <header class="site-header scrolled" id="siteHeader">
         <div class="container header__inner">
             <a href="index.html" class="header__logo">
                 <img src="logo.jpg" alt="Logo" width="40" height="40">
@@ -36,7 +34,7 @@
                             CENTRO <span class="dropdown-arrow"></span>
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a href="centro.html" class="nav__link">Nosotros</a></li>
+                            <li><a href="centro.html#about" class="nav__link">Nosotros</a></li>
                             <li><a href="centro.html#gallery" class="nav__link">Galería</a></li>
                             <li><a href="centro.html#testimonios" class="nav__link">Opiniones</a></li>
                             <li><a href="centro.html#faq" class="nav__link">Dudas (FAQ)</a></li>
@@ -47,10 +45,10 @@
                             OPERACIONES <span class="dropdown-arrow"></span>
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a href="misiones.html" class="nav__link">Misiones (Intel)</a></li>
-                            <li><a href="operaciones.html#games" class="nav__link nav__link--active">Partidas</a></li>
-                            <li><a href="operaciones.html#calendario" class="nav__link">Calendario</a></li>
-                            <li><a href="operaciones.html#tarifas" class="nav__link">Tarifas</a></li>
+                            <li><a href="#intel" class="nav__link">Misiones (Intel)</a></li>
+                            <li><a href="#games" class="nav__link">Partidas</a></li>
+                            <li><a href="#calendario" class="nav__link">Calendario</a></li>
+                            <li><a href="#tarifas" class="nav__link">Tarifas</a></li>
                         </ul>
                     </li>
                     <li class="nav__item nav__dropdown">
@@ -64,8 +62,9 @@
                             <li><a href="logistica.html#leaderboard" class="nav__link">Ranking Clanes</a></li>
                         </ul>
                     </li>
+                    <li><a href="index.html#contact" class="nav__link nav__link--cta">Contacto</a></li>
                     <li class="nav__auth-wrap">
-                        <button id="authTrigger" class="nav__link nav__link--auth">Acceso</button>
+                        <button id="authTrigger" class="nav__link nav__link--auth">Acceso Operador</button>
                         <div id="userMenu" class="user-menu hidden">
                             <span id="userName" class="user-menu__name"></span>
                             <div class="user-menu__actions">
@@ -87,12 +86,77 @@
     </header>
 
     <main class="main-content">
+        <!-- INTEL SECTION (Merged from misiones.html) -->
+        <section id="intel" class="section section--dark">
+            <div class="container">
+                <header class="section__header reveal">
+                    <span class="section__label">Inteligencia</span>
+                    <h2 class="section__title">Misiones (Intel)</h2>
+                </header>
+                
+                <div id="intelBoard" class="intel-board">
+                    <div class="intel-board__header">
+                        <div class="intel-badge">CLASSIFIED / CONFIDENCIAL</div>
+                        <h3 class="intel-board__title" style="font-family:var(--font-display); color:var(--bronze); margin-bottom:20px;">CENTRO DE INTELIGENCIA TÁCTICA</h3>
+                    </div>
+                    
+                    <div class="intel-grid">
+                        <div class="intel-map-wrap">
+                            <div class="intel-map-container">
+                                <div class="scan-line"></div>
+                                <img id="intelMapImg" src="img/agoge_tactical_map_final.png" alt="Mapa Táctico" class="intel-map" loading="lazy">
+                                <svg id="mapHotspots" viewBox="0 0 1200 800"></svg>
+                                <div id="mapTooltip" class="map-tooltip hidden"></div>
+                            </div>
+                        </div>
+
+                        <div class="intel-briefing">
+                            <h4 class="briefing-title">ORDEN DE OPERACIONES (OPORD)</h4>
+                            <div class="briefing-content">
+                                <div class="briefing-item">
+                                    <strong>SITUACIÓN:</strong>
+                                    <p id="opordSituation">Cargando inteligencia de campo...</p>
+                                </div>
+                                <div class="briefing-item">
+                                    <strong>MISIÓN:</strong>
+                                    <p id="opordMission">Esperando órdenes de mando...</p>
+                                </div>
+                                <div class="briefing-item">
+                                    <strong>EQUIPAMIENTO:</strong>
+                                    <p id="opordGear">Consultando logística...</p>
+                                </div>
+                                
+                                <div class="briefing-item briefing-item--full u-margin-t-md">
+                                    <strong>DESPLIEGUE POR ROLES (ESTADO DE LA FUERZA):</strong>
+                                    <div id="roleDistribution" class="role-distribution-grid"></div>
+                                </div>
+
+                                <div class="briefing-item briefing-item--full">
+                                    <strong>VOTACIÓN ESTRATÉGICA (OPERADOR):</strong>
+                                    <div id="votingOptions" class="voting-options">
+                                        <button class="vote-btn" data-mode="tdm">Eliminación por Equipos</button>
+                                        <button class="vote-btn" data-mode="ctf">Captura de Bandera</button>
+                                        <button class="vote-btn" data-mode="vip">Protección de VIP</button>
+                                        <button class="vote-btn" data-mode="dom">Dominación de Sectores</button>
+                                    </div>
+                                    <div id="votingResults" class="voting-results hidden">
+                                        <p>VOTO ASIGNADO. RESULTADOS ACTUALES:</p>
+                                        <div id="resultsList"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- GAMES -->
         <section id="games" class="section section--mid">
             <div class="container">
                 <header class="section__header reveal">
                     <span class="section__label">Operaciones</span>
-                    <h2 class="section__title">Partidas y Entrenamiento</h2>
+                    <h2 class="section__title">Partidas</h2>
                 </header>
                 <div class="cards-grid">
                     <article class="card reveal">
@@ -117,7 +181,7 @@
             <div class="container">
                 <header class="section__header reveal">
                     <span class="section__label">Agenda</span>
-                    <h2 class="section__title">Calendario de Operaciones</h2>
+                    <h2 class="section__title">Calendario</h2>
                 </header>
                 <div class="calendar reveal" id="calendarContainer">
                     <div class="calendar__header">
@@ -138,7 +202,7 @@
             <div class="container">
                 <header class="section__header reveal">
                     <span class="section__label">Planes</span>
-                    <h2 class="section__title">Planes y Cuotas</h2>
+                    <h2 class="section__title">Tarifas</h2>
                 </header>
                 <div class="plans-grid" role="list">
                     <article class="plan-card reveal" role="listitem">
@@ -190,9 +254,38 @@
         </section>
     </main>
 
-    <footer class="site-footer">
+    <footer class="site-footer" role="contentinfo">
         <div class="container footer__inner">
-            <p>&copy; 2024 AGOGE ELITE. Sistema de Gestión Táctica v4.1.0</p>
+            <div class="footer__brand">
+                <a href="index.html#hero" aria-label="Inicio Agoge Elite"><img src="logo.jpg" alt="Logo Agoge Elite" width="48" height="48"></a>
+                <p class="footer__tagline">EL PRECIO DE LA VICTORIA ES LA DISCIPLINA.</p>
+            </div>
+            <nav class="footer__nav" aria-label="Navegación pie de página">
+                <ul role="list">
+                    <li><a href="centro.html#about">Nosotros</a></li>
+                    <li><a href="#games">Partidas</a></li>
+                    <li><a href="#tarifas">Tarifas</a></li>
+                    <li><a href="logistica.html#rules">Normativa</a></li>
+                    <li><a href="index.html#contact">Contacto</a></li>
+                </ul>
+            </nav>
+            <address class="footer__contact">
+                <p>Cam. de Palomares, 300</p>
+                <p>47011 Valladolid, España</p>
+                <a href="mailto:agogeelite13@gmail.com">agogeelite13@gmail.com</a>
+                <a href="https://www.instagram.com/agoge.elite" target="_blank" rel="noopener" class="footer__instagram">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16" aria-hidden="true">
+                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                    </svg>
+                    @agoge.elite
+                </a>
+            </address>
+        </div>
+        <div class="footer__bottom">
+            <p>&copy; 2025 Agoge Elite &ndash; CQB Airsoft Camp. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+</p>
         </div>
     </footer>
 
