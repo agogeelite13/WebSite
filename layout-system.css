@@ -25,12 +25,12 @@
 
     /* Spacing - Fluid Widescreen Layout */
     --section-py: 120px;
-    --container: 100% !important; /* Full Fluid */
-    --container-pad: 3%;
+    --container: 1800px; /* Matching Centro */
+    --container-pad: 5%;
     --gap: 60px;
 
-    /* Max widths for readability - DISABLED FOR FULL PAGE */
-    --text-max-width: 100% !important; 
+    /* Max widths for readability */
+    --text-max-width: 1200px; 
 
     /* Grid System - "BIG BOXES" CONFIGURATION */
     --grid-min-item-width: 500px; /* Force larger boxes on desktop */
@@ -50,9 +50,9 @@
 /* --- MASTER CONTAINER --- */
 .container {
     width: 100% !important;
-    max-width: none !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
+    max-width: var(--container) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
     padding-left: var(--container-pad) !important;
     padding-right: var(--container-pad) !important;
     position: relative !important;
@@ -70,18 +70,17 @@
     padding: var(--section-py) 0 !important;
     border-bottom: 1px solid var(--border) !important;
     position: relative !important;
-    width: 100% !important;
 }
 
-/* --- HEADER ALIGNMENT (Fluid and Left-Aligned) --- */
+/* --- HEADER ALIGNMENT (Centered like Centro) --- */
 .section__header {
-    text-align: left !important;
-    margin: 0 0 var(--gap) !important;
+    text-align: center !important;
+    margin: 0 auto var(--gap) !important;
     width: 100% !important;
-    max-width: none !important;
+    max-width: var(--text-max-width) !important;
     display: flex !important;
     flex-direction: column !important;
-    align-items: flex-start !important;
+    align-items: center !important;
 }
 
 .section__label {
@@ -114,8 +113,8 @@
     font-size: 1.2rem;
     color: var(--text-muted);
     line-height: 1.6;
-    max-width: 1000px;
-    margin: 0;
+    max-width: 800px;
+    margin: 0 auto;
 }
 
 /* --- GRID SYSTEM: THE "BIG BOXES" RESTRUCTURING --- */
