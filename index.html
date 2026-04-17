@@ -228,34 +228,10 @@
                         <h2 class="section__title">Navegación Táctica</h2>
                         <p class="section__subtitle">Accede a los departamentos especializados de nuestro campo.</p>
                     </header>
-                    <div class="portal-grid">
-                        <!-- CARD 1: CENTRO -->
-                        <a href="centro.html" class="portal-card reveal">
-                            <div class="portal-card__img" style="background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.8)), url('https://placehold.co/600x400/222/a88b54?text=CENTRO+DE+OPERACIONES');"></div>
-                            <div class="portal-card__content">
-                                <h3 class="portal-card__title">CENTRO</h3>
-                                <p class="portal-card__desc">Nosotros, Galera, Opiniones y Dudas (FAQ).</p>
-                                <span class="portal-card__link">ACCEDER AL REA <span>&rarr;</span></span>
-                            </div>
-                        </a>
-                        <!-- CARD 2: OPERACIONES -->
-                        <a href="operaciones.html" class="portal-card reveal reveal--delay">
-                            <div class="portal-card__img" style="background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.8)), url('https://placehold.co/600x400/222/a88b54?text=DEPARTAMENTO+DE+MISIONES');"></div>
-                            <div class="portal-card__content">
-                                <h3 class="portal-card__title">OPERACIONES</h3>
-                                <p class="portal-card__desc">Misiones (Intel), Partidas, Calendario y Tarifas.</p>
-                                <span class="portal-card__link">VER DESPLIEGUE <span>&rarr;</span></span>
-                            </div>
-                        </a>
-                        <!-- CARD 3: LOGSTICA -->
-                        <a href="logistica.html" class="portal-card reveal reveal--delay-2">
-                            <div class="portal-card__img" style="background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.8)), url('https://placehold.co/600x400/222/a88b54?text=LOGISTICA+Y+SUMINISTROS');"></div>
-                            <div class="portal-card__content">
-                                <h3 class="portal-card__title">LOGSTICA</h3>
-                                <p class="portal-card__desc">Alquiler, Normativa, Suministros y Ranking Clanes.</p>
-                                <span class="portal-card__link">ACCEDER AL ARSENAL <span>&rarr;</span></span>
-                            </div>
-                        </a>
+                    <div class="portal-navigation reveal">
+                        <a href="centro.html" class="btn btn--portal">CENTRO DE OPERACIONES <span class="portal-arrow">&rarr;</span></a>
+                        <a href="operaciones.html" class="btn btn--portal">DEPARTAMENTO DE MISIONES <span class="portal-arrow">&rarr;</span></a>
+                        <a href="logistica.html" class="btn btn--portal">LOGÍSTICA Y SUMINISTROS <span class="portal-arrow">&rarr;</span></a>
                     </div>
                 </div>
             </section>
@@ -523,6 +499,42 @@
             .contact-grid-tactical .map-wrap {
                 grid-column: span 1 !important;
             }
+        }
+        /* PORTAL BUTTONS NAVIGATION */
+        .portal-navigation {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 20px !important;
+            align-items: center !important;
+            max-width: 600px !important;
+            margin: 40px auto 0 !important;
+        }
+        .btn--portal {
+            width: 100% !important;
+            padding: 24px 40px !important;
+            font-size: 1.2rem !important;
+            background: rgba(205, 127, 50, 0.05) !important;
+            border: 1px solid var(--border) !important;
+            color: var(--white) !important;
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            transition: all 0.3s var(--ease) !important;
+            font-family: var(--font-display) !important;
+            letter-spacing: 2px !important;
+        }
+        .btn--portal:hover {
+            background: var(--bronze) !important;
+            color: var(--black) !important;
+            transform: translateY(-3px) !important;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4) !important;
+        }
+        .portal-arrow {
+            font-size: 1.5rem !important;
+            transition: transform 0.3s var(--ease) !important;
+        }
+        .btn--portal:hover .portal-arrow {
+            transform: translateX(10px) !important;
         }
     </style>
 </body>
