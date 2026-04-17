@@ -148,22 +148,24 @@
     padding: 120px 0 !important;
 }
 
-.contact-grid {
+.contact-grid-tactical {
     display: grid !important;
-    grid-template-columns: repeat(3, 1fr) !important; /* Strict 3-column horizontal */
+    grid-template-columns: 1fr 1fr !important;
     gap: 40px !important;
     width: 100% !important;
-    align-items: stretch !important;
-    margin-top: 50px !important;
 }
 
-.contact-grid > * {
+.contact-grid-tactical > * {
     background: rgba(255, 255, 255, 0.03) !important;
     padding: 30px !important;
     border: 1px solid var(--border) !important;
-    display: flex !important;
-    flex-direction: column !important;
-    min-width: 0 !important; /* Force fit */
+    min-width: 0 !important;
+}
+
+.contact-grid-tactical .map-wrap {
+    grid-column: span 2 !important;
+    padding: 0 !important;
+    min-height: 450px !important;
 }
 
 /* Map specific to fill its column */
