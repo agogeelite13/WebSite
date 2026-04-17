@@ -4915,9 +4915,9 @@ select.form-input option {
 .hero__subtitle,
 .hero__tagline,
 .hero__eyebrow {
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
 }
 
 /* Standalone paragraphs directly inside .container or .section should be centered */
