@@ -5184,3 +5184,56 @@ select.form-input option {
         justify-content: center;
     }
 }
+
+/* =============================================
+   NUCLEAR GLOBAL CENTERING OVERRIDE
+   Forces ALL page-level text to span full width
+   so text-align:center works edge-to-edge.
+   This is the LAST rule — maximum specificity.
+   ============================================= */
+
+/* Every page-level element must be full-width for centering to work */
+.hero__eyebrow,
+.hero__title,
+.hero__subtitle,
+.hero__tagline,
+.hero__actions,
+.section__header,
+.section__title,
+.section__subtitle,
+.section__label,
+.about__intro-text,
+.coming-soon-banner h3,
+.coming-soon-banner p,
+.faction-ranking__title,
+.footer__bottom p,
+.equip-note,
+.stat-item,
+.enroll-status {
+    width: 100% !important;
+    max-width: 100% !important;
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+/* Section header flex container: children must stretch full width */
+.section__header {
+    width: 100% !important;
+    max-width: 100% !important;
+    align-items: center !important;
+}
+
+/* Force section__header children to take full width */
+.section__header > * {
+    width: 100% !important;
+    max-width: 100% !important;
+    text-align: center !important;
+}
+
+/* Hero content flex: children full-width */
+.hero__content > * {
+    width: 100% !important;
+    max-width: 100% !important;
+    text-align: center !important;
+}
