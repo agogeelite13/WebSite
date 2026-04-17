@@ -1,0 +1,164 @@
+/* ==========================================================================
+   AGOGE ELITE - FLUID WIDESCREEN LAYOUT SYSTEM
+   ========================================================================== */
+
+:root {
+    /* Colors - Neo Classical Spartan Palette */
+    --red: #e53935;
+    --red-light: #ef5350;
+    --red-dim: rgba(229, 57, 53, 0.2);
+    --bronze: #cd7f32;
+    --bronze-light: #e6a57e;
+    --bronze-dark: #8b4513;
+    --bg: #0d0d0d;
+    --bg-mid: #141414;
+    --bg-surface: #1e1e1e;
+    --border: rgba(205, 127, 50, 0.15);
+    --text: #d4d4d4;
+    --text-muted: #888;
+    --white: #ffffff;
+    --gold: #ffd700;
+
+    /* Typography */
+    --font-display: 'Cinzel', serif;
+    --font-body: 'Inter', sans-serif;
+
+    /* Spacing - Fluid Widescreen Layout */
+    --section-py: 120px;
+    --container: 1800px;
+    --container-pad: 5%;
+    --gap: 60px;
+
+    /* Max widths for readability */
+    --text-max-width: 1200px;
+
+    /* Grid System - "BIG BOXES" CONFIGURATION */
+    --grid-min-item-width: 500px; /* Force larger boxes on desktop */
+
+    /* Shadows & Glows */
+    --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.5);
+    --shadow-md: 0 12px 40px rgba(0, 0, 0, 0.7);
+    --shadow-lg: 0 30px 80px rgba(0, 0, 0, 0.9);
+    --glow-red: 0 0 30px rgba(139, 0, 0, 0.3);
+    --glow-bronze: 0 0 20px rgba(205, 127, 50, 0.2);
+
+    /* Transitions */
+    --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --duration: 0.4s;
+}
+
+/* --- MASTER CONTAINER --- */
+.container {
+    width: 100% !important;
+    max-width: var(--container) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: var(--container-pad) !important;
+    padding-right: var(--container-pad) !important;
+    position: relative !important;
+}
+
+/* --- SECTIONS --- */
+.section {
+    padding: var(--section-py) 0 !important;
+    border-bottom: 1px solid var(--border) !important;
+    position: relative !important;
+}
+
+/* --- HEADER ALIGNMENT (Branding is centered, content is fluid) --- */
+.section__header {
+    text-align: center !important;
+    margin: 0 auto var(--gap) !important;
+    width: 100% !important;
+    max-width: var(--text-max-width) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+}
+
+.section__label {
+    display: inline-block;
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--bronze);
+    margin-bottom: 20px;
+    padding: 8px 20px;
+    border: 1px solid var(--bronze-dark);
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.section__title {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    line-height: 1.1;
+    color: var(--white);
+    margin-bottom: 24px;
+}
+
+.section__subtitle {
+    font-family: var(--font-body);
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* --- GRID SYSTEM: THE "BIG BOXES" RESTRUCTURING --- */
+.portal-grid,
+.cards-grid,
+.plans-grid,
+.about__grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(var(--grid-min-item-width), 1fr)) !important;
+    gap: var(--gap) !important;
+    width: 100% !important;
+    justify-content: stretch !important;
+}
+
+/* Ensure cards fill their grid tracks completely */
+.card,
+.portal-card,
+.plan-card,
+.mission-card {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+}
+
+/* --- CONTACT GRID EXPANSION --- */
+.contact-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1.2fr !important; /* Slightly larger form column */
+    gap: 100px !important;
+    width: 100% !important;
+    align-items: start !important;
+}
+
+@media (max-width: 1200px) {
+    .contact-grid {
+        grid-template-columns: 1fr !important;
+        gap: 60px !important;
+    }
+    
+    :root {
+        --grid-min-item-width: 400px;
+    }
+}
+
+@media (max-width: 768px) {
+    :root {
+        --grid-min-item-width: 100%;
+        --section-py: 80px;
+    }
+    
+    .contact-grid {
+        gap: 40px !important;
+    }
+}
