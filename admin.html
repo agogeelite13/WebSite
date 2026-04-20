@@ -198,7 +198,10 @@
                 <div id="secretaryPanel" class="admin-panel hidden" style="margin-top: 30px;">
                     <div class="admin-panel__header">
                         <h2 class="admin-panel__title">OFICINA DE SECRETARÍA</h2>
-                        <button id="addAttendanceBtn" class="btn btn--primary">NUEVA ASISTENCIA</button>
+                        <div class="sec-header-actions">
+                            <button id="addAttendanceBtn" class="btn btn--primary btn--sm">NUEVA ASISTENCIA</button>
+                            <button id="addExpenseBtn" class="btn btn--secondary btn--sm">NUEVO GASTO</button>
+                        </div>
                     </div>
                     
                     <!-- Summary Stats -->
@@ -262,9 +265,6 @@
 
                     <!-- Gastos Table -->
                     <div id="secGastosWrap" class="sec-table-wrap hidden">
-                        <div style="margin-bottom:15px; display:flex; justify-content:flex-end;">
-                            <button id="addExpenseBtn" class="btn btn--secondary btn--sm">REGISTRAR GASTO</button>
-                        </div>
                         <table class="leaderboard-table">
                             <thead>
                                 <tr>

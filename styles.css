@@ -5019,3 +5019,6 @@ select.form-input option {
         grid-template-columns: 1fr 1fr;
     }
 }
+
+.sec-header-actions { display: flex; gap: 10px; }
+@media (max-width: 600px) { .sec-header-actions { width: 100%; flex-direction: column; margin-top: 10px; } }
