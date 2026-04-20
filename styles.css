@@ -822,8 +822,7 @@ p {
     inset: 0;
     background:
         radial-gradient(ellipse at center bottom, rgba(139, 0, 0, 0.15) 0%, transparent 70%),
-        linear-gradient(to bottom, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.9) 100%),
-        url('https://placehold.co/1920x1080/111/222?text=+') no-repeat center center / cover;
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.9) 100%);
     z-index: 0;
 }
 
@@ -2591,7 +2590,7 @@ select.form-input option {
 .hero__parallax {
     position: absolute;
     inset: -20% 0;
-    background: url('https://placehold.co/1920x1080/0d0d0d/1a1a1a?text=+') no-repeat center center / cover;
+    background: url('img/hero-parthenon.png') no-repeat center center / cover;
     will-change: transform;
     z-index: 0;
     opacity: 0.6;
