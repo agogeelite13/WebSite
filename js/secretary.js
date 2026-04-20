@@ -23,19 +23,22 @@ export const initSecretary = (api) => {
     if (!els.list) return;
 
     // Load initial data
+    console.log('[SECRETARY] Initializing module...');
     renderSecretaryDashboard(api, els);
 
     // Add Button
     els.addBtn?.addEventListener('click', () => {
+        console.log('[SECRETARY] Add button clicked');
         const authModal = document.getElementById('authModal');
         const loginWrap = document.getElementById('loginFormWrap');
         const regWrap = document.getElementById('registerFormWrap');
+        const attWrap = document.getElementById('attendanceModalWrap');
 
         if (authModal) authModal.classList.add('active');
         if (loginWrap) loginWrap.classList.add('hidden');
         if (regWrap) regWrap.classList.add('hidden');
+        if (attWrap) attWrap.classList.remove('hidden');
         
-        els.modal.classList.remove('hidden');
         els.form.reset();
         const dateInput = document.getElementById('attDate');
         if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
