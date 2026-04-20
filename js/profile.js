@@ -141,7 +141,7 @@ export const updateProfileView = (userProfile) => {
             avatarSrc = 'avatars/avatar_operador.png';
         }
         
-        if (elements.profLevel) elements.profLevel.textContent = `NIVEL ${level}`;
+        if (elements.profLevel) elements.profLevel.textContent = level;
         if (elements.profXPText) elements.profXPText.textContent = `${currentLevelXP} / 5 XP`;
         if (elements.profXPFill) elements.profXPFill.style.width = `${xpPercent}%`;
     }

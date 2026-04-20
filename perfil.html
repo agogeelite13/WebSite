@@ -114,36 +114,49 @@
                                 <div id="medalsList" class="medals-grid-compact"></div>
                             </div>
 
-                            <div class="profile-stats-grid">
-                                <div class="prof-stat">
-                                    <span class="prof-stat__label">ESPECIALIDAD</span>
-                                    <span id="profSpecialty" class="prof-stat__value">-</span>
+                            <!-- NEW PROGRESSION DASHBOARD -->
+                            <div class="profile-progression">
+                                <div class="progression-badge">
+                                    <span class="progression-label">RANGO OPERATIVO</span>
+                                    <div class="level-circle">
+                                        <span id="profLevel">--</span>
+                                    </div>
                                 </div>
-                                <div class="prof-stat">
-                                    <span class="prof-stat__label">OPERACIONES</span>
-                                    <span id="profMissions" class="prof-stat__value">0</span>
-                                </div>
-                                <div class="prof-stat">
-                                    <span class="prof-stat__label">EQUIPO</span>
-                                    <span id="profGear" class="prof-stat__value">-</span>
-                                </div>
-                                <div class="prof-stat">
-                                    <span class="prof-stat__label">FUERZA DE TAREAS</span>
-                                    <span id="profClan" class="prof-stat__value">-</span>
-                                </div>
-                                <div class="prof-stat">
-                                    <span class="prof-stat__label">FACCIÓN</span>
-                                    <span id="profFaction" class="prof-stat__value">-</span>
+                                <div class="progression-main">
+                                    <div class="xp-info">
+                                        <span class="xp-label">EXPERIENCIA ACUMULADA</span>
+                                        <span id="profXPText" class="xp-value">0 / 5 XP</span>
+                                    </div>
+                                    <div class="xp-bar-tactical">
+                                        <div id="profXPFill" class="xp-bar-fill-tactical"></div>
+                                        <div class="xp-bar-segments">
+                                            <span></span><span></span><span></span><span></span><span></span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="profile-exp-section u-margin-t-md">
-                                <div class="exp-header">
-                                    <span id="profLevel">NIVEL 1</span>
-                                    <span id="profXPText">0 / 5 XP</span>
+                            <!-- STATS HUB -->
+                            <div class="profile-stats-hub">
+                                <div class="stat-node">
+                                    <span class="stat-node__label">ESPECIALIDAD</span>
+                                    <span id="profSpecialty" class="stat-node__value">-</span>
                                 </div>
-                                <div class="exp-bar">
-                                    <div id="profXPFill" class="exp-bar__fill" style="width: 0%"></div>
+                                <div class="stat-node">
+                                    <span class="stat-node__label">MISIONES</span>
+                                    <span id="profMissions" class="stat-node__value">0</span>
+                                </div>
+                                <div class="stat-node">
+                                    <span class="stat-node__label">EQUIPO</span>
+                                    <span id="profGear" class="stat-node__value">-</span>
+                                </div>
+                                <div class="stat-node">
+                                    <span class="stat-node__label">CLAN</span>
+                                    <span id="profClan" class="stat-node__value">-</span>
+                                </div>
+                                <div class="stat-node">
+                                    <span class="stat-node__label">FACCIÓN</span>
+                                    <span id="profFaction" class="stat-node__value">-</span>
                                 </div>
                             </div>
 
