@@ -34,7 +34,7 @@ export const initSecretary = (api) => {
         const regWrap = document.getElementById('registerFormWrap');
         const attWrap = document.getElementById('attendanceModalWrap');
 
-        if (authModal) authModal.classList.add('active');
+        if (authModal) authModal.classList.add('is-open');
         if (loginWrap) loginWrap.classList.add('hidden');
         if (regWrap) regWrap.classList.add('hidden');
         if (attWrap) attWrap.classList.remove('hidden');
@@ -47,13 +47,13 @@ export const initSecretary = (api) => {
     // Modal Close (using existing close button logic)
     document.getElementById('modalClose')?.addEventListener('click', () => {
         const authModal = document.getElementById('authModal');
-        if (authModal) authModal.classList.remove('active');
+        if (authModal) authModal.classList.remove('is-open');
         els.modal.classList.add('hidden');
     });
     
     document.getElementById('modalOverlay')?.addEventListener('click', () => {
         const authModal = document.getElementById('authModal');
-        if (authModal) authModal.classList.remove('active');
+        if (authModal) authModal.classList.remove('is-open');
         els.modal.classList.add('hidden');
     });
 

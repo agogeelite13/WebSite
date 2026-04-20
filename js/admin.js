@@ -433,15 +433,15 @@ export const attachAdminGlobals = (api, nextSundayKey) => {
 
     if (configBtn && configModal) {
         configBtn.addEventListener('click', () => {
-            configModal.classList.add('active');
+            configModal.classList.add('is-open');
             if (sheetsUrlInput) sheetsUrlInput.value = localStorage.getItem('sec_sheets_url') || '';
         });
         
         document.getElementById('configModalClose')?.addEventListener('click', () => {
-            configModal.classList.remove('active');
+            configModal.classList.remove('is-open');
         });
         document.getElementById('configModalOverlay')?.addEventListener('click', () => {
-            configModal.classList.remove('active');
+            configModal.classList.remove('is-open');
         });
     }
 
@@ -450,7 +450,7 @@ export const attachAdminGlobals = (api, nextSundayKey) => {
         if (url) {
             localStorage.setItem('sec_sheets_url', url);
             alert('Enlace con Google Sheets establecido correctamente.');
-            configModal?.classList.remove('active');
+            configModal?.classList.remove('is-open');
         } else {
             alert('Por favor, introduce una URL válida.');
         }
