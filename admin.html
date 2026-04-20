@@ -367,6 +367,35 @@
                     <button type="submit" class="btn btn--primary btn--full">GUARDAR REGISTRO</button>
                 </form>
             </div>
+
+            <!-- EXPENSE MODAL (SECRETARY) -->
+            <div id="expenseModalWrap" class="hidden">
+                <h3 class="modal__title">REGISTRAR GASTO OPERATIVO</h3>
+                <form id="expenseForm">
+                    <div class="form-group">
+                        <label class="form-label">Fecha</label>
+                        <input type="date" id="expDate" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Concepto / Descripción</label>
+                        <input type="text" id="expConcept" class="form-input" placeholder="Ej: Nuevas bolas 0.25g" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Categoría</label>
+                        <select id="expCategory" class="form-input">
+                            <option value="material">MATERIAL / CONSUMIBLES</option>
+                            <option value="reparacion">REPARACIONES</option>
+                            <option value="marketing">MARKETING / RRSS</option>
+                            <option value="logistica">LOGÍSTICA / TRANSPORTE</option>
+                            <option value="otros">OTROS GASTOS</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Importe Total (€)</label>
+                        <input type="number" id="expAmount" class="form-input" step="0.01" placeholder="0.00" required>
+                    </div>
+                    <button type="submit" class="btn btn--primary btn--full">GUARDAR GASTO</button>
+                </form>
             </div>
         </div>
     </div>
