@@ -4260,19 +4260,20 @@ select.form-input option {
    PHASE DELTA: IMMERSIVE UI
    ============================================= */
 
-/* Hero Cinematic */
-.hero__video-wrap {
+/* Hero Cinematic Image */
+.hero__image-wrap {
     position: absolute;
     inset: 0;
     overflow: hidden;
     z-index: 0;
 }
 
-.hero__video {
+.hero__bg-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: brightness(0.6) contrast(1.1) grayscale(30%);
+    object-position: center;
+    filter: brightness(0.6) contrast(1.1);
 }
 
 /* scan-line logic */
