@@ -91,6 +91,7 @@
             <div id="adminPanel" class="admin-panel">
                 <div class="admin-panel__header">
                     <h2 class="admin-panel__title">CENTRO DE MANDO ESTRATÉGICO</h2>
+                    <button id="openConfigBtn" class="btn btn--secondary btn--sm" title="Configuración Técnica">⚙️</button>
                 </div>
                 <div class="admin-panel__content">
                     <div class="admin-grid">
@@ -339,6 +340,22 @@
                     <button type="submit" class="btn btn--primary btn--full">GUARDAR REGISTRO</button>
                 </form>
             </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONFIG MODAL (ADMIN) -->
+    <div id="configModal" class="modal">
+        <div class="modal__overlay" id="configModalOverlay"></div>
+        <div class="modal__content">
+            <button class="modal__close" id="configModalClose">&times;</button>
+            <h3 class="modal__title">CONFIGURACIÓN TÉCNICA</h3>
+            <div class="form-group">
+                <label class="form-label">URL de Google Sheets (Apps Script)</label>
+                <input type="text" id="sheetsUrlInput" class="form-input" placeholder="https://script.google.com/macros/s/...">
+                <p class="u-text-muted" style="font-size:0.6rem; margin-top:5px;">Esta URL permite que la Oficina de Secretaría sincronice los datos automáticamente.</p>
+            </div>
+            <button id="saveConfigBtn" class="btn btn--primary btn--full">GUARDAR CONFIGURACIÓN</button>
         </div>
     </div>
     

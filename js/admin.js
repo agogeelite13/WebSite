@@ -424,6 +424,37 @@ export const attachAdminGlobals = (api, nextSundayKey) => {
         if (ok) updateAdminDashboard(api, nextSundayKey);
         else alert('Error al guardar asistencia. Revisa los permisos en Supabase.');
     };
+
+    // --- TECHNICAL CONFIG LOGIC ---
+    const configBtn = document.getElementById('openConfigBtn');
+    const configModal = document.getElementById('configModal');
+    const saveConfigBtn = document.getElementById('saveConfigBtn');
+    const sheetsUrlInput = document.getElementById('sheetsUrlInput');
+
+    if (configBtn && configModal) {
+        configBtn.addEventListener('click', () => {
+            configModal.classList.add('active');
+            if (sheetsUrlInput) sheetsUrlInput.value = localStorage.getItem('sec_sheets_url') || '';
+        });
+        
+        document.getElementById('configModalClose')?.addEventListener('click', () => {
+            configModal.classList.remove('active');
+        });
+        document.getElementById('configModalOverlay')?.addEventListener('click', () => {
+            configModal.classList.remove('active');
+        });
+    }
+
+    saveConfigBtn?.addEventListener('click', () => {
+        const url = sheetsUrlInput?.value.trim();
+        if (url) {
+            localStorage.setItem('sec_sheets_url', url);
+            alert('Enlace con Google Sheets establecido correctamente.');
+            configModal?.classList.remove('active');
+        } else {
+            alert('Por favor, introduce una URL válida.');
+        }
+    });
 };
 
 export const applyPermissions = (userProfile) => {
