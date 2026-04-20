@@ -5022,3 +5022,10 @@ select.form-input option {
 
 .sec-header-actions { display: flex; gap: 10px; }
 @media (max-width: 600px) { .sec-header-actions { width: 100%; flex-direction: column; margin-top: 10px; } }
+/* AVATAR PICKER */
+.avatar-picker { margin: 15px 0; padding: 15px; background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 4px; }
+.avatar-picker__title { font-size: 0.6rem; color: var(--bronze); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; font-family: var(--font-display); }
+.avatar-picker__grid { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.avatar-picker__option { width: 55px; height: 55px; object-fit: cover; border: 2px solid var(--border); border-radius: 50%; cursor: pointer; opacity: 0.6; transition: all 0.3s ease; }
+.avatar-picker__option:hover { opacity: 1; border-color: var(--bronze); transform: scale(1.1); }
+.avatar-picker__option.selected { opacity: 1; border-color: var(--gold); box-shadow: 0 0 15px rgba(212,175,55,0.4); }

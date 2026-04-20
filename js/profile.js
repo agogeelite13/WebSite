@@ -156,13 +156,29 @@ export const updateProfileView = (userProfile) => {
         if (elements.profXPFill) elements.profXPFill.style.width = level >= 20 ? '100%' : `${xpPercent}%`;
     }
 
+    // Use custom avatar if user has one saved, otherwise use rank-based
+    const finalAvatar = userProfile.avatar || avatarSrc;
     const avatarImg = document.getElementById('profAvatar');
     const avatarFrame = document.getElementById('operatorAvatarFrame');
-    if (avatarImg) avatarImg.src = avatarSrc;
+    if (avatarImg) avatarImg.src = finalAvatar;
     if (avatarFrame) {
         avatarFrame.className = 'operator-avatar-frame';
         avatarFrame.classList.add(frameClass);
     }
+
+    // Avatar Picker: highlight current & attach click handlers
+    document.querySelectorAll('.avatar-picker__option').forEach(opt => {
+        opt.classList.toggle('selected', opt.dataset.avatar === finalAvatar);
+        opt.onclick = async () => {
+            const newAvatar = opt.dataset.avatar;
+            if (avatarImg) avatarImg.src = newAvatar;
+            document.querySelectorAll('.avatar-picker__option').forEach(o => o.classList.remove('selected'));
+            opt.classList.add('selected');
+            // Save to DB
+            const api = window._api_instance;
+            if (api) await api.saveProfile({ id: userProfile.id, avatar: newAvatar });
+        };
+    });
 
     const profilePanel = document.getElementById('profilePanel');
     if (profilePanel) profilePanel.dataset.tier = tier;

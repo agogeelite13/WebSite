@@ -99,6 +99,7 @@ const updateUI = async () => {
         // Page-specific UI Logic
         const path = window.location.pathname;
         if (path.includes('perfil.html')) {
+            window._api_instance = api;
             profile.updateProfileView(userProfile);
             profile.renderMedals(userProfile, enrollments, getNextSundayKey());
         } else if (path.includes('admin.html')) {
