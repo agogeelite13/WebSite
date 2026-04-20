@@ -6,9 +6,9 @@
  *   setupMissionConfig, renderAdminPhotos, attachAdminGlobals
  */
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// -----------------------------------------------------------------------------
 // DASHBOARD: Renders users list + enrollment list
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// -----------------------------------------------------------------------------
 export const updateAdminDashboard = async (api, nextSundayKey) => {
 
     const adminUserList   = document.getElementById('adminUserList');
@@ -17,7 +17,7 @@ export const updateAdminDashboard = async (api, nextSundayKey) => {
     const adminAforoProgress = document.getElementById('adminAforoProgress');
 
     if (!adminUserList || !adminEnrollList) {
-        console.warn('[ADMIN] adminUserList or adminEnrollList not found in DOM â€“ skipping.');
+        console.warn('[ADMIN] adminUserList or adminEnrollList not found in DOM – skipping.');
         return;
     }
 
@@ -32,7 +32,7 @@ export const updateAdminDashboard = async (api, nextSundayKey) => {
     if (adminAforoCount)    adminAforoCount.textContent    = `${currentCount} / ${maxAforo}`;
     if (adminAforoProgress) adminAforoProgress.style.width = `${Math.min((currentCount / maxAforo) * 100, 100)}%`;
 
-    // â”€â”€ Users list (with INSCRIBIR button) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // —— Users list (with INSCRIBIR button) ———————————————
     if (allUsers.length === 0) {
         adminUserList.innerHTML = '<tr><td colspan="4" style="padding:15px;color:#666;font-size:0.8rem;">No hay usuarios registrados.</td></tr>';
     } else {
@@ -40,9 +40,9 @@ export const updateAdminDashboard = async (api, nextSundayKey) => {
             const isEnrolled = enrolledIdentifiers.some(e => e.user_id === u.id);
             return `
                 <tr>
-                    <td>${u.callsign || u.name || 'â€”'} <small style="opacity:.5">(${u.name || ''})</small></td>
-                    <td>${u.specialty || 'â€”'}</td>
-                    <td style="color:${isEnrolled ? '#2ecc71' : '#aaa'}">${isEnrolled ? 'âœ” INSCRITO' : 'â€”'}</td>
+                    <td>${u.callsign || u.name || '—'} <small style="opacity:.5">(${u.name || ''})</small></td>
+                    <td>${u.specialty || '—'}</td>
+                    <td style="color:${isEnrolled ? '#2ecc71' : '#aaa'}">${isEnrolled ? '✓ INSCRITO' : '—'}</td>
                     <td>
                         <button
                             class="btn btn--primary btn--xs admin-enroll-btn"
@@ -55,11 +55,11 @@ export const updateAdminDashboard = async (api, nextSundayKey) => {
         }).join('');
     }
 
-    // â”€â”€ Enrolled list (with ASISTIÃ“ + BORRAR buttons) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // —— Enrolled list (with ASISTIÓ + BORRAR buttons) —————————————
     if (enrolledIdentifiers.length === 0) {
-        adminEnrollList.innerHTML = '<p style="padding:15px;color:#666;font-size:0.8rem;">Nadie inscrito todavÃ­a.</p>';
+        adminEnrollList.innerHTML = '<p style="padding:15px;color:#666;font-size:0.8rem;">Nadie inscrito todavía.</p>';
     } else {
-        const gearMap = { own: 'PROPIA', complete: 'COMPLETO', replica: 'RÃ‰PLICA', basic: 'BÃSICO' };
+        const gearMap = { own: 'PROPIA', complete: 'COMPLETO', replica: 'RÉPLICA', basic: 'BÁSICO' };
         adminEnrollList.innerHTML = enrolledIdentifiers.map(entry => {
             const u = entry.is_guest
                 ? { callsign: entry.guest_name, name: entry.guest_name, gear: entry.gear }
@@ -80,7 +80,7 @@ export const updateAdminDashboard = async (api, nextSundayKey) => {
                                 data-sunkey="${nextSundayKey}"
                                 data-enrollid="${entry.id}"
                                 ${hasAttended ? 'disabled' : ''}>
-                                ${hasAttended ? 'CONFIRMADO' : 'ASISTIÃ“'}
+                                ${hasAttended ? 'CONFIRMADO' : 'ASISTIÓ'}
                             </button>` : ''}
                         <button class="btn btn--outline btn--xs admin-unenroll-btn"
                             data-enrollid="${entry.id}">
@@ -91,7 +91,7 @@ export const updateAdminDashboard = async (api, nextSundayKey) => {
         }).join('');
     }
 
-    // â”€â”€ Attach event listeners (replaces window.onclick handlers) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // —— Attach event listeners (replaces window.onclick handlers) ———————————
     _attachDashboardListeners(api, nextSundayKey);
 };
 
@@ -116,7 +116,7 @@ const _attachDashboardListeners = (api, nextSundayKey) => {
         });
     });
 
-    // ASISTIÃ“ buttons
+    // ASISTIÓ buttons
     document.querySelectorAll('.admin-attendance-btn').forEach(btn => {
         btn.addEventListener('click', async () => {
             const userId   = btn.dataset.uid;
@@ -126,7 +126,7 @@ const _attachDashboardListeners = (api, nextSundayKey) => {
             const user = await api.getProfile(userId);
             if (!user) {
                 console.error('[ADMIN] getProfile returned null for', userId);
-                alert('No se encontrÃ³ el perfil del usuario.');
+                alert('No se encontró el perfil del usuario.');
                 return;
             }
             const history = Array.isArray(user.mission_history) ? user.mission_history : [];
@@ -140,7 +140,7 @@ const _attachDashboardListeners = (api, nextSundayKey) => {
                 console.error('[ADMIN] Attendance save FAILED');
                 alert('Error al guardar asistencia. Revisa los permisos en Supabase.');
                 btn.disabled = false;
-                btn.textContent = 'ASISTIÃ“';
+                btn.textContent = 'ASISTIÓ';
             }
         });
     });
@@ -148,15 +148,16 @@ const _attachDashboardListeners = (api, nextSundayKey) => {
     // BORRAR (unenroll) buttons
     document.querySelectorAll('.admin-unenroll-btn').forEach(btn => {
         btn.addEventListener('click', async () => {
-            const enrollmentId = btn.dataset.enrollid;
+            if (!confirm('¿Eliminar esta inscripción?')) return;
+            const enrollId = btn.dataset.enrollid;
                     btn.disabled = true;
             btn.textContent = '...';
-            const ok = await api.unenroll(enrollmentId);
+            const ok = await api.unenroll(enrollId);
             if (ok) {
                             updateAdminDashboard(api, nextSundayKey);
             } else {
                 console.error('[ADMIN] Unenroll FAILED');
-                alert('Error al borrar inscripciÃ³n. Revisa los permisos en Supabase.');
+                alert('Error al borrar inscripción.');
                 btn.disabled = false;
                 btn.textContent = 'BORRAR';
             }
@@ -164,144 +165,37 @@ const _attachDashboardListeners = (api, nextSundayKey) => {
     });
 };
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// MANIFESTO DOWNLOAD
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-export const downloadManifesto = async (api, nextSundayKey) => {
-    const dbEnrollments = await api.getEnrollments();
-    const list          = dbEnrollments[nextSundayKey] || [];
-    const allUsers      = await api.getUsers();
-    const gearMap       = { own: 'PROPIA', complete: 'COMPLETO', replica: 'RÃ‰PLICA', basic: 'BÃSICO' };
-
-    let manifest  = `MANIFESTO AGOGE ELITE - ${nextSundayKey}\n`;
-    manifest     += `TOTAL INSCRITOS: ${list.length}\n`;
-    manifest     += `------------------------------------------\n`;
-
-    list.forEach((entry, i) => {
-        const u = entry.is_guest
-            ? { callsign: entry.guest_name, name: entry.guest_name, gear: entry.gear }
-            : (allUsers.find(x => x.id === entry.user_id) || { callsign: 'â€”', name: entry.user_email, gear: entry.gear });
-        const gearStr = gearMap[entry.gear || 'own'] || 'N/A';
-        manifest += `${i + 1}. ${u?.callsign || 'N/A'} (${u?.name || entry.user_email}) - ${gearStr}\n`;
-    });
-
-    const blob = new Blob([manifest], { type: 'text/plain' });
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement('a');
-    a.href     = url;
-    a.download = `manifesto_agoge_${nextSundayKey}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-};
-
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// MISSION CONFIG FORM
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-export const setupMissionConfig = async (api, nextSundayKey) => {
-    const form = document.getElementById('adminMissionForm');
-    if (!form) return;
-
-    // Prevent double-binding if called multiple times
-    if (form.dataset.bound === 'true') return;
-    form.dataset.bound = 'true';
-
-    // Load current settings
-    const settings = await api.getMissionSettings(nextSundayKey);
-    if (settings) {
-            const el = id => document.getElementById(id);
-        if (el('confSituation')) el('confSituation').value = settings.situation  || '';
-        if (el('confMission'))   el('confMission').value   = settings.mission    || '';
-        if (el('confGear'))      el('confGear').value      = settings.gear_rules || '';
-        if (el('confMap'))       el('confMap').value       = settings.map_url    || '';
-        if (el('confMode'))      el('confMode').value      = settings.game_mode  || 'tdm';
-    }
-
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const el = id => document.getElementById(id);
-        const missionData = {
-            sun_key:   nextSundayKey,
-            situation: el('confSituation')?.value || '',
-            mission:   el('confMission')?.value   || '',
-            gear_rules: el('confGear')?.value     || '',
-            map_url:   el('confMap')?.value        || '',
-            game_mode: el('confMode')?.value       || 'tdm'
-        };
-    
-        const btn      = form.querySelector('[type="submit"]');
-        const feedback = document.getElementById('configFeedback');
-        if (btn) btn.disabled = true;
-
-        const success = await api.saveMissionSettings(missionData);
-        if (success) {
-                    if (feedback) { feedback.style.display = 'block'; feedback.style.color = '#2ecc71'; feedback.textContent = 'âœ” OPORD publicada con Ã©xito.'; }
-            else alert('Â¡MisiÃ³n publicada con Ã©xito!');
-        } else {
-            console.error('[ADMIN] Mission save FAILED');
-            if (feedback) { feedback.style.display = 'block'; feedback.style.color = 'var(--blood)'; feedback.textContent = 'âœ– Error al guardar. Revisa permisos Supabase.'; }
-            else alert('Error al publicar la misiÃ³n. Revisa los permisos en Supabase (admin_fix_v2.sql).');
-        }
-        if (btn) btn.disabled = false;
-    });
-};
-
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// PHOTO MODERATION
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// -----------------------------------------------------------------------------
+// PHOTOS: Approve/Reject community photos
+// -----------------------------------------------------------------------------
 export const renderAdminPhotos = async (api) => {
     const photoList = document.getElementById('adminPhotoList');
     if (!photoList) return;
 
-    photoList.innerHTML = '<div style="text-align:center;font-size:.8rem;color:var(--text-muted);padding:10px;">Cargando inteligencia...</div>';
+    const photos = await api.getCommunityPhotos();
+    const pending = photos.filter(p => p.status === 'pending');
 
-    // Fetch both pending and approved to allow deleting from mural
-    const pending = await api.getCommunityPhotos('pending');
-    const approved = await api.getCommunityPhotos('approved');
-    const photos = [...pending, ...approved].sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
-
-    if (photos.length === 0) {
-        photoList.innerHTML = '<div style="text-align:center;font-size:.8rem;color:var(--text-muted);padding:20px;">No hay archivos visuales registrados.</div>';
+    if (pending.length === 0) {
+        photoList.innerHTML = '<p style="padding:15px;color:#666;font-size:0.8rem;">No hay fotos pendientes de moderación.</p>';
         return;
     }
 
-    photoList.innerHTML = '';
-    photos.forEach(photo => {
-        const isApproved = photo.status === 'approved';
-        const div = document.createElement('div');
-        div.className = 'admin-item';
-        div.style.cssText = `flex-direction:column;align-items:stretch;padding:10px;background:rgba(0,0,0,.5);margin-bottom:15px;border-left:3px solid ${isApproved ? '#2ecc71' : 'var(--bronze)'};`;
-        div.innerHTML = `
-            <div style="position:relative;">
-                <img src="${photo.image_url}" alt="Intel"
-                     style="width:100%;height:150px;object-fit:cover;border:1px solid var(--border);border-radius:4px;margin-bottom:10px;">
-                <span style="position:absolute;top:5px;right:5px;background:${isApproved ? '#2ecc71' : 'var(--bronze)'};color:black;font-size:0.6rem;padding:2px 6px;border-radius:2px;font-weight:bold;">
-                    ${isApproved ? 'EN MURAL' : 'PENDIENTE'}
-                </span>
-            </div>
-            <div style="font-size:.75rem;color:var(--text-muted);margin-bottom:5px;">
-                <span style="color:var(--bronze-light);">OP:</span> ${photo.users?.callsign || (photo.user_id ? photo.user_id.split('-')[0] : 'ANÓNIMO')}
-            </div>
-            <div style="font-size:.8rem;line-height:1.2;margin-bottom:15px;">"${photo.caption || ''}"</div>
-            <div style="display:flex;flex-direction:column;gap:8px;">
-                <div style="display:flex;gap:8px;">
-                    ${!isApproved ? `
-                    <button class="btn btn--xs photo-reject-btn"
-                        data-id="${photo.id}"
-                        style="background:var(--blood);color:var(--white);flex:1;">DENEGAR</button>
-                    <button class="btn btn--outline btn--xs photo-approve-btn"
-                        data-id="${photo.id}"
-                        style="border-color:#2ecc71;color:#2ecc71;flex:1;">APROBAR</button>
-                    ` : '<span style="color:#2ecc71;font-size:0.7rem;text-align:center;width:100%;">Esta foto ya es pública en el mural.</span>'}
+    photoList.innerHTML = pending.map(p => `
+        <div class="admin-item" style="flex-direction:column; align-items:flex-start; gap:10px;">
+            <div style="display:flex; gap:15px; width:100%;">
+                <img src="${p.url}" style="width:80px; height:80px; object-fit:cover; border:1px solid var(--border);">
+                <div style="flex:1;">
+                    <span class="admin-item__name">${p.user_name || 'Anónimo'}</span>
+                    <span class="admin-item__sub">ID: ${p.id.split('-')[0]}</span>
+                    <div style="margin-top:10px; display:flex; gap:5px;">
+                        <button class="btn btn--primary btn--xs photo-approve-btn" data-id="${p.id}">APROBAR</button>
+                        <button class="btn btn--outline btn--xs photo-reject-btn" data-id="${p.id}">DENEGAR</button>
+                        <button class="btn btn--outline btn--xs photo-delete-btn" data-id="${p.id}" data-url="${p.url}" style="color:var(--red); border-color:var(--red);">BORRAR</button>
+                    </div>
                 </div>
-                <button class="btn btn--xs photo-delete-btn"
-                    data-id="${photo.id}"
-                    data-url="${photo.image_url}"
-                    style="background:transparent;border:1px solid var(--blood);color:var(--blood);font-size:0.65rem;">BORRAR PERMANENTEMENTE</button>
-            </div>`;
-        photoList.appendChild(div);
-    });
+            </div>
+        </div>
+    `).join('');
 
     // Attach listeners
     photoList.querySelectorAll('.photo-approve-btn').forEach(btn => {
@@ -337,9 +231,9 @@ export const renderAdminPhotos = async (api) => {
     });
 };
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// -----------------------------------------------------------------------------
 // ATTACH GLOBAL HANDLERS (for manual enrollment form in admin.html)
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// -----------------------------------------------------------------------------
 export const attachAdminGlobals = (api, nextSundayKey) => {
 
     // Manual enrollment form button (in admin.html HTML)
@@ -411,7 +305,7 @@ export const attachAdminGlobals = (api, nextSundayKey) => {
     window.adminUnenrollUser = async (enrollmentId) => {
             const ok = await api.unenroll(enrollmentId);
         if (ok) updateAdminDashboard(api, nextSundayKey);
-        else alert('Error al borrar inscripciÃ³n.');
+        else alert('Error al borrar inscripción.');
     };
 
     window.adminConfirmAttendance = async (userId, sunKey) => {
@@ -500,50 +394,104 @@ export const applyPermissions = (userProfile) => {
     }
 };
 
-export const renderUserRoles = async (api) => {
-    const list = document.getElementById('adminUserRoleList');
-    if (!list) return;
-
-    // Cache the api instance for the global handler
-    window._api_instance = api;
-
-    const allUsers = await api.getUsers();
-    if (!allUsers) return;
-
-    list.innerHTML = allUsers.map(u => `
-        <div class="admin-item">
-            <div class="admin-item__info">
-                <span class="admin-item__name" style="font-size:0.8rem;">${u.callsign || u.name}</span>
-                <span class="admin-item__sub" style="font-size:0.6rem;">ROL: ${(u.role || 'recluta').toUpperCase()}</span>
-            </div>
-            <div class="admin-item__actions">
-                <select onchange="adminUpdateRole('${u.id}', this.value)" class="form-input" style="font-size:0.65rem; padding:4px; height:28px; width:120px;">
-                    <option value="recluta" ${u.role === 'recluta' || !u.role ? 'selected' : ''}>Recluta</option>
-                    <option value="secretario" ${u.role === 'secretario' ? 'selected' : ''}>Secretario</option>
-                    <option value="jefe_operaciones" ${u.role === 'jefe_operaciones' ? 'selected' : ''}>Jefe Ops</option>
-                    <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Administrador</option>
-                </select>
-            </div>
-        </div>
-    `).join('');
+const renderUserRoles = async (api) => {
+    const listWrap = document.getElementById('adminUserRoleList');
+    if (!listWrap) return;
+    
+    const users = await api.getUsers();
+    if (users.length === 0) {
+        listWrap.innerHTML = '<p class="u-text-muted">No hay usuarios registrados.</p>';
+        return;
+    }
+    
+    listWrap.innerHTML = `
+        <table class="leaderboard-table">
+            <thead>
+                <tr>
+                    <th>OPERADOR</th>
+                    <th>ROL ACTUAL</th>
+                    <th>ACCIONES</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${users.map(u => `
+                    <tr>
+                        <td><strong>${u.callsign || u.name}</strong><br><small style="opacity:0.6;">${u.email || ''}</small></td>
+                        <td><span class="sec-type-badge sec-type-badge--${u.role || 'recluta'}">${(u.role || 'recluta').toUpperCase()}</span></td>
+                        <td>
+                            <select class="form-input btn--xs" onchange="window.adminChangeUserRole('${u.id}', this.value)" style="padding: 2px 5px; font-size: 0.7rem; width: auto;">
+                                <option value="recluta" ${u.role === 'recluta' ? 'selected' : ''}>RECLUTA</option>
+                                <option value="secretario" ${u.role === 'secretario' ? 'selected' : ''}>SECRETARIO</option>
+                                <option value="jefe_operaciones" ${u.role === 'jefe_operaciones' ? 'selected' : ''}>JEFE OPS</option>
+                                <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>ADMIN</option>
+                            </select>
+                        </td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+    `;
 };
 
-// Global handler for role updates
-window.adminUpdateRole = async (userId, newRole) => {
+// Global role change handler
+window.adminChangeUserRole = async (userId, newRole) => {
     const api = window._api_instance;
     if (!api) return;
-
-    const confirmChange = confirm(`¿Estás seguro de cambiar el rango del operador a ${newRole.toUpperCase()}?`);
-    if (!confirmChange) return renderUserRoles(api); // Refresh to revert visual change
-
-    const user = await api.getProfile(userId);
-    if (!user) return alert('No se pudo encontrar el perfil del operador.');
-
-    const ok = await api.saveProfile({ ...user, role: newRole, is_admin: newRole === 'admin' });
+    
+    const ok = await api.saveProfile({ id: userId, role: newRole });
     if (ok) {
         alert('Rango actualizado correctamente.');
-        renderUserRoles(api);
+        location.reload(); // Refresh to apply permissions
     } else {
         alert('Error al actualizar el rango. Revisa los permisos.');
     }
+};
+
+// -----------------------------------------------------------------------------
+// MISSION CONFIG
+// -----------------------------------------------------------------------------
+export const setupMissionConfig = async (api, nextSundayKey) => {
+    const titleInput = document.getElementById('missionTitleInput');
+    const saveBtn    = document.getElementById('saveMissionConfig');
+    if (!titleInput || !saveBtn) return;
+
+    // Load current config
+    const config = await api.getMissionConfig(nextSundayKey);
+    if (config && config.title) titleInput.value = config.title;
+
+    saveBtn.addEventListener('click', async () => {
+        const title = titleInput.value.trim();
+        if (!title) return alert('Pon un título a la misión.');
+        
+        saveBtn.disabled = true; saveBtn.textContent = '...';
+        const ok = await api.saveMissionConfig(nextSundayKey, { title });
+        if (ok) { alert('Misión configurada.'); }
+        else    { alert('Error al configurar.'); }
+        saveBtn.disabled = false; saveBtn.textContent = 'GUARDAR MISIÓN';
+    });
+};
+
+// -----------------------------------------------------------------------------
+// MANIFESTO DOWNLOAD
+// -----------------------------------------------------------------------------
+export const downloadManifesto = async (api, nextSundayKey) => {
+    const enrollments = await api.getEnrollments();
+    const list = enrollments[nextSundayKey] || [];
+    if (list.length === 0) return alert('No hay inscritos para este domingo.');
+
+    let csv = "OPERADOR;EMAIL;EQUIPO;ROL;COMENTARIOS\n";
+    list.forEach(e => {
+        const name = e.is_guest ? e.guest_name : (e.user_email || 'Anon');
+        const role = e.role || 'assault';
+        const gear = e.gear || 'own';
+        csv += `${name};${e.user_email || ''};${gear};${role};${e.comment || ''}\n`;
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute("download", `Manifiesto_${nextSundayKey}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 };
