@@ -104,6 +104,7 @@ const updateUI = async () => {
         } else if (path.includes('admin.html')) {
             if (!hasAdminAccess) window.location.href = 'index.html';
             const sunKey = getNextSundayKey();
+            window._api_instance = api; // Global bridge for nested admin calls
             admin.updateAdminDashboard(api, sunKey);
             admin.setupMissionConfig(api, sunKey);
             admin.renderAdminPhotos(api);
