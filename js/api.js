@@ -29,6 +29,40 @@ export const api = {
         const { data } = await supabase.from('users').select('*').eq('id', userId).single();
         return data || null;
     },
+    async deletePhoto(id) {
+        const { error } = await supabase.from('photos').delete().eq('id', id);
+        return !error;
+    },
+
+    // --- SECRETARY ATTENDANCE LOGS ---
+    async getAttendanceLogs() {
+        const { data } = await supabase.from('attendance_logs').select('*').order('date', { ascending: false });
+        return data || [];
+    },
+    async saveAttendanceLog(log) {
+        const { error } = await supabase.from('attendance_logs').upsert(log);
+        if (error) console.error('Supabase saveAttendanceLog Error:', error);
+        return !error;
+    },
+    async deleteAttendanceLog(logId) {
+        const { error } = await supabase.from('attendance_logs').delete().eq('id', logId);
+        return !error;
+    },
+    async syncToSheets(record) {
+        const SHEETS_WEBAPP_URL = localStorage.getItem('sec_sheets_url');
+        if (!SHEETS_WEBAPP_URL) return { ok: false, msg: 'URL no configurada' };
+        try {
+            await fetch(SHEETS_WEBAPP_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(record)
+            });
+            return { ok: true };
+        } catch (e) {
+            return { ok: false, msg: e.message };
+        }
+    },
     async getUsers() {
         const { data } = await supabase.from('users').select('*');
         return data || [];

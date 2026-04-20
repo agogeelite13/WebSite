@@ -6,6 +6,7 @@ import { initSupabase, api } from './js/api.js';
 import * as ui from './js/ui.js';
 import * as profile from './js/profile.js';
 import * as admin from './js/admin.js';
+import * as secretary from './js/secretary.js';
 
 // 1. GLOBAL STATE
 let supabase = null;
@@ -108,6 +109,7 @@ const updateUI = async () => {
             admin.renderAdminPhotos(api);
             admin.attachAdminGlobals(api, sunKey);
             admin.applyPermissions(userProfile);
+            secretary.initSecretary(api);
 
             // Download Manifesto Listener
             document.getElementById('downloadManifestoBtn')?.addEventListener('click', () => {

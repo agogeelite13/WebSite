@@ -192,6 +192,65 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- SECRETARY PANEL (NEW) -->
+                <div id="secretaryPanel" class="admin-panel hidden" style="margin-top: 30px;">
+                    <div class="admin-panel__header">
+                        <h2 class="admin-panel__title">OFICINA DE SECRETARÍA</h2>
+                        <button id="addAttendanceBtn" class="btn btn--primary">NUEVA ASISTENCIA</button>
+                    </div>
+                    
+                    <!-- Summary Stats -->
+                    <div class="secretary-stats-grid">
+                        <div class="sec-stat-card">
+                            <span class="sec-stat-card__label">INGRESO HOY</span>
+                            <span id="statIncomeDay" class="sec-stat-card__value">0 €</span>
+                        </div>
+                        <div class="sec-stat-card">
+                            <span class="sec-stat-card__label">ESTA SEMANA</span>
+                            <span id="statIncomeWeek" class="sec-stat-card__value">0 €</span>
+                        </div>
+                        <div class="sec-stat-card">
+                            <span class="sec-stat-card__label">ESTE MES</span>
+                            <span id="statIncomeMonth" class="sec-stat-card__value">0 €</span>
+                        </div>
+                        <div class="sec-stat-card">
+                            <span class="sec-stat-card__label">GRUPOS / INDIV.</span>
+                            <span id="statAttendanceCount" class="sec-stat-card__value">0 / 0</span>
+                        </div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="sec-filters-bar">
+                        <input type="text" id="secSearchName" placeholder="Buscar por nombre..." class="form-input">
+                        <input type="date" id="secFilterDate" class="form-input">
+                        <select id="secFilterType" class="form-input">
+                            <option value="all">TODOS LOS TIPOS</option>
+                            <option value="individual">INDIVIDUAL</option>
+                            <option value="grupo">GRUPO</option>
+                        </select>
+                    </div>
+
+                    <!-- Main Table -->
+                    <div class="sec-table-wrap">
+                        <table class="leaderboard-table">
+                            <thead>
+                                <tr>
+                                    <th>DÍA</th>
+                                    <th>TIPO</th>
+                                    <th>NOMBRE</th>
+                                    <th>PAX</th>
+                                    <th>TOTAL</th>
+                                    <th>P/PAX</th>
+                                    <th>ACCIONES</th>
+                                </tr>
+                            </thead>
+                            <tbody id="secretaryAttendanceList">
+                                <!-- Data injected via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
@@ -243,6 +302,42 @@
                     <button type="submit" class="btn btn--primary btn--full">Crear Cuenta</button>
                 </form>
                 <p class="modal__footer">¿Ya tienes cuenta? <button id="toLogin" class="text-link">Inicia sesión</button></p>
+            </div>
+
+            <!-- ATTENDANCE MODAL (SECRETARY) -->
+            <div id="attendanceModalWrap" class="hidden">
+                <h3 class="modal__title">REGISTRO DE ASISTENCIA</h3>
+                <form id="attendanceForm" class="auth-form">
+                    <div class="form-group">
+                        <label class="form-label">Fecha de la Actividad</label>
+                        <input type="date" id="attDate" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tipo de Reserva</label>
+                        <select id="attType" class="form-input" required>
+                            <option value="individual">Individual</option>
+                            <option value="grupo">Grupo</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Nombre (Persona o Grupo)</label>
+                        <input type="text" id="attName" class="form-input" required placeholder="Ej: Grupo Smith o Juan Pérez">
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Nº Jugadores</label>
+                            <input type="number" id="attPlayers" class="form-input" required min="1" value="1">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Precio Total (€)</label>
+                            <input type="number" id="attTotalPrice" class="form-input" required min="0" step="0.01">
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-top:10px; text-align:center;">
+                        <p style="color:var(--bronze-light); font-size:0.8rem; letter-spacing:1px;">PRECIO / PAX: <strong id="attPricePerPax">0.00</strong> €</p>
+                    </div>
+                    <button type="submit" class="btn btn--primary btn--full">GUARDAR REGISTRO</button>
+                </form>
             </div>
         </div>
     </div>
