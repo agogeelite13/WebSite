@@ -120,7 +120,10 @@ export const updateProfileView = (userProfile) => {
             elements.profCallsign.innerHTML += ' <span class="supreme-badge">MANDO</span>';
         }
         // Force Max Stats for Admin View
-        if (elements.profLevel) elements.profLevel.textContent = `NIVEL MAX`;
+        if (elements.profLevel) {
+            elements.profLevel.textContent = 'MAX';
+            elements.profLevel.style.fontSize = '0.9rem';
+        }
         if (elements.profXPText) elements.profXPText.textContent = `∞ / ∞ XP`;
         if (elements.profXPFill) elements.profXPFill.style.width = `100%`;
     } else {
@@ -141,9 +144,16 @@ export const updateProfileView = (userProfile) => {
             avatarSrc = 'avatars/avatar_operador.png';
         }
         
-        if (elements.profLevel) elements.profLevel.textContent = level;
-        if (elements.profXPText) elements.profXPText.textContent = `${currentLevelXP} / 5 XP`;
-        if (elements.profXPFill) elements.profXPFill.style.width = `${xpPercent}%`;
+        if (elements.profLevel) {
+            if (level >= 20) {
+                elements.profLevel.textContent = 'MAX';
+                elements.profLevel.style.fontSize = '0.9rem';
+            } else {
+                elements.profLevel.textContent = level;
+            }
+        }
+        if (elements.profXPText) elements.profXPText.textContent = level >= 20 ? 'NIVEL MÁXIMO' : `${currentLevelXP} / 5 XP`;
+        if (elements.profXPFill) elements.profXPFill.style.width = level >= 20 ? '100%' : `${xpPercent}%`;
     }
 
     const avatarImg = document.getElementById('profAvatar');
