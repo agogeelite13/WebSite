@@ -3583,6 +3583,63 @@ select.form-input option {
     text-shadow: 0 0 5px rgba(46, 204, 113, 0.3);
 }
 
+/* Compact Medals (Phase 37) */
+.profile-medals-row {
+    margin: 0 0 24px;
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+}
+
+.medals-grid-compact {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.medal-slot {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.medal-slot.unlocked {
+    background: rgba(205, 127, 50, 0.1);
+    border-color: var(--bronze);
+    box-shadow: inset 0 0 15px rgba(205, 127, 50, 0.1), 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+.medal-slot:hover {
+    transform: translateY(-3px) scale(1.05);
+    border-color: var(--bronze-light);
+}
+
+.medal-icon {
+    width: 34px;
+    height: 34px;
+    object-fit: contain;
+    filter: grayscale(1) brightness(0.5) opacity(0.5);
+    transition: all 0.4s ease;
+}
+
+.medal-icon.unlocked {
+    filter: drop-shadow(0 0 5px rgba(205, 127, 50, 0.5));
+    animation: medalGlow 2s infinite alternate;
+}
+
+.medal-slot.empty {
+    opacity: 0.3;
+}
+
 .profile-stats-grid {
     display: grid;
     grid-template-columns: 1fr;
