@@ -425,3 +425,31 @@ export const attachAdminGlobals = (api, nextSundayKey) => {
         else alert('Error al guardar asistencia. Revisa los permisos en Supabase.');
     };
 };
+
+export const applyPermissions = (userProfile) => {
+    if (!userProfile) return;
+    
+    const role = userProfile.role;
+    const isFullAdmin = role === 'admin' || userProfile.is_admin;
+    
+    // Select containers
+    const dashCol = document.querySelector('.admin-col--dash');
+    const configCol = document.querySelector('.admin-col--config');
+    const photosCol = document.querySelector('.admin-col--photos');
+    
+    if (role === 'jefe_operaciones') {
+        // Jefe de Operaciones sees everything except photos
+        if (photosCol) photosCol.style.display = 'none';
+        if (dashCol) dashCol.style.display = 'block';
+        if (configCol) configCol.style.display = 'block';
+    } else if (role === 'secretario') {
+        // Secretario - Hidden for now, restricted access
+        if (photosCol) photosCol.style.display = 'none';
+        if (dashCol) dashCol.style.display = 'none';
+        if (configCol) configCol.style.display = 'none';
+        console.log('[ADMIN] Secretary role detected - Waiting for specific tasks.');
+    } else if (!isFullAdmin) {
+        // Safety redirect
+        window.location.href = 'index.html';
+    }
+};

@@ -92,7 +92,8 @@ const updateUI = async () => {
         
         // Dynamic Navbar Links
         const navAdmin = document.getElementById('navAdminLink');
-        if (navAdmin && userProfile.is_admin) navAdmin.classList.remove('hidden');
+        const hasAdminAccess = ['admin', 'jefe_operaciones', 'secretario'].includes(userProfile.role) || userProfile.is_admin;
+        if (navAdmin && hasAdminAccess) navAdmin.classList.remove('hidden');
 
         // Page-specific UI Logic
         const path = window.location.pathname;
@@ -100,12 +101,13 @@ const updateUI = async () => {
             profile.updateProfileView(userProfile);
             profile.renderMedals(userProfile, enrollments, getNextSundayKey());
         } else if (path.includes('admin.html')) {
-            if (!userProfile.is_admin) window.location.href = 'index.html';
+            if (!hasAdminAccess) window.location.href = 'index.html';
             const sunKey = getNextSundayKey();
             admin.updateAdminDashboard(api, sunKey);
             admin.setupMissionConfig(api, sunKey);
             admin.renderAdminPhotos(api);
             admin.attachAdminGlobals(api, sunKey);
+            admin.applyPermissions(userProfile);
 
             // Download Manifesto Listener
             document.getElementById('downloadManifestoBtn')?.addEventListener('click', () => {
