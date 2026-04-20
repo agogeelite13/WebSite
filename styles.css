@@ -1018,6 +1018,12 @@ p {
     box-shadow: var(--shadow-md);
 }
 
+.about__card--centered {
+    grid-column: 1 / -1 !important;
+    max-width: 800px;
+    margin: 0 auto !important;
+}
+
 .about__card-accent {
     position: absolute;
     top: 0;
