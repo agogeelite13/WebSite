@@ -27,14 +27,30 @@ export const initSecretary = (api) => {
 
     // Add Button
     els.addBtn?.addEventListener('click', () => {
+        const authModal = document.getElementById('authModal');
+        const loginWrap = document.getElementById('loginFormWrap');
+        const regWrap = document.getElementById('registerFormWrap');
+
+        if (authModal) authModal.classList.add('active');
+        if (loginWrap) loginWrap.classList.add('hidden');
+        if (regWrap) regWrap.classList.add('hidden');
+        
         els.modal.classList.remove('hidden');
         els.form.reset();
         const dateInput = document.getElementById('attDate');
         if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
     });
 
-    // Modal Close
+    // Modal Close (using existing close button logic)
     document.getElementById('modalClose')?.addEventListener('click', () => {
+        const authModal = document.getElementById('authModal');
+        if (authModal) authModal.classList.remove('active');
+        els.modal.classList.add('hidden');
+    });
+    
+    document.getElementById('modalOverlay')?.addEventListener('click', () => {
+        const authModal = document.getElementById('authModal');
+        if (authModal) authModal.classList.remove('active');
         els.modal.classList.add('hidden');
     });
 
