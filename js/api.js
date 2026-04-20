@@ -48,7 +48,21 @@ export const api = {
         const { error } = await supabase.from('attendance_logs').delete().eq('id', logId);
         return !error;
     },
-    async syncToSheets(record) {
+    // --- EXPENSES ---
+    async getExpenseLogs() {
+        const { data } = await supabase.from('expense_logs').select('*').order('date', { ascending: false });
+        return data || [];
+    },
+    async saveExpenseLog(log) {
+        const { error } = await supabase.from('expense_logs').upsert(log);
+        if (error) console.error('Supabase saveExpenseLog Error:', error);
+        return !error;
+    },
+    async deleteExpenseLog(logId) {
+        const { error } = await supabase.from('expense_logs').delete().eq('id', logId);
+        return !error;
+    },
+    async syncToSheets(record, type = 'attendance') {
         const DEFAULT_URL = 'https://script.google.com/macros/s/AKfycbzMVnIleBd4QxemWy8Qsrb7ZdqjPULzmzOQ2TLWrKxzWKtD1q2sOYuoEt3r1DsAKC8K/exec';
         const SHEETS_WEBAPP_URL = localStorage.getItem('sec_sheets_url') || DEFAULT_URL;
         if (!SHEETS_WEBAPP_URL) return { ok: false, msg: 'URL no configurada' };

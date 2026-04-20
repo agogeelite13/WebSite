@@ -1,6 +1,6 @@
 /**
  * AGOGE ELITE - Secretary Module
- * Attendance & Financial Management
+ * Attendance & Financial Management (Income & Expenses)
  */
 
 export const initSecretary = (api) => {
@@ -9,6 +9,7 @@ export const initSecretary = (api) => {
         modal: document.getElementById('attendanceModalWrap'),
         form: document.getElementById('attendanceForm'),
         list: document.getElementById('secretaryAttendanceList'),
+        expList: document.getElementById('secretaryExpenseList'),
         search: document.getElementById('secSearchName'),
         filterDate: document.getElementById('secFilterDate'),
         filterType: document.getElementById('secFilterType'),
@@ -16,54 +17,87 @@ export const initSecretary = (api) => {
             day: document.getElementById('statIncomeDay'),
             week: document.getElementById('statIncomeWeek'),
             month: document.getElementById('statIncomeMonth'),
+            expMonth: document.getElementById('statExpenseMonth'),
+            netBalance: document.getElementById('statNetBalance'),
             count: document.getElementById('statAttendanceCount')
-        }
+        },
+        // Toggles
+        viewIngresosBtn: document.getElementById('viewIngresosBtn'),
+        viewGastosBtn: document.getElementById('viewGastosBtn'),
+        ingresosWrap: document.getElementById('secIngresosWrap'),
+        gastosWrap: document.getElementById('secGastosWrap'),
+        // Expense elements
+        addExpBtn: document.getElementById('addExpenseBtn'),
+        expModal: document.getElementById('expenseModalWrap'),
+        expForm: document.getElementById('expenseForm')
     };
 
     if (!els.list) return;
 
     // Load initial data
-    console.log('[SECRETARY] Initializing module...');
     renderSecretaryDashboard(api, els);
 
-    // Add Button
+    // View Toggles
+    els.viewIngresosBtn?.addEventListener('click', () => {
+        els.viewIngresosBtn.classList.add('active');
+        els.viewGastosBtn.classList.remove('active');
+        els.ingresosWrap.classList.remove('hidden');
+        els.gastosWrap.classList.add('hidden');
+    });
+
+    els.viewGastosBtn?.addEventListener('click', () => {
+        els.viewGastosBtn.classList.add('active');
+        els.viewIngresosBtn.classList.remove('active');
+        els.gastosWrap.classList.remove('hidden');
+        els.ingresosWrap.classList.add('hidden');
+    });
+
+    // Add Attendance Button
     els.addBtn?.addEventListener('click', () => {
-        console.log('[SECRETARY] Add button clicked');
         const authModal = document.getElementById('authModal');
         const loginWrap = document.getElementById('loginFormWrap');
         const regWrap = document.getElementById('registerFormWrap');
-        const attWrap = document.getElementById('attendanceModalWrap');
-
         if (authModal) authModal.classList.add('is-open');
         if (loginWrap) loginWrap.classList.add('hidden');
         if (regWrap) regWrap.classList.add('hidden');
-        if (attWrap) attWrap.classList.remove('hidden');
         
+        els.modal.classList.remove('hidden');
+        els.expModal.classList.add('hidden'); // Hide other
         els.form.reset();
         const dateInput = document.getElementById('attDate');
         if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
     });
 
-    // Modal Close (using existing close button logic)
+    // Add Expense Button
+    els.addExpBtn?.addEventListener('click', () => {
+        const authModal = document.getElementById('authModal');
+        const loginWrap = document.getElementById('loginFormWrap');
+        const regWrap = document.getElementById('registerFormWrap');
+        if (authModal) authModal.classList.add('is-open');
+        if (loginWrap) loginWrap.classList.add('hidden');
+        if (regWrap) regWrap.classList.add('hidden');
+
+        els.expModal.classList.remove('hidden');
+        els.modal.classList.add('hidden'); // Hide other
+        els.expForm.reset();
+        const dateInput = document.getElementById('expDate');
+        if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
+    });
+
+    // Modal Close (Global for authModal children)
     document.getElementById('modalClose')?.addEventListener('click', () => {
         const authModal = document.getElementById('authModal');
         if (authModal) authModal.classList.remove('is-open');
         els.modal.classList.add('hidden');
-    });
-    
-    document.getElementById('modalOverlay')?.addEventListener('click', () => {
-        const authModal = document.getElementById('authModal');
-        if (authModal) authModal.classList.remove('is-open');
-        els.modal.classList.add('hidden');
+        els.expModal.classList.add('hidden');
     });
 
-    // Form: Auto-calculation
+    // Form: Attendance Auto-calculation
     ['attPlayers', 'attTotalPrice'].forEach(id => {
         document.getElementById(id)?.addEventListener('input', () => {
             const paxInput = document.getElementById('attPlayers');
             const totalInput = document.getElementById('attTotalPrice');
             const display = document.getElementById('attPricePerPax');
-            
             if (paxInput && totalInput && display) {
                 const pax = parseFloat(paxInput.value) || 1;
                 const total = parseFloat(totalInput.value) || 0;
@@ -72,7 +106,7 @@ export const initSecretary = (api) => {
         });
     });
 
-    // Form: Submit
+    // Form: Attendance Submit
     els.form?.addEventListener('submit', async (e) => {
         e.preventDefault();
         const formData = {
@@ -83,92 +117,101 @@ export const initSecretary = (api) => {
             total_price: parseFloat(document.getElementById('attTotalPrice').value),
             price_per_pax: parseFloat(document.getElementById('attPricePerPax').textContent)
         };
-
-        const ok = await api.saveAttendanceLog(formData);
-        if (ok) {
-            // Also sync to sheets if configured
-            await api.syncToSheets(formData);
-            els.modal.classList.add('hidden');
+        if (await api.saveAttendanceLog(formData)) {
+            await api.syncToSheets(formData, 'attendance');
+            document.getElementById('authModal')?.classList.remove('is-open');
             renderSecretaryDashboard(api, els);
-        } else {
-            alert('Error al guardar en base de datos. Verifica la tabla attendance_logs.');
         }
     });
 
-    // Filters
-    [els.search, els.filterDate, els.filterType].forEach(el => {
-        el?.addEventListener('input', () => renderSecretaryDashboard(api, els));
+    // Form: Expense Submit
+    els.expForm?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = {
+            date: document.getElementById('expDate').value,
+            concept: document.getElementById('expConcept').value,
+            category: document.getElementById('expCategory').value,
+            amount: parseFloat(document.getElementById('expAmount').value)
+        };
+        if (await api.saveExpenseLog(formData)) {
+            await api.syncToSheets(formData, 'expense');
+            document.getElementById('authModal')?.classList.remove('is-open');
+            renderSecretaryDashboard(api, els);
+        }
     });
 
-    // Global delete handler
+    // Global delete handlers
     window.adminDeleteAttendance = async (id) => {
-        if (confirm('¿Eliminar este registro permanentemente?')) {
-            const ok = await api.deleteAttendanceLog(id);
-            if (ok) renderSecretaryDashboard(api, els);
+        if (confirm('¿Eliminar registro de asistencia?')) {
+            if (await api.deleteAttendanceLog(id)) renderSecretaryDashboard(api, els);
+        }
+    };
+    window.adminDeleteExpense = async (id) => {
+        if (confirm('¿Eliminar registro de gasto?')) {
+            if (await api.deleteExpenseLog(id)) renderSecretaryDashboard(api, els);
         }
     };
 };
 
 const renderSecretaryDashboard = async (api, els) => {
     const logs = await api.getAttendanceLogs();
-    if (!logs) return;
+    const expenses = await api.getExpenseLogs();
+    if (!logs || !expenses) return;
 
-    const searchTerm = els.search.value.toLowerCase();
-    const filterDate = els.filterDate.value;
-    const filterType = els.filterType.value;
-
-    const filtered = logs.filter(l => {
-        const matchesSearch = (l.name || '').toLowerCase().includes(searchTerm);
-        const matchesDate = !filterDate || l.date === filterDate;
-        const matchesType = filterType === 'all' || l.type === filterType;
-        return matchesSearch && matchesDate && matchesType;
-    });
-
-    // Render Table
-    els.list.innerHTML = filtered.length > 0 ? 
-        filtered.map(l => `
-            <tr>
-                <td style="font-family:monospace; font-size:0.7rem;">${l.date}</td>
-                <td><span class="sec-type-badge sec-type-badge--${l.type}">${l.type}</span></td>
-                <td style="font-weight:bold;">${l.name}</td>
-                <td>${l.players}</td>
-                <td>${l.total_price} €</td>
-                <td style="color:var(--bronze-light);">${l.price_per_pax} €</td>
-                <td>
-                    <button class="sec-action-btn sec-action-btn--delete" onclick="adminDeleteAttendance('${l.id}')">BORRAR</button>
-                </td>
-            </tr>
-        `).join('') :
-        '<tr><td colspan="7" style="text-align:center; padding:20px; color:#666;">No hay registros.</td></tr>';
-
-    // Calculate Totals
+    // Stats calculations
     const now = new Date();
     const todayStr = now.toISOString().split('T')[0];
-    
-    // Day
-    const incomeDay = logs.filter(l => l.date === todayStr).reduce((sum, l) => sum + (l.total_price || 0), 0);
-    els.stats.day.textContent = `${incomeDay.toFixed(2)} €`;
-
-    // Month
     const thisMonth = now.getMonth();
     const thisYear = now.getFullYear();
+
+    const incomeDay = logs.filter(l => l.date === todayStr).reduce((sum, l) => sum + (l.total_price || 0), 0);
     const incomeMonth = logs.filter(l => {
         const d = new Date(l.date);
         return d.getMonth() === thisMonth && d.getFullYear() === thisYear;
     }).reduce((sum, l) => sum + (l.total_price || 0), 0);
-    els.stats.month.textContent = `${incomeMonth.toFixed(2)} €`;
+    
+    const expenseMonth = expenses.filter(e => {
+        const d = new Date(e.date);
+        return d.getMonth() === thisMonth && d.getFullYear() === thisYear;
+    }).reduce((sum, e) => sum + (e.amount || 0), 0);
 
-    // Week (Approx)
     const incomeWeek = logs.filter(l => {
         const d = new Date(l.date);
-        const diffTime = Math.abs(now - d);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-        return diffDays <= 7;
+        const diff = Math.ceil(Math.abs(now - d) / (1000 * 60 * 60 * 24));
+        return diff <= 7;
     }).reduce((sum, l) => sum + (l.total_price || 0), 0);
-    els.stats.week.textContent = `${incomeWeek.toFixed(2)} €`;
 
-    // Counts
-    const groups = logs.filter(l => l.type === 'grupo').length;
-    const indivs = logs.filter(l => l.type === 'individual').length;
-    els.stats.count.textContent = `${groups} / ${indivs}`;
+    if (els.stats.day) els.stats.day.textContent = `${incomeDay.toFixed(2)} €`;
+    if (els.stats.week) els.stats.week.textContent = `${incomeWeek.toFixed(2)} €`;
+    if (els.stats.month) els.stats.month.textContent = `${incomeMonth.toFixed(2)} €`;
+    if (els.stats.expMonth) els.stats.expMonth.textContent = `${expenseMonth.toFixed(2)} €`;
+    if (els.stats.netBalance) {
+        const net = incomeMonth - expenseMonth;
+        els.stats.netBalance.textContent = `${net.toFixed(2)} €`;
+        els.stats.netBalance.style.color = net >= 0 ? 'var(--gold)' : 'var(--blood-light)';
+    }
+    
+    // Attendance Table
+    els.list.innerHTML = logs.length > 0 ? logs.map(l => `
+        <tr>
+            <td style="font-family:monospace; font-size:0.7rem;">${l.date}</td>
+            <td><span class="sec-type-badge sec-type-badge--${l.type}">${l.type}</span></td>
+            <td style="font-weight:bold;">${l.name}</td>
+            <td>${l.players}</td>
+            <td>${l.total_price} €</td>
+            <td style="color:var(--bronze-light);">${l.price_per_pax} €</td>
+            <td><button class="sec-action-btn sec-action-btn--delete" onclick="adminDeleteAttendance('${l.id}')">BORRAR</button></td>
+        </tr>
+    `).join('') : '<tr><td colspan="7">No hay ingresos.</td></tr>';
+
+    // Expenses Table
+    els.expList.innerHTML = expenses.length > 0 ? expenses.map(e => `
+        <tr>
+            <td style="font-family:monospace; font-size:0.7rem;">${e.date}</td>
+            <td style="font-weight:bold;">${e.concept}</td>
+            <td><span class="sec-type-badge sec-type-badge--${e.category}">${e.category}</span></td>
+            <td style="color:var(--blood-light); font-weight:bold;">-${e.amount} €</td>
+            <td><button class="sec-action-btn sec-action-btn--delete" onclick="adminDeleteExpense('${e.id}')">BORRAR</button></td>
+        </tr>
+    `).join('') : '<tr><td colspan="5">No hay gastos registrados.</td></tr>';
 };

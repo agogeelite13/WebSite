@@ -3176,6 +3176,51 @@ select.form-input option {
     display: none !important;
 }
 
+/* SECRETARY EXPENSES & TOGGLES */
+.sec-view-toggle {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+    padding: 5px;
+    background: rgba(0,0,0,0.4);
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.sec-toggle-btn {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    background: transparent;
+    color: rgba(255,255,255,0.5);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.sec-toggle-btn.active {
+    background: var(--gold);
+    color: var(--black);
+    box-shadow: 0 0 15px rgba(212,175,55,0.3);
+}
+
+.sec-stat-card--expense {
+    border-left: 3px solid var(--blood);
+}
+
+.sec-stat-card--balance {
+    background: linear-gradient(135deg, rgba(212,175,55,0.1), transparent);
+    border: 1px solid rgba(212,175,55,0.2);
+}
+
+.sec-stat-card--balance .sec-stat-card__value {
+    text-shadow: 0 0 10px rgba(212,175,55,0.5);
+}
+
 @media (max-width: 768px) {
     .mission-card {
         flex-direction: column;
