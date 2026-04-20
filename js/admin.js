@@ -445,11 +445,69 @@ export const applyPermissions = (userProfile) => {
     } else if (role === 'secretario') {
         // Secretario - Hidden for now, restricted access
         if (photosCol) photosCol.style.display = 'none';
+        if (usersCol) usersCol.style.display = 'none';
         if (dashCol) dashCol.style.display = 'none';
         if (configCol) configCol.style.display = 'none';
         console.log('[ADMIN] Secretary role detected - Waiting for specific tasks.');
-    } else if (!isFullAdmin) {
+    } else if (isFullAdmin) {
+        // Full Admin sees EVERYTHING
+        if (photosCol) photosCol.style.display = 'block';
+        if (usersCol) usersCol.style.display = 'block';
+        if (dashCol) dashCol.style.display = 'block';
+        if (configCol) configCol.style.display = 'block';
+        
+        // Render the user roles list if we are admin
+        renderUserRoles(window._api_instance); 
+    } else {
         // Safety redirect
         window.location.href = 'index.html';
+    }
+};
+
+export const renderUserRoles = async (api) => {
+    const list = document.getElementById('adminUserRoleList');
+    if (!list) return;
+
+    // Cache the api instance for the global handler
+    window._api_instance = api;
+
+    const allUsers = await api.getUsers();
+    if (!allUsers) return;
+
+    list.innerHTML = allUsers.map(u => `
+        <div class="admin-item">
+            <div class="admin-item__info">
+                <span class="admin-item__name" style="font-size:0.8rem;">${u.callsign || u.name}</span>
+                <span class="admin-item__sub" style="font-size:0.6rem;">ROL: ${(u.role || 'recluta').toUpperCase()}</span>
+            </div>
+            <div class="admin-item__actions">
+                <select onchange="adminUpdateRole('${u.id}', this.value)" class="form-input" style="font-size:0.65rem; padding:4px; height:28px; width:120px;">
+                    <option value="recluta" ${u.role === 'recluta' || !u.role ? 'selected' : ''}>Recluta</option>
+                    <option value="secretario" ${u.role === 'secretario' ? 'selected' : ''}>Secretario</option>
+                    <option value="jefe_operaciones" ${u.role === 'jefe_operaciones' ? 'selected' : ''}>Jefe Ops</option>
+                    <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Administrador</option>
+                </select>
+            </div>
+        </div>
+    `).join('');
+};
+
+// Global handler for role updates
+window.adminUpdateRole = async (userId, newRole) => {
+    const api = window._api_instance;
+    if (!api) return;
+
+    const confirmChange = confirm(`¿Estás seguro de cambiar el rango del operador a ${newRole.toUpperCase()}?`);
+    if (!confirmChange) return renderUserRoles(api); // Refresh to revert visual change
+
+    const user = await api.getProfile(userId);
+    if (!user) return alert('No se pudo encontrar el perfil del operador.');
+
+    const ok = await api.saveProfile({ ...user, role: newRole, is_admin: newRole === 'admin' });
+    if (ok) {
+        alert('Rango actualizado correctamente.');
+        renderUserRoles(api);
+    } else {
+        alert('Error al actualizar el rango. Revisa los permisos.');
     }
 };
