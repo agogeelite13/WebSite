@@ -3507,7 +3507,7 @@ select.form-input option {
 }
 
 .rank-badge::before {
-    content: 'â—ˆ';
+    content: '✦';
     color: var(--bronze-light);
 }
 
@@ -3521,7 +3521,7 @@ select.form-input option {
     border-color: #f1c40f;
 }
 
-.rank-badge[data-rank="Ã©lite"] {
+.rank-badge[data-rank="elite"] {
     color: var(--white);
     border-color: var(--white);
     box-shadow: 0 0 10px rgba(255, 68, 68, 0.3);
