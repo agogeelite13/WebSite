@@ -4115,6 +4115,54 @@ select.form-input option {
     border: 1px solid var(--border);
 }
 
+.mission-log-entry {
+    background: rgba(255, 255, 255, 0.03);
+    border-left: 2px solid var(--bronze);
+    padding: 12px 15px;
+    margin-bottom: 12px;
+    transition: all 0.3s var(--ease);
+}
+
+.mission-log-entry:hover {
+    background: rgba(205, 127, 50, 0.05);
+    transform: translateX(5px);
+    border-left-color: var(--bronze-light);
+}
+
+.log-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.log-date {
+    font-size: 0.65rem;
+    color: var(--bronze-light);
+    font-family: monospace;
+    letter-spacing: 1px;
+}
+
+.log-role {
+    font-size: 0.6rem;
+    background: var(--red-dim);
+    color: var(--white);
+    padding: 2px 8px;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+    border: 1px solid rgba(229, 57, 53, 0.3);
+}
+
+.log-op-name {
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    color: var(--white);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+
 .log-entry__date {
     color: var(--bronze);
 }

@@ -171,9 +171,34 @@ export const updateProfileView = (userProfile) => {
     }
 
     if (elements.missionLogList) {
-        const history = userProfile.missionHistory || [];
+        let history = userProfile.missionHistory || [];
+        
+        // Demo for Admin (Requested by user)
+        if (userProfile.role === 'admin' && history.length === 0) {
+            history = [
+                { date: '2026-04-12', operation: 'OPERACIÓN TERMITA', role: 'LÍDER DE ESCUADRA' },
+                { date: '2026-04-05', operation: 'FUEGO CRUZADO', role: 'FRANCOTIRADOR' },
+                { date: '2026-03-29', operation: 'TORMENTA DE ARENA', role: 'MÉDICO' }
+            ];
+        }
+
         elements.missionLogList.innerHTML = history.length > 0 ?
-            history.map(date => `<div class="mission-item">OPERACIÓN: SUNDAY ${date}</div>`).join('') :
+            history.map(item => {
+                const isObj = typeof item === 'object';
+                const missionName = isObj ? item.operation : `OPERACIÓN: SUNDAY ${item}`;
+                const roleText = (isObj && item.role) ? `<span class="log-role">${item.role}</span>` : '';
+                const dateText = isObj ? item.date : item;
+                
+                return `
+                    <div class="mission-log-entry">
+                        <div class="log-header">
+                            <span class="log-date">${dateText}</span>
+                            ${roleText}
+                        </div>
+                        <div class="log-op-name">${missionName}</div>
+                    </div>
+                `;
+            }).join('') :
             '<div class="mission-item">SIN ACTIVIDAD REGISTRADA</div>';
     }
 };
