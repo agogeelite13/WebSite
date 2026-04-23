@@ -92,7 +92,8 @@ export const updateProfileView = (userProfile) => {
         'assault': 'ASALTO (FUSILERO)',
         'medic': 'MÉDICO DE CAMPO',
         'support': 'APOYO (SMG)',
-        'sniper': 'TIRADOR SELECTO'
+        'sniper': 'TIRADOR SELECTO',
+        'leader': 'LÍDER DE ESCUADRA'
     };
     if (elements.profSpecialty) elements.profSpecialty.textContent = specMap[userProfile.specialty] || 'ASALTO';
 
