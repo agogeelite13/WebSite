@@ -264,6 +264,28 @@ const setupAuthUI = () => {
     els.modalClose?.addEventListener('click', () => els.authModal.classList.remove('is-open'));
     els.modalOverlay?.addEventListener('click', () => els.authModal.classList.remove('is-open'));
 
+    // Toggle between Login / Register / Recovery forms
+    els.toRegister?.addEventListener('click', () => {
+        document.getElementById('loginFormWrap')?.classList.add('hidden');
+        document.getElementById('recoveryFormWrap')?.classList.add('hidden');
+        document.getElementById('registerFormWrap')?.classList.remove('hidden');
+    });
+    els.toLogin?.addEventListener('click', () => {
+        document.getElementById('registerFormWrap')?.classList.add('hidden');
+        document.getElementById('recoveryFormWrap')?.classList.add('hidden');
+        document.getElementById('loginFormWrap')?.classList.remove('hidden');
+    });
+    document.getElementById('toRecover')?.addEventListener('click', () => {
+        document.getElementById('loginFormWrap')?.classList.add('hidden');
+        document.getElementById('registerFormWrap')?.classList.add('hidden');
+        document.getElementById('recoveryFormWrap')?.classList.remove('hidden');
+    });
+    document.getElementById('backToLogin')?.addEventListener('click', () => {
+        document.getElementById('recoveryFormWrap')?.classList.add('hidden');
+        document.getElementById('registerFormWrap')?.classList.add('hidden');
+        document.getElementById('loginFormWrap')?.classList.remove('hidden');
+    });
+
     els.logoutBtn?.addEventListener('click', () => supabase.auth.signOut());
 
     els.loginForm?.addEventListener('submit', async (e) => {
