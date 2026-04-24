@@ -6,6 +6,7 @@
 export const initSecretary = (api) => {
     const els = {
         addBtn: document.getElementById('addAttendanceBtn'),
+        addExtraBtn: document.getElementById('addExtraIncomeBtn'),
         modal: document.getElementById('attendanceModalWrap'),
         form: document.getElementById('attendanceForm'),
         list: document.getElementById('secretaryAttendanceList'),
@@ -56,15 +57,34 @@ export const initSecretary = (api) => {
     // Add Attendance Button
     els.addBtn?.addEventListener('click', () => {
         const authModal = document.getElementById('authModal');
-        const loginWrap = document.getElementById('loginFormWrap');
-        const regWrap = document.getElementById('registerFormWrap');
         if (authModal) authModal.classList.add('is-open');
-        if (loginWrap) loginWrap.classList.add('hidden');
-        if (regWrap) regWrap.classList.add('hidden');
+        document.getElementById('loginFormWrap')?.classList.add('hidden');
+        document.getElementById('registerFormWrap')?.classList.add('hidden');
         
         els.modal.classList.remove('hidden');
-        els.expModal.classList.add('hidden'); // Hide other
+        els.expModal.classList.add('hidden');
         els.form.reset();
+        document.getElementById('attModalTitle').textContent = 'REGISTRO DE ASISTENCIA';
+        document.getElementById('attType').value = 'individual';
+        const dateInput = document.getElementById('attDate');
+        if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
+    });
+
+    // Add Extra Income Button
+    els.addExtraBtn?.addEventListener('click', () => {
+        const authModal = document.getElementById('authModal');
+        if (authModal) authModal.classList.add('is-open');
+        document.getElementById('loginFormWrap')?.classList.add('hidden');
+        document.getElementById('registerFormWrap')?.classList.add('hidden');
+        
+        els.modal.classList.remove('hidden');
+        els.expModal.classList.add('hidden');
+        els.form.reset();
+        
+        document.getElementById('attModalTitle').textContent = 'NUEVO INGRESO EXTRA';
+        document.getElementById('attType').value = 'inyeccion';
+        document.getElementById('attName').value = 'Ingreso / Inyección';
+        document.getElementById('attPlayers').value = '1';
         const dateInput = document.getElementById('attDate');
         if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
     });

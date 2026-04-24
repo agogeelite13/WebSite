@@ -200,6 +200,7 @@
                         <h2 class="admin-panel__title">OFICINA DE SECRETARÍA</h2>
                         <div class="sec-header-actions">
                             <button id="addAttendanceBtn" class="btn btn--primary btn--sm">NUEVA ASISTENCIA</button>
+                            <button id="addExtraIncomeBtn" class="btn btn--primary btn--sm" style="background:var(--gold); color:var(--surface-dark);">INGRESO EXTRA</button>
                             <button id="addExpenseBtn" class="btn btn--secondary btn--sm">NUEVO GASTO</button>
                         </div>
                     </div>
@@ -246,6 +247,7 @@
                             <option value="all">TODOS LOS TIPOS</option>
                             <option value="individual">INDIVIDUAL</option>
                             <option value="grupo">GRUPO</option>
+                            <option value="inyeccion">INGRESO EXTRA</option>
                         </select>
                     </div>
 
@@ -338,7 +340,7 @@
 
             <!-- ATTENDANCE MODAL (SECRETARY) -->
             <div id="attendanceModalWrap" class="hidden">
-                <h3 class="modal__title">REGISTRO DE ASISTENCIA</h3>
+                <h3 class="modal__title" id="attModalTitle">REGISTRO DE ASISTENCIA</h3>
                 <form id="attendanceForm" class="auth-form">
                     <div class="form-group">
                         <label class="form-label">Fecha de la Actividad</label>
@@ -349,6 +351,7 @@
                         <select id="attType" class="form-input" required>
                             <option value="individual">Individual</option>
                             <option value="grupo">Grupo</option>
+                            <option value="inyeccion">Ingreso Extra / Inyección</option>
                         </select>
                     </div>
                     <div class="form-group">
