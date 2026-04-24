@@ -239,10 +239,15 @@ export const api = {
 
     // --- SOCIAL SYSTEM ---
     async searchUsers(query) {
-        const { data } = await supabase.from('users')
+        const { data, error } = await supabase.from('users')
             .select('id, callsign, name, specialty, faction, exp, avatar_url')
             .or(`callsign.ilike.%${query}%,name.ilike.%${query}%`)
             .limit(10);
+        
+        if (error) {
+            console.error('Supabase Search Error:', error.message, error.details);
+            return [];
+        }
         return data || [];
     },
     async sendFriendRequest(userId, friendId) {
