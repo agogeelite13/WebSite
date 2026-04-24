@@ -3,6 +3,8 @@
  * Attendance & Financial Management (Income & Expenses)
  */
 
+let activeBonosData = [];
+
 export const initSecretary = (api) => {
     if (window._secretaryInitialized) return;
     window._secretaryInitialized = true;
@@ -50,34 +52,127 @@ export const initSecretary = (api) => {
     renderSecretaryDashboard(api, els);
 
     // View Toggles
-    els.viewIngresosBtn?.addEventListener('click', () => {
-        els.viewIngresosBtn.classList.add('active');
-        els.viewGastosBtn.classList.remove('active');
-        els.viewBonosBtn?.classList.remove('active');
-        els.ingresosWrap.classList.remove('hidden');
-        els.gastosWrap.classList.add('hidden');
-        els.bonosWrap?.classList.add('hidden');
-    });
+    const setupToggles = () => {
+        const resetToggles = () => {
+            [els.viewIngresosBtn, els.viewGastosBtn, els.viewBonosBtn].forEach(btn => btn?.classList.remove('active'));
+            [els.ingresosWrap, els.gastosWrap, els.bonosWrap].forEach(wrap => wrap?.classList.add('hidden'));
+        };
 
-    els.viewGastosBtn?.addEventListener('click', () => {
-        els.viewGastosBtn.classList.add('active');
-        els.viewIngresosBtn.classList.remove('active');
-        els.viewBonosBtn?.classList.remove('active');
-        els.gastosWrap.classList.remove('hidden');
-        els.ingresosWrap.classList.add('hidden');
-        els.bonosWrap?.classList.add('hidden');
-    });
+        els.viewIngresosBtn?.addEventListener('click', () => {
+            resetToggles();
+            els.viewIngresosBtn.classList.add('active');
+            els.ingresosWrap.classList.remove('hidden');
+        });
 
-    els.viewBonosBtn?.addEventListener('click', () => {
-        els.viewBonosBtn.classList.add('active');
-        els.viewIngresosBtn.classList.remove('active');
-        els.viewGastosBtn.classList.remove('active');
-        els.bonosWrap?.classList.remove('hidden');
-        els.ingresosWrap.classList.add('hidden');
-        els.gastosWrap.classList.add('hidden');
-    });
+        els.viewGastosBtn?.addEventListener('click', () => {
+            resetToggles();
+            els.viewGastosBtn.classList.add('active');
+            els.gastosWrap.classList.remove('hidden');
+        });
 
-    // Add Attendance Button
+        els.viewBonosBtn?.addEventListener('click', () => {
+            resetToggles();
+            els.viewBonosBtn.classList.add('active');
+            els.bonosWrap.classList.remove('hidden');
+        });
+    };
+    setupToggles();
+
+    // --- SESSION BUILDER LOGIC ---
+
+    const addSessionRow = (data = null) => {
+        const container = document.getElementById('sessionItemsContainer');
+        if (!container) return;
+
+        const row = document.createElement('div');
+        row.className = 'session-row';
+        row.style.cssText = 'background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.05);';
+        
+        row.innerHTML = `
+            <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                <select class="form-input row-type" style="flex: 1; font-size: 0.7rem; height: 35px; padding: 0 5px;">
+                    <option value="individual">Indiv.</option>
+                    <option value="grupo">Grupo</option>
+                    <option value="bono">Bono</option>
+                    <option value="inyeccion">Extra</option>
+                </select>
+                <select class="form-input row-bonus hidden" style="flex: 2; font-size: 0.7rem; height: 35px; padding: 0 5px;">
+                    <option value="">-- Bono --</option>
+                    ${activeBonosData.map(b => `<option value="${b.id}" data-name="${b.group_name}" data-price="${b.price_per_session}" data-total="${b.total_sessions}" data-used="${b.sessions_used}">${b.group_name} (${b.total_sessions - b.sessions_used})</option>`).join('')}
+                </select>
+                <input type="text" class="form-input row-name" placeholder="Nombre" style="flex: 2; font-size: 0.7rem; height: 35px;">
+                <button type="button" class="btn btn--outline remove-row-btn" style="padding: 0 10px; border-color: rgba(229,57,53,0.3); color: var(--red); height: 35px;">&times;</button>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <div style="display: flex; align-items: center; gap: 5px;">
+                    <span style="font-size: 0.6rem; color: #666;">PAX:</span>
+                    <input type="number" class="form-input row-pax" value="1" min="1" style="font-size: 0.7rem; height: 30px; padding: 0 5px;">
+                </div>
+                <div style="display: flex; align-items: center; gap: 5px;">
+                    <span style="font-size: 0.6rem; color: #666;">TOTAL:</span>
+                    <input type="number" class="form-input row-price" value="0.00" step="0.01" style="font-size: 0.7rem; height: 30px; padding: 0 5px;">
+                </div>
+            </div>
+        `;
+
+        container.appendChild(row);
+
+        const typeSelect = row.querySelector('.row-type');
+        const bonusSelect = row.querySelector('.row-bonus');
+        const nameInput = row.querySelector('.row-name');
+        const paxInput = row.querySelector('.row-pax');
+        const priceInput = row.querySelector('.row-price');
+
+        typeSelect.addEventListener('change', () => {
+            const val = typeSelect.value;
+            bonusSelect.classList.toggle('hidden', val !== 'bono');
+            nameInput.classList.toggle('hidden', val === 'bono');
+            priceInput.readOnly = (val === 'bono');
+            if (val === 'bono') paxInput.value = 1;
+            if (val === 'inyeccion') nameInput.value = 'Ingreso Extra';
+            updateSessionTotals();
+        });
+
+        bonusSelect.addEventListener('change', () => {
+            const opt = bonusSelect.options[bonusSelect.selectedIndex];
+            if (opt.value) {
+                priceInput.value = opt.getAttribute('data-price');
+                paxInput.value = 1;
+            }
+            updateSessionTotals();
+        });
+
+        [paxInput, priceInput].forEach(el => el.addEventListener('input', updateSessionTotals));
+        row.querySelector('.remove-row-btn').addEventListener('click', () => {
+            row.remove();
+            updateSessionTotals();
+        });
+
+        if (data) {
+            typeSelect.value = data.type || 'individual';
+            nameInput.value = data.name || '';
+            paxInput.value = data.pax || 1;
+            priceInput.value = data.price || 0;
+            typeSelect.dispatchEvent(new Event('change'));
+        }
+    };
+
+    const updateSessionTotals = () => {
+        let totalPax = 0;
+        let totalPrice = 0;
+        document.querySelectorAll('.session-row').forEach(row => {
+            totalPax += parseInt(row.querySelector('.row-pax').value) || 0;
+            totalPrice += parseFloat(row.querySelector('.row-price').value) || 0;
+        });
+        const paxDisplay = document.getElementById('sessionTotalPax');
+        const priceDisplay = document.getElementById('sessionTotalPrice');
+        if (paxDisplay) paxDisplay.textContent = totalPax;
+        if (priceDisplay) priceDisplay.textContent = totalPrice.toFixed(2) + ' €';
+    };
+
+    document.getElementById('addRowBtn')?.addEventListener('click', () => addSessionRow());
+
+    // Add Attendance Button (Now "Match" button)
     els.addBtn?.addEventListener('click', () => {
         const authModal = document.getElementById('authModal');
         if (authModal) authModal.classList.add('is-open');
@@ -87,42 +182,73 @@ export const initSecretary = (api) => {
         els.modal.classList.remove('hidden');
         els.expModal.classList.add('hidden');
         els.bonusModal?.classList.add('hidden');
-        els.form.reset();
-        document.getElementById('attModalTitle').textContent = 'REGISTRO DE ASISTENCIA';
-        document.getElementById('attType').value = 'individual';
+        
+        document.getElementById('sessionItemsContainer').innerHTML = '';
+        addSessionRow();
+        document.getElementById('attModalTitle').textContent = 'REGISTRO DE PARTIDA';
         const dateInput = document.getElementById('attDate');
         if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
+        updateSessionTotals();
     });
 
-    // Add Extra Income Button
     els.addExtraBtn?.addEventListener('click', () => {
         const authModal = document.getElementById('authModal');
         if (authModal) authModal.classList.add('is-open');
         document.getElementById('loginFormWrap')?.classList.add('hidden');
-        document.getElementById('registerFormWrap')?.classList.add('hidden');
-        
         els.modal.classList.remove('hidden');
         els.expModal.classList.add('hidden');
         els.bonusModal?.classList.add('hidden');
-        els.form.reset();
         
+        document.getElementById('sessionItemsContainer').innerHTML = '';
+        addSessionRow({ type: 'inyeccion', name: 'Ingreso Extra', pax: 1, price: 0 });
         document.getElementById('attModalTitle').textContent = 'NUEVO INGRESO EXTRA';
-        document.getElementById('attType').value = 'inyeccion';
-        document.getElementById('attName').value = 'Ingreso';
-        document.getElementById('attPlayers').value = '1';
         const dateInput = document.getElementById('attDate');
         if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
+        updateSessionTotals();
+    });
+
+    // Form: Match Session Submit
+    els.form?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const date = document.getElementById('attDate').value;
+        const rows = document.querySelectorAll('.session-row');
+        if (rows.length === 0) return alert('Añade al menos una fila.');
+
+        let successCount = 0;
+        for (const row of rows) {
+            const type = row.querySelector('.row-type').value;
+            let name = row.querySelector('.row-name').value;
+            const pax = parseInt(row.querySelector('.row-pax').value) || 0;
+            const price = parseFloat(row.querySelector('.row-price').value) || 0;
+
+            if (type === 'bono') {
+                const bonusSelect = row.querySelector('.row-bonus');
+                const opt = bonusSelect.options[bonusSelect.selectedIndex];
+                if (!opt.value) continue;
+                const bonusId = opt.value;
+                const maxSess = parseInt(opt.getAttribute('data-total'));
+                const currentSess = parseInt(opt.getAttribute('data-used')) + 1;
+                name = `${opt.getAttribute('data-name')} [BONO ${currentSess}/${maxSess}]`;
+                await api.saveGroupBonus({ id: bonusId, sessions_used: currentSess, is_active: currentSess < maxSess });
+            }
+
+            const logData = { date, type: type === 'bono' ? 'grupo' : type, name, players: pax, total_price: price, price_per_pax: pax > 0 ? (price / pax) : 0 };
+            if (await api.saveAttendanceLog(logData)) {
+                await api.syncToSheets(logData, 'attendance');
+                successCount++;
+            }
+        }
+
+        if (successCount > 0) {
+            document.getElementById('authModal')?.classList.remove('is-open');
+            renderSecretaryDashboard(api, els);
+        }
     });
 
     // Add Expense Button
     els.addExpBtn?.addEventListener('click', () => {
         const authModal = document.getElementById('authModal');
-        const loginWrap = document.getElementById('loginFormWrap');
-        const regWrap = document.getElementById('registerFormWrap');
         if (authModal) authModal.classList.add('is-open');
-        if (loginWrap) loginWrap.classList.add('hidden');
-        if (regWrap) regWrap.classList.add('hidden');
-
         els.expModal.classList.remove('hidden');
         els.modal.classList.add('hidden');
         els.bonusModal?.classList.add('hidden');
@@ -131,240 +257,164 @@ export const initSecretary = (api) => {
         if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
     });
 
-    // Modal Close (Global for authModal children)
-    document.getElementById('modalClose')?.addEventListener('click', () => {
-        const authModal = document.getElementById('authModal');
-        if (authModal) authModal.classList.remove('is-open');
-        els.modal.classList.add('hidden');
-        els.expModal.classList.add('hidden');
-        els.bonusModal?.classList.add('hidden');
+    els.expForm?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const data = {
+            date: document.getElementById('expDate').value,
+            concept: document.getElementById('expConcept').value,
+            category: document.getElementById('expCategory').value,
+            amount: parseFloat(document.getElementById('expAmount').value),
+            responsible: document.getElementById('expResponsible').value || 'ADMIN'
+        };
+        if (await api.saveExpenseLog(data)) {
+            await api.syncToSheets(data, 'expenses');
+            document.getElementById('authModal')?.classList.remove('is-open');
+            renderSecretaryDashboard(api, els);
+        }
     });
 
     // Add Bono Button
     els.addBonoBtn?.addEventListener('click', () => {
         const authModal = document.getElementById('authModal');
         if (authModal) authModal.classList.add('is-open');
-        document.getElementById('loginFormWrap')?.classList.add('hidden');
-        document.getElementById('registerFormWrap')?.classList.add('hidden');
-        
         els.bonusModal?.classList.remove('hidden');
         els.modal.classList.add('hidden');
         els.expModal.classList.add('hidden');
         els.bonusForm?.reset();
     });
 
-    // Form: Bonus Auto-calculation
-    ['bonusSessions', 'bonusPrice'].forEach(id => {
-        document.getElementById(id)?.addEventListener('input', () => {
-            const sess = parseFloat(document.getElementById('bonusSessions').value) || 1;
-            const total = parseFloat(document.getElementById('bonusPrice').value) || 0;
-            const display = document.getElementById('bonusPricePerSession');
-            if (display) display.textContent = (total / sess).toFixed(2);
-        });
-    });
-
-    // Form: Bonus Submit
     els.bonusForm?.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const totalSessions = parseInt(document.getElementById('bonusSessions').value);
-        const totalPrice = parseFloat(document.getElementById('bonusPrice').value);
-        
-        const bonusData = {
+        const sess = parseInt(document.getElementById('bonusSessions').value);
+        const price = parseFloat(document.getElementById('bonusPrice').value);
+        const data = {
             group_name: document.getElementById('bonusName').value,
-            total_sessions: totalSessions,
+            total_sessions: sess,
             sessions_used: 0,
-            price_total: totalPrice,
-            price_per_session: (totalPrice / totalSessions).toFixed(2),
+            price_total: price,
+            price_per_session: (price / sess),
             is_active: true
         };
-        
-        if (await api.saveGroupBonus(bonusData)) {
+        if (await api.saveGroupBonus(data)) {
             document.getElementById('authModal')?.classList.remove('is-open');
             renderSecretaryDashboard(api, els);
         }
     });
 
-    // Handle selecting a Bonus in the Attendance Modal
-    const attBonusSelect = document.getElementById('attBonusSelect');
-    attBonusSelect?.addEventListener('change', () => {
-        const opt = attBonusSelect.options[attBonusSelect.selectedIndex];
-        if (opt.value !== '') {
-            document.getElementById('attName').value = opt.getAttribute('data-name');
-            document.getElementById('attTotalPrice').value = opt.getAttribute('data-price');
-            document.getElementById('attPlayers').value = opt.getAttribute('data-pax') || 1;
-            document.getElementById('attType').value = 'grupo';
-            
-            // Dispatch input event to recalculate
-            document.getElementById('attTotalPrice').dispatchEvent(new Event('input'));
-        }
+    // Modal Close
+    document.getElementById('modalClose')?.addEventListener('click', () => {
+        document.getElementById('authModal')?.classList.remove('is-open');
     });
 
-    // Form: Attendance Auto-calculation
-    ['attPlayers', 'attTotalPrice'].forEach(id => {
-        document.getElementById(id)?.addEventListener('input', () => {
-            const paxInput = document.getElementById('attPlayers');
-            const totalInput = document.getElementById('attTotalPrice');
-            const display = document.getElementById('attPricePerPax');
-            if (paxInput && totalInput && display) {
-                const pax = parseFloat(paxInput.value) || 1;
-                const total = parseFloat(totalInput.value) || 0;
-                display.textContent = (total / pax).toFixed(2);
-            }
-        });
-    });
-
-    // Form: Attendance Submit
-    els.form?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        let nameVal = document.getElementById('attName').value;
-        const totalInput = parseFloat(document.getElementById('attTotalPrice').value);
-        
-        const bonusSelect = document.getElementById('attBonusSelect');
-        const selectedBonusId = bonusSelect ? bonusSelect.value : null;
-        let finalPrice = totalInput;
-        
-        if (selectedBonusId) {
-            const opt = bonusSelect.options[bonusSelect.selectedIndex];
-            const maxSess = parseInt(opt.getAttribute('data-total'));
-            const currentSess = parseInt(opt.getAttribute('data-used')) + 1;
-            
-            // Append bono format
-            nameVal = `${nameVal} [BONO ${currentSess}/${maxSess}]`;
-            
-            // Update the bonus in Supabase
-            const bonusData = {
-                id: selectedBonusId,
-                sessions_used: currentSess,
-                is_active: currentSess < maxSess
-            };
-            await api.saveGroupBonus(bonusData);
-        }
-        
-        const formData = {
-            date: document.getElementById('attDate').value,
-            type: document.getElementById('attType').value,
-            name: nameVal,
-            players: parseInt(document.getElementById('attPlayers').value),
-            total_price: finalPrice,
-            price_per_pax: parseFloat(document.getElementById('attPricePerPax').textContent)
-        };
-        
-        if (await api.saveAttendanceLog(formData)) {
-            await api.syncToSheets(formData, 'attendance');
-            document.getElementById('authModal')?.classList.remove('is-open');
-            renderSecretaryDashboard(api, els);
-        }
-    });
-
-    // Form: Expense Submit
-    els.expForm?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const formData = {
-            date: document.getElementById('expDate').value,
-            concept: document.getElementById('expConcept').value,
-            category: document.getElementById('expCategory').value,
-            amount: parseFloat(document.getElementById('expAmount').value)
-        };
-        if (await api.saveExpenseLog(formData)) {
-            await api.syncToSheets(formData, 'expense');
-            document.getElementById('authModal')?.classList.remove('is-open');
-            renderSecretaryDashboard(api, els);
-        }
-    });
-
-    // Global delete handlers
+    // Global Deletes
     window.adminDeleteAttendance = async (id) => {
-        if (confirm('¿Eliminar registro de asistencia?')) {
+        if (confirm('¿Eliminar este registro de asistencia?')) {
             if (await api.deleteAttendanceLog(id)) renderSecretaryDashboard(api, els);
         }
     };
     window.adminDeleteExpense = async (id) => {
-        if (confirm('¿Eliminar registro de gasto?')) {
+        if (confirm('¿Eliminar este gasto?')) {
             if (await api.deleteExpenseLog(id)) renderSecretaryDashboard(api, els);
         }
     };
     window.adminDeleteBonus = async (id) => {
-        if (confirm('¿Eliminar bono completamente?')) {
+        if (confirm('¿Eliminar este bono?')) {
             if (await api.deleteGroupBonus(id)) renderSecretaryDashboard(api, els);
         }
     };
 };
 
-const renderSecretaryDashboard = async (api, els) => {
+export const renderSecretaryDashboard = async (api, els) => {
     const logs = await api.getAttendanceLogs();
     const expenses = await api.getExpenseLogs();
     const bonos = await api.getGroupBonuses ? await api.getGroupBonuses() : [];
-    
+    activeBonosData = bonos.filter(b => b.is_active); 
+
     if (!logs || !expenses) return;
 
-    // Stats calculations
+    // Group logs by Date
+    const groupedLogs = logs.reduce((acc, log) => {
+        if (!acc[log.date]) acc[log.date] = { date: log.date, items: [], totalPax: 0, totalPrice: 0 };
+        acc[log.date].items.push(log);
+        acc[log.date].totalPax += (log.players || 0);
+        acc[log.date].totalPrice += (log.total_price || 0);
+        return acc;
+    }, {});
+
+    const sortedDates = Object.keys(groupedLogs).sort((a, b) => new Date(b) - new Date(a));
+
+    // Stats
     const now = new Date();
     const todayStr = now.toISOString().split('T')[0];
-    const thisMonth = now.getMonth();
-    const thisYear = now.getFullYear();
-
     const incomeDay = logs.filter(l => l.date === todayStr).reduce((sum, l) => sum + (l.total_price || 0), 0);
-    const incomeMonth = logs.filter(l => {
-        const d = new Date(l.date);
-        return d.getMonth() === thisMonth && d.getFullYear() === thisYear;
-    }).reduce((sum, l) => sum + (l.total_price || 0), 0);
-    
-    const expenseMonth = expenses.filter(e => {
-        const d = new Date(e.date);
-        return d.getMonth() === thisMonth && d.getFullYear() === thisYear;
-    }).reduce((sum, e) => sum + (e.amount || 0), 0);
-
     const incomeTotal = logs.reduce((sum, l) => sum + (l.total_price || 0), 0);
     const expenseTotal = expenses.reduce((sum, e) => sum + (e.amount || 0), 0);
 
     if (els.stats.day) els.stats.day.textContent = `${incomeDay.toFixed(2)} €`;
-    if (els.stats.month) els.stats.month.textContent = `${incomeMonth.toFixed(2)} €`;
-    if (els.stats.expMonth) els.stats.expMonth.textContent = `${expenseMonth.toFixed(2)} €`;
-    
-    if (els.stats.netBalance) {
-        const net = incomeMonth - expenseMonth;
-        els.stats.netBalance.textContent = `${net.toFixed(2)} €`;
-        els.stats.netBalance.style.color = net >= 0 ? 'var(--gold)' : 'var(--blood-light)';
-    }
-
-    if (els.stats.incomeTotal) {
-        els.stats.incomeTotal.textContent = `${incomeTotal.toFixed(2)} €`;
-    }
-
+    if (els.stats.incomeTotal) els.stats.incomeTotal.textContent = `${incomeTotal.toFixed(2)} €`;
     if (els.stats.balanceTotal) {
-        const globalNet = incomeTotal - expenseTotal;
-        els.stats.balanceTotal.textContent = `${globalNet.toFixed(2)} €`;
-        els.stats.balanceTotal.style.color = globalNet >= 0 ? 'var(--gold)' : 'var(--blood-light)';
+        const net = incomeTotal - expenseTotal;
+        els.stats.balanceTotal.textContent = `${net.toFixed(2)} €`;
+        els.stats.balanceTotal.style.color = net >= 0 ? 'var(--gold)' : 'var(--blood-light)';
     }
-    
-    // Attendance Table
-    els.list.innerHTML = logs.length > 0 ? logs.map(l => `
-        <tr>
-            <td style="font-family:monospace; font-size:0.7rem;">${l.date}</td>
-            <td><span class="sec-type-badge sec-type-badge--${l.type}">${l.type}</span></td>
-            <td style="font-weight:bold;">${l.name}</td>
-            <td>${l.players}</td>
-            <td>${l.total_price} €</td>
-            <td style="color:var(--bronze-light);">${l.price_per_pax} €</td>
-            <td><button class="sec-action-btn sec-action-btn--delete" onclick="adminDeleteAttendance('${l.id}')">BORRAR</button></td>
-        </tr>
-    `).join('') : '<tr><td colspan="7">No hay ingresos.</td></tr>';
 
-    // Expenses Table
+    // Render Grouped Attendance
+    els.list.innerHTML = sortedDates.length > 0 ? sortedDates.map(date => {
+        const g = groupedLogs[date];
+        const rowId = `details-${date.replace(/-/g, '')}`;
+        return `
+            <tr class="sec-grouped-row" onclick="document.getElementById('${rowId}').classList.toggle('hidden')" style="cursor:pointer; background: rgba(212,175,55,0.02);">
+                <td style="font-family:monospace; color:var(--gold); font-weight:bold;">${date}</td>
+                <td><span class="sec-type-badge sec-type-badge--grupo">PARTIDA</span></td>
+                <td style="text-align:left; font-weight:700;">RESUMEN JORNADA ${date}</td>
+                <td>${g.totalPax}</td>
+                <td style="color:var(--gold); font-weight:bold;">${g.totalPrice.toFixed(2)} €</td>
+                <td><span style="font-size:0.6rem; opacity:0.6;">[+] VER DETALLE</span></td>
+                <td>---</td>
+            </tr>
+            <tr id="${rowId}" class="hidden" style="background: rgba(0,0,0,0.15);">
+                <td colspan="7" style="padding: 10px;">
+                    <div style="border-left: 2px solid var(--gold); padding-left: 15px;">
+                        <table style="width:100%; font-size:0.75rem;">
+                            <thead>
+                                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                    <th style="text-align:left; padding: 5px;">TIPO</th>
+                                    <th style="text-align:left; padding: 5px;">NOMBRE / CONCEPTO</th>
+                                    <th style="padding: 5px;">PAX</th>
+                                    <th style="padding: 5px;">TOTAL</th>
+                                    <th style="padding: 5px;">ACCIONES</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${g.items.map(item => `
+                                    <tr>
+                                        <td><span class="sec-type-badge sec-type-badge--${item.type}" style="font-size:0.55rem;">${item.type.toUpperCase()}</span></td>
+                                        <td style="text-align:left;">${item.name}</td>
+                                        <td>${item.players}</td>
+                                        <td>${item.total_price.toFixed(2)} €</td>
+                                        <td><button class="btn btn--outline btn--sm" style="font-size:0.55rem; padding: 2px 6px; border-color:var(--red); color:var(--red);" onclick="event.stopPropagation(); adminDeleteAttendance('${item.id}')">Borrar</button></td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }).join('') : '<tr><td colspan="7">No hay partidas.</td></tr>';
+
+    // Render Expenses
     els.expList.innerHTML = expenses.length > 0 ? expenses.map(e => `
         <tr>
             <td style="font-family:monospace; font-size:0.7rem;">${e.date}</td>
             <td><span class="sec-type-badge sec-type-badge--${e.category.toLowerCase()}">${e.category.toUpperCase()}</span></td>
             <td style="font-weight:bold;">${e.concept}</td>
             <td style="color:var(--blood-light);">${e.amount.toFixed(2)} €</td>
-            <td>
-                <button class="btn btn--outline btn--sm" onclick="adminDeleteExpense('${e.id}')">Borrar</button>
-            </td>
+            <td><button class="btn btn--outline btn--sm" onclick="adminDeleteExpense('${e.id}')">Borrar</button></td>
         </tr>
-    `).join('') : `<tr><td colspan="5" class="u-text-center">No hay gastos registrados</td></tr>`;
-    
-    // Bonos Table
+    `).join('') : '<tr><td colspan="5">No hay gastos.</td></tr>';
+
+    // Render Bonos
     if (els.bonosList) {
         els.bonosList.innerHTML = bonos.length > 0 ? bonos.map(b => `
             <tr style="opacity: ${b.is_active ? '1' : '0.5'};">
@@ -372,39 +422,8 @@ const renderSecretaryDashboard = async (api, els) => {
                 <td style="font-family:monospace;">${b.sessions_used} / ${b.total_sessions}</td>
                 <td>${b.price_total.toFixed(2)} € <span style="font-size:0.7rem; color:var(--bronze-light);">(${b.price_per_session.toFixed(2)}€/s)</span></td>
                 <td><span class="sec-type-badge ${b.is_active ? 'sec-type-badge--grupo' : 'sec-type-badge--individual'}">${b.is_active ? 'ACTIVO' : 'AGOTADO'}</span></td>
-                <td>
-                    <button class="btn btn--outline btn--sm" onclick="adminDeleteBonus('${b.id}')">Borrar</button>
-                </td>
+                <td><button class="btn btn--outline btn--sm" onclick="adminDeleteBonus('${b.id}')">Borrar</button></td>
             </tr>
-        `).join('') : `<tr><td colspan="5" class="u-text-center">No hay bonos activos</td></tr>`;
+        `).join('') : '<tr><td colspan="5">No hay bonos.</td></tr>';
     }
-
-    // Populate the dropdown in Attendance Modal
-    const attBonusSelect = document.getElementById('attBonusSelect');
-    if (attBonusSelect) {
-        const activeBonos = bonos.filter(b => b.is_active);
-        attBonusSelect.innerHTML = `<option value="">-- No asociar a ningún bono --</option>` + 
-            activeBonos.map(b => `<option value="${b.id}" data-name="${b.group_name}" data-price="${b.price_per_session}" data-total="${b.total_sessions}" data-used="${b.sessions_used}" data-pax="1">${b.group_name} (${b.total_sessions - b.sessions_used} restantes)</option>`).join('');
-    }
-
-    // Attach search handlers
-    const renderFiltered = () => {
-        const q = (els.search?.value || '').toLowerCase();
-        const d = els.filterDate?.value || '';
-        const t = els.filterType?.value || 'all';
-
-        Array.from(els.list.children).forEach(tr => {
-            const dateStr = tr.children[0].textContent;
-            const typeStr = tr.children[1].textContent.toLowerCase();
-            const nameStr = tr.children[2].textContent.toLowerCase();
-            const matchQ = !q || nameStr.includes(q);
-            const matchD = !d || dateStr === d;
-            const matchT = t === 'all' || typeStr === t;
-            tr.style.display = matchQ && matchD && matchT ? '' : 'none';
-        });
-    };
-
-    els.search?.addEventListener('input', renderFiltered);
-    els.filterDate?.addEventListener('change', renderFiltered);
-    els.filterType?.addEventListener('change', renderFiltered);
 };

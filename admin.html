@@ -363,45 +363,33 @@
 
             <!-- ATTENDANCE MODAL (SECRETARY) -->
             <div id="attendanceModalWrap" class="hidden">
-                <h3 class="modal__title" id="attModalTitle">REGISTRO DE ASISTENCIA</h3>
-                <form id="attendanceForm" class="auth-form">
-                    <div class="form-group">
-                        <label class="form-label">Fecha de la Actividad</label>
-                        <input type="date" id="attDate" class="form-input" required>
+                <h3 class="modal__title" id="attModalTitle">REGISTRO DE PARTIDA</h3>
+                <div class="form-group">
+                    <label class="form-label">Fecha de la Partida</label>
+                    <input type="date" id="attDate" class="form-input" required>
+                </div>
+                
+                <div id="sessionItemsContainer" style="margin-top: 20px; max-height: 400px; overflow-y: auto; padding-right: 5px;">
+                    <!-- Line items will be injected here -->
+                </div>
+
+                <div style="margin-top: 15px; text-align: center;">
+                    <button type="button" id="addRowBtn" class="btn btn--outline btn--sm" style="width: 100%; border-style: dashed; opacity: 0.8; font-size: 0.7rem;">+ AÑADIR JUGADOR / GRUPO / BONO</button>
+                </div>
+
+                <div class="sec-session-summary" style="margin-top: 25px; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 8px; border: 1px solid var(--border); font-size: 0.8rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span>TOTAL JUGADORES:</span>
+                        <strong id="sessionTotalPax" style="color:var(--gold);">0</strong>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Tipo de Reserva</label>
-                        <select id="attType" class="form-input" required>
-                            <option value="individual">Individual</option>
-                            <option value="grupo">Grupo</option>
-                            <option value="inyeccion">Ingreso</option>
-                        </select>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span>TOTAL RECAUDACIÓN:</span>
+                        <strong id="sessionTotalPrice" style="color:var(--gold);">0.00 €</strong>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Consumir de Bono Activo (Opcional)</label>
-                        <select id="attBonusSelect" class="form-input">
-                            <option value="">-- No asociar a ningún bono --</option>
-                            <!-- Dynamically injected active bonuses -->
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Nombre (Persona o Grupo)</label>
-                        <input type="text" id="attName" class="form-input" required placeholder="Ej: Grupo Smith o Juan Pérez">
-                    </div>
-                    <div class="grid-2">
-                        <div class="form-group">
-                            <label class="form-label">Nº Jugadores</label>
-                            <input type="number" id="attPlayers" class="form-input" required min="1" value="1">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Precio Total (€)</label>
-                            <input type="number" id="attTotalPrice" class="form-input" required min="0" step="0.01">
-                        </div>
-                    </div>
-                    <div class="form-group" style="margin-top:10px; text-align:center;">
-                        <p style="color:var(--bronze-light); font-size:0.8rem; letter-spacing:1px;">PRECIO / PAX: <strong id="attPricePerPax">0.00</strong> €</p>
-                    </div>
-                    <button type="submit" class="btn btn--primary btn--full">GUARDAR REGISTRO</button>
+                </div>
+
+                <form id="attendanceForm" style="margin-top: 20px;">
+                    <button type="submit" class="btn btn--primary btn--full">GUARDAR PARTIDA COMPLETA</button>
                 </form>
             </div>
 
