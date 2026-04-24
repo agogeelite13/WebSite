@@ -29,12 +29,19 @@ export const initSecretary = (api) => {
         // Toggles
         viewIngresosBtn: document.getElementById('viewIngresosBtn'),
         viewGastosBtn: document.getElementById('viewGastosBtn'),
+        viewBonosBtn: document.getElementById('viewBonosBtn'),
         ingresosWrap: document.getElementById('secIngresosWrap'),
         gastosWrap: document.getElementById('secGastosWrap'),
+        bonosWrap: document.getElementById('secBonosWrap'),
         // Expense elements
         addExpBtn: document.getElementById('addExpenseBtn'),
         expModal: document.getElementById('expenseModalWrap'),
-        expForm: document.getElementById('expenseForm')
+        expForm: document.getElementById('expenseForm'),
+        // Bonos elements
+        addBonoBtn: document.getElementById('addBonoBtn'),
+        bonusModal: document.getElementById('bonusModalWrap'),
+        bonusForm: document.getElementById('bonusForm'),
+        bonosList: document.getElementById('secretaryBonosList')
     };
 
     if (!els.list) return;
@@ -46,15 +53,28 @@ export const initSecretary = (api) => {
     els.viewIngresosBtn?.addEventListener('click', () => {
         els.viewIngresosBtn.classList.add('active');
         els.viewGastosBtn.classList.remove('active');
+        els.viewBonosBtn?.classList.remove('active');
         els.ingresosWrap.classList.remove('hidden');
         els.gastosWrap.classList.add('hidden');
+        els.bonosWrap?.classList.add('hidden');
     });
 
     els.viewGastosBtn?.addEventListener('click', () => {
         els.viewGastosBtn.classList.add('active');
         els.viewIngresosBtn.classList.remove('active');
+        els.viewBonosBtn?.classList.remove('active');
         els.gastosWrap.classList.remove('hidden');
         els.ingresosWrap.classList.add('hidden');
+        els.bonosWrap?.classList.add('hidden');
+    });
+
+    els.viewBonosBtn?.addEventListener('click', () => {
+        els.viewBonosBtn.classList.add('active');
+        els.viewIngresosBtn.classList.remove('active');
+        els.viewGastosBtn.classList.remove('active');
+        els.bonosWrap?.classList.remove('hidden');
+        els.ingresosWrap.classList.add('hidden');
+        els.gastosWrap.classList.add('hidden');
     });
 
     // Add Attendance Button
@@ -66,6 +86,7 @@ export const initSecretary = (api) => {
         
         els.modal.classList.remove('hidden');
         els.expModal.classList.add('hidden');
+        els.bonusModal?.classList.add('hidden');
         els.form.reset();
         document.getElementById('attModalTitle').textContent = 'REGISTRO DE ASISTENCIA';
         document.getElementById('attType').value = 'individual';
@@ -82,6 +103,7 @@ export const initSecretary = (api) => {
         
         els.modal.classList.remove('hidden');
         els.expModal.classList.add('hidden');
+        els.bonusModal?.classList.add('hidden');
         els.form.reset();
         
         document.getElementById('attModalTitle').textContent = 'NUEVO INGRESO EXTRA';
@@ -102,7 +124,8 @@ export const initSecretary = (api) => {
         if (regWrap) regWrap.classList.add('hidden');
 
         els.expModal.classList.remove('hidden');
-        els.modal.classList.add('hidden'); // Hide other
+        els.modal.classList.add('hidden');
+        els.bonusModal?.classList.add('hidden');
         els.expForm.reset();
         const dateInput = document.getElementById('expDate');
         if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
@@ -114,6 +137,66 @@ export const initSecretary = (api) => {
         if (authModal) authModal.classList.remove('is-open');
         els.modal.classList.add('hidden');
         els.expModal.classList.add('hidden');
+        els.bonusModal?.classList.add('hidden');
+    });
+
+    // Add Bono Button
+    els.addBonoBtn?.addEventListener('click', () => {
+        const authModal = document.getElementById('authModal');
+        if (authModal) authModal.classList.add('is-open');
+        document.getElementById('loginFormWrap')?.classList.add('hidden');
+        document.getElementById('registerFormWrap')?.classList.add('hidden');
+        
+        els.bonusModal?.classList.remove('hidden');
+        els.modal.classList.add('hidden');
+        els.expModal.classList.add('hidden');
+        els.bonusForm?.reset();
+    });
+
+    // Form: Bonus Auto-calculation
+    ['bonusSessions', 'bonusPrice'].forEach(id => {
+        document.getElementById(id)?.addEventListener('input', () => {
+            const sess = parseFloat(document.getElementById('bonusSessions').value) || 1;
+            const total = parseFloat(document.getElementById('bonusPrice').value) || 0;
+            const display = document.getElementById('bonusPricePerSession');
+            if (display) display.textContent = (total / sess).toFixed(2);
+        });
+    });
+
+    // Form: Bonus Submit
+    els.bonusForm?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const totalSessions = parseInt(document.getElementById('bonusSessions').value);
+        const totalPrice = parseFloat(document.getElementById('bonusPrice').value);
+        
+        const bonusData = {
+            group_name: document.getElementById('bonusName').value,
+            total_sessions: totalSessions,
+            sessions_used: 0,
+            price_total: totalPrice,
+            price_per_session: (totalPrice / totalSessions).toFixed(2),
+            is_active: true
+        };
+        
+        if (await api.saveGroupBonus(bonusData)) {
+            document.getElementById('authModal')?.classList.remove('is-open');
+            renderSecretaryDashboard(api, els);
+        }
+    });
+
+    // Handle selecting a Bonus in the Attendance Modal
+    const attBonusSelect = document.getElementById('attBonusSelect');
+    attBonusSelect?.addEventListener('change', () => {
+        const opt = attBonusSelect.options[attBonusSelect.selectedIndex];
+        if (opt.value !== '') {
+            document.getElementById('attName').value = opt.getAttribute('data-name');
+            document.getElementById('attTotalPrice').value = opt.getAttribute('data-price');
+            document.getElementById('attPlayers').value = opt.getAttribute('data-pax') || 1;
+            document.getElementById('attType').value = 'grupo';
+            
+            // Dispatch input event to recalculate
+            document.getElementById('attTotalPrice').dispatchEvent(new Event('input'));
+        }
     });
 
     // Form: Attendance Auto-calculation
@@ -133,14 +216,40 @@ export const initSecretary = (api) => {
     // Form: Attendance Submit
     els.form?.addEventListener('submit', async (e) => {
         e.preventDefault();
+        
+        let nameVal = document.getElementById('attName').value;
+        const totalInput = parseFloat(document.getElementById('attTotalPrice').value);
+        
+        const bonusSelect = document.getElementById('attBonusSelect');
+        const selectedBonusId = bonusSelect ? bonusSelect.value : null;
+        let finalPrice = totalInput;
+        
+        if (selectedBonusId) {
+            const opt = bonusSelect.options[bonusSelect.selectedIndex];
+            const maxSess = parseInt(opt.getAttribute('data-total'));
+            const currentSess = parseInt(opt.getAttribute('data-used')) + 1;
+            
+            // Append bono format
+            nameVal = `${nameVal} [BONO ${currentSess}/${maxSess}]`;
+            
+            // Update the bonus in Supabase
+            const bonusData = {
+                id: selectedBonusId,
+                sessions_used: currentSess,
+                is_active: currentSess < maxSess
+            };
+            await api.saveGroupBonus(bonusData);
+        }
+        
         const formData = {
             date: document.getElementById('attDate').value,
             type: document.getElementById('attType').value,
-            name: document.getElementById('attName').value,
+            name: nameVal,
             players: parseInt(document.getElementById('attPlayers').value),
-            total_price: parseFloat(document.getElementById('attTotalPrice').value),
+            total_price: finalPrice,
             price_per_pax: parseFloat(document.getElementById('attPricePerPax').textContent)
         };
+        
         if (await api.saveAttendanceLog(formData)) {
             await api.syncToSheets(formData, 'attendance');
             document.getElementById('authModal')?.classList.remove('is-open');
@@ -175,11 +284,18 @@ export const initSecretary = (api) => {
             if (await api.deleteExpenseLog(id)) renderSecretaryDashboard(api, els);
         }
     };
+    window.adminDeleteBonus = async (id) => {
+        if (confirm('¿Eliminar bono completamente?')) {
+            if (await api.deleteGroupBonus(id)) renderSecretaryDashboard(api, els);
+        }
+    };
 };
 
 const renderSecretaryDashboard = async (api, els) => {
     const logs = await api.getAttendanceLogs();
     const expenses = await api.getExpenseLogs();
+    const bonos = await api.getGroupBonuses ? await api.getGroupBonuses() : [];
+    
     if (!logs || !expenses) return;
 
     // Stats calculations
@@ -239,10 +355,6 @@ const renderSecretaryDashboard = async (api, els) => {
     els.expList.innerHTML = expenses.length > 0 ? expenses.map(e => `
         <tr>
             <td style="font-family:monospace; font-size:0.7rem;">${e.date}</td>
+            <td><span class="sec-type-badge sec-type-badge--${e.category.toLowerCase()}">${e.category.toUpperCase()}</span></td>
             <td style="font-weight:bold;">${e.concept}</td>
-            <td><span class="sec-type-badge sec-type-badge--${e.category}">${e.category}</span></td>
-            <td style="color:var(--blood-light); font-weight:bold;">-${e.amount} €</td>
-            <td><button class="sec-action-btn sec-action-btn--delete" onclick="adminDeleteExpense('${e.id}')">BORRAR</button></td>
-        </tr>
-    `).join('') : '<tr><td colspan="5">No hay gastos registrados.</td></tr>';
 };

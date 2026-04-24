@@ -62,6 +62,20 @@ export const api = {
         const { error } = await supabase.from('expense_logs').delete().eq('id', logId);
         return !error;
     },
+    // --- GROUP BONUSES ---
+    async getGroupBonuses() {
+        const { data } = await supabase.from('group_bonuses').select('*').order('created_at', { ascending: false });
+        return data || [];
+    },
+    async saveGroupBonus(bonus) {
+        const { error } = await supabase.from('group_bonuses').upsert(bonus);
+        if (error) console.error('Supabase saveGroupBonus Error:', error);
+        return !error;
+    },
+    async deleteGroupBonus(bonusId) {
+        const { error } = await supabase.from('group_bonuses').delete().eq('id', bonusId);
+        return !error;
+    },
     async syncToSheets(record, type = 'attendance') {
         const DEFAULT_URL = 'https://script.google.com/macros/s/AKfycbzMVnIleBd4QxemWy8Qsrb7ZdqjPULzmzOQ2TLWrKxzWKtD1q2sOYuoEt3r1DsAKC8K/exec';
         const SHEETS_WEBAPP_URL = localStorage.getItem('sec_sheets_url') || DEFAULT_URL;

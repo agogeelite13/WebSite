@@ -237,6 +237,7 @@
                     <div class="sec-view-toggle">
                         <button id="viewIngresosBtn" class="sec-toggle-btn active">INGRESOS</button>
                         <button id="viewGastosBtn" class="sec-toggle-btn">GASTOS</button>
+                        <button id="viewBonosBtn" class="sec-toggle-btn" style="color:var(--gold);">BONOS</button>
                     </div>
 
                     <!-- Filters -->
@@ -282,6 +283,27 @@
                                 </tr>
                             </thead>
                             <tbody id="secretaryExpenseList"></tbody>
+                        </table>
+                    </div>
+
+                    <!-- Bonos Table -->
+                    <div id="secBonosWrap" class="sec-table-wrap hidden">
+                        <div class="sec-header-actions" style="margin-bottom: 15px; justify-content: flex-end;">
+                            <button id="addBonoBtn" class="btn btn--primary btn--sm" style="background:var(--gold); color:#000; font-weight:bold;">CREAR NUEVO BONO</button>
+                        </div>
+                        <table class="leaderboard-table">
+                            <thead>
+                                <tr>
+                                    <th>GRUPO / TITULAR</th>
+                                    <th>SESIONES</th>
+                                    <th>PRECIO TOTAL</th>
+                                    <th>ESTADO</th>
+                                    <th>ACCIONES</th>
+                                </tr>
+                            </thead>
+                            <tbody id="secretaryBonosList">
+                                <!-- Data injected here -->
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -355,6 +377,13 @@
                         </select>
                     </div>
                     <div class="form-group">
+                        <label class="form-label">Consumir de Bono Activo (Opcional)</label>
+                        <select id="attBonusSelect" class="form-input">
+                            <option value="">-- No asociar a ningún bono --</option>
+                            <!-- Dynamically injected active bonuses -->
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label class="form-label">Nombre (Persona o Grupo)</label>
                         <input type="text" id="attName" class="form-input" required placeholder="Ej: Grupo Smith o Juan Pérez">
                     </div>
@@ -402,6 +431,32 @@
                         <input type="number" id="expAmount" class="form-input" step="0.01" placeholder="0.00" required>
                     </div>
                     <button type="submit" class="btn btn--primary btn--full">GUARDAR GASTO</button>
+                </form>
+            </div>
+
+            <!-- BONUS MODAL (SECRETARY) -->
+            <div id="bonusModalWrap" class="hidden">
+                <h3 class="modal__title">ALTA DE NUEVO BONO</h3>
+                <form id="bonusForm" class="auth-form">
+                    <div class="form-group">
+                        <label class="form-label">Nombre del Grupo / Titular</label>
+                        <input type="text" id="bonusName" class="form-input" required placeholder="Ej: Grupo Spartan">
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Total Sesiones</label>
+                            <input type="number" id="bonusSessions" class="form-input" required min="1" value="4">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Precio Total (€)</label>
+                            <input type="number" id="bonusPrice" class="form-input" required min="0" step="0.01" placeholder="0.00">
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-top:10px; text-align:center;">
+                        <p style="color:var(--bronze-light); font-size:0.8rem; letter-spacing:1px;">IMPUTACIÓN POR SESIÓN: <strong id="bonusPricePerSession">0.00</strong> €</p>
+                        <p style="font-size:0.7rem; color:#888;">El sistema registrará este valor automáticamente al consumir sesiones.</p>
+                    </div>
+                    <button type="submit" class="btn btn--primary btn--full" style="background:var(--gold); color:#000;">REGISTRAR BONO</button>
                 </form>
             </div>
         </div>
