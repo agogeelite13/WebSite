@@ -247,7 +247,7 @@ export const api = {
         
         if (error) {
             console.error('Supabase Search Error:', error.message);
-            // Reintento simplificado si falla el OR (algunas configuraciones de RLS dan problemas con OR complejos)
+            // Reintento simplificado por callsign
             const { data: retryData } = await supabase.from('users')
                 .select('id, callsign, name, specialty, faction, exp, avatar_url')
                 .ilike('callsign', `%${query}%`)
