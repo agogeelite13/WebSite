@@ -42,6 +42,26 @@ body.nav-open {
     margin: 2px auto 0;
 }
 
+.sec-stat-card {
+    background: rgba(20, 20, 20, 0.4);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.sec-stat-card:hover {
+    background: rgba(30, 30, 30, 0.5);
+    border-color: rgba(212, 175, 55, 0.2);
+    transform: translateY(-2px);
+}
+
 /* Sent button state */
 .btn--sent {
     background: #2ecc71 !important;
@@ -466,14 +486,15 @@ p {
     font-weight: 700;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    padding: 16px 40px;
-    border-radius: 0;
-    /* Spartan sharp edges */
+    padding: 14px 36px;
+    border-radius: 4px;
     transition: all var(--duration) var(--ease);
     position: relative;
     overflow: hidden;
-    clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
-    /* Tactical chisel cut */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    cursor: pointer;
+    border: 1px solid transparent;
 }
 
 .btn::before {
@@ -494,63 +515,40 @@ p {
 }
 
 .btn--primary {
-    background: var(--red);
+    background: rgba(139, 0, 0, 0.2);
     color: var(--white);
-    border: none;
-    box-shadow: 0 10px 30px rgba(139, 0, 0, 0.4);
+    border: 1px solid var(--red);
+    box-shadow: 0 5px 20px rgba(139, 0, 0, 0.2), inset 0 0 10px rgba(255, 0, 0, 0.1);
 }
 
 .btn--primary:hover {
-    box-shadow: 0 15px 40px rgba(139, 0, 0, 0.6);
+    background: rgba(139, 0, 0, 0.35);
+    border-color: var(--red-light);
+    box-shadow: 0 8px 30px rgba(139, 0, 0, 0.4), var(--glow-red);
 }
 
 .btn--secondary {
-    background: transparent;
-    color: var(--bronze-light);
-    border: 1px solid var(--bronze);
-    box-shadow: inset 0 0 10px rgba(205, 127, 50, 0.1);
+    background: rgba(212, 175, 55, 0.1);
+    color: var(--gold);
+    border: 1px solid var(--gold);
+    box-shadow: 0 5px 20px rgba(212, 175, 55, 0.1), inset 0 0 10px rgba(212, 175, 55, 0.05);
 }
 
 .btn--secondary:hover {
-    background: var(--bronze-dark);
+    background: rgba(212, 175, 55, 0.2);
+    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.2);
     color: var(--white);
 }
 
 .btn--outline {
     background: transparent;
     color: var(--white);
-    border: 1px solid var(--border);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .btn--outline:hover {
-    border-color: var(--bronze);
-    background: rgba(205, 127, 50, 0.1);
-}
-
-.btn--primary:hover {
-    background: var(--red-light);
-    box-shadow: var(--glow-red);
-}
-
-.btn--outline {
-    background: transparent;
-    color: var(--white);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.btn--outline:hover {
+    background: rgba(255, 255, 255, 0.05);
     border-color: var(--white);
-}
-
-.btn--secondary {
-    background: transparent;
-    color: var(--text);
-    border: 1px solid var(--border);
-}
-
-.btn--secondary:hover {
-    border-color: var(--white);
-    color: var(--white);
 }
 
 .btn--full {
