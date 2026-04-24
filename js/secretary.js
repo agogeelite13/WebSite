@@ -83,7 +83,7 @@ export const initSecretary = (api) => {
         
         document.getElementById('attModalTitle').textContent = 'NUEVO INGRESO EXTRA';
         document.getElementById('attType').value = 'inyeccion';
-        document.getElementById('attName').value = 'Ingreso / Inyección';
+        document.getElementById('attName').value = 'Ingreso';
         document.getElementById('attPlayers').value = '1';
         const dateInput = document.getElementById('attDate');
         if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
