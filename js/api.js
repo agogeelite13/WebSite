@@ -239,14 +239,20 @@ export const api = {
 
     // --- SOCIAL SYSTEM ---
     async searchUsers(query) {
+        // Usamos una consulta más robusta para el OR
         const { data, error } = await supabase.from('users')
             .select('id, callsign, name, specialty, faction, exp, avatar_url')
             .or(`callsign.ilike.%${query}%,name.ilike.%${query}%`)
-            .limit(10);
+            .limit(15);
         
         if (error) {
-            console.error('Supabase Search Error:', error.message, error.details);
-            return [];
+            console.error('Supabase Search Error:', error.message);
+            // Reintento simplificado si falla el OR (algunas configuraciones de RLS dan problemas con OR complejos)
+            const { data: retryData } = await supabase.from('users')
+                .select('id, callsign, name, specialty, faction, exp, avatar_url')
+                .ilike('callsign', `%${query}%`)
+                .limit(10);
+            return retryData || [];
         }
         return data || [];
     },

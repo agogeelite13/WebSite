@@ -312,9 +312,14 @@ export const initSocial = async (api, currentUser) => {
     // Search Logic
     const handleSearch = async () => {
         const query = userSearchInput.value.trim();
-        if (query.length < 2) return;
+        console.log('Iniciando búsqueda de:', query);
+        if (query.length < 2) {
+            console.warn('Búsqueda demasiado corta');
+            return;
+        }
         userSearchResults.innerHTML = '<p class="u-text-center u-small">Buscando...</p>';
         const users = await api.searchUsers(query);
+        console.log('Usuarios encontrados:', users.length);
         renderSearchResults(users, api, currentUser);
     };
 
