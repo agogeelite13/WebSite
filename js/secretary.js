@@ -4,6 +4,9 @@
  */
 
 export const initSecretary = (api) => {
+    if (window._secretaryInitialized) return;
+    window._secretaryInitialized = true;
+    
     const els = {
         addBtn: document.getElementById('addAttendanceBtn'),
         addExtraBtn: document.getElementById('addExtraIncomeBtn'),
