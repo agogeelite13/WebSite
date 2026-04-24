@@ -7,6 +7,7 @@ import * as ui from './js/ui.js';
 import * as profile from './js/profile.js';
 import * as admin from './js/admin.js';
 import * as secretary from './js/secretary.js';
+import { initBackground } from './js/background.js';
 
 // 1. GLOBAL STATE
 let supabase = null;
@@ -575,6 +576,7 @@ const setupVotingListeners = () => {
 // 5. INITIALIZATION
 document.addEventListener('DOMContentLoaded', async () => {
     // a. Component Inits (Vanilla UI)
+    initBackground();
     ui.initScrollProgress();
     ui.initStickyHeader();
     ui.initHamburger();
