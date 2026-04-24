@@ -278,3 +278,144 @@ export const renderClanView = async (userProfile, clans, allUsers, actions) => {
         document.getElementById('leaveClanBtn')?.addEventListener('click', actions.leaveClan);
     }
 };
+
+/** --- SOCIAL & COMMUNITY LOGIC --- **/
+
+export const initSocial = async (api, currentUser) => {
+    const viewMyProfileBtn = document.getElementById('viewMyProfileBtn');
+    const viewCommunityBtn = document.getElementById('viewCommunityBtn');
+    const communityView = document.getElementById('communityView');
+    const profileMain = document.querySelector('.profile-card--premium'); // The main profile content
+
+    const userSearchInput = document.getElementById('userSearchInput');
+    const userSearchBtn = document.getElementById('userSearchBtn');
+    const userSearchResults = document.getElementById('userSearchResults');
+
+    if (!viewCommunityBtn || !currentUser) return;
+
+    // View Toggles
+    viewMyProfileBtn?.addEventListener('click', () => {
+        viewMyProfileBtn.classList.add('active');
+        viewCommunityBtn.classList.remove('active');
+        communityView.classList.add('hidden');
+        profileMain.classList.remove('hidden');
+    });
+
+    viewCommunityBtn?.addEventListener('click', () => {
+        viewCommunityBtn.classList.add('active');
+        viewMyProfileBtn.classList.remove('active');
+        communityView.classList.remove('hidden');
+        profileMain.classList.add('hidden');
+        renderFriends(api, currentUser);
+    });
+
+    // Search Logic
+    const handleSearch = async () => {
+        const query = userSearchInput.value.trim();
+        if (query.length < 2) return;
+        userSearchResults.innerHTML = '<p class="u-text-center u-small">Buscando...</p>';
+        const users = await api.searchUsers(query);
+        renderSearchResults(users, api, currentUser);
+    };
+
+    userSearchBtn?.addEventListener('click', handleSearch);
+    userSearchInput?.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSearch(); });
+};
+
+const renderSearchResults = (users, api, currentUser) => {
+    const container = document.getElementById('userSearchResults');
+    if (!container) return;
+
+    if (users.length === 0) {
+        container.innerHTML = '<p class="u-text-center u-small">No se encontraron operadores.</p>';
+        return;
+    }
+
+    container.innerHTML = users.filter(u => u.id !== currentUser.id).map(user => `
+        <div class="user-card">
+            <img src="${user.avatar_url || 'avatars/avatar_recluta.png'}" class="user-card__avatar">
+            <h5 class="user-card__name">${user.callsign || user.name}</h5>
+            <p class="user-card__meta">${user.specialty || 'RECLUTA'} | LVL ${Math.floor(user.exp || 0)}</p>
+            <div class="user-card__actions">
+                <button class="btn btn--primary btn--sm user-card__btn" onclick="sendFriendRequest('${user.id}')">AGREGAR</button>
+            </div>
+        </div>
+    `).join('');
+
+    window.sendFriendRequest = async (friendId) => {
+        if (await api.sendFriendRequest(currentUser.id, friendId)) {
+            alert('Solicitud enviada!');
+            handleSearch(); // Refresh results to hide or show status
+        }
+    };
+};
+
+export const renderFriends = async (api, currentUser) => {
+    const friendsList = document.getElementById('friendsList');
+    const pendingArea = document.getElementById('pendingRequestsArea');
+    const pendingList = document.getElementById('pendingRequestsList');
+
+    if (!friendsList || !currentUser) return;
+
+    const friendships = await api.getFriendships(currentUser.id);
+    
+    const pending = friendships.filter(f => f.status === 'pending' && f.friend_id === currentUser.id);
+    const accepted = friendships.filter(f => f.status === 'accepted');
+
+    // Handle Pending
+    if (pending.length > 0) {
+        pendingArea.classList.remove('hidden');
+        pendingList.innerHTML = pending.map(f => {
+            const u = f.user;
+            return `
+                <div class="user-card" style="border-color:var(--gold);">
+                    <img src="${u.avatar_url || 'avatars/avatar_recluta.png'}" class="user-card__avatar">
+                    <h5 class="user-card__name">${u.callsign}</h5>
+                    <div class="user-card__actions">
+                        <button class="btn btn--primary btn--sm" onclick="acceptFriend('${f.id}')">ACEPTAR</button>
+                        <button class="btn btn--outline btn--sm" onclick="rejectFriend('${f.id}')">RECHAZAR</button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    } else {
+        pendingArea.classList.add('hidden');
+    }
+
+    // Handle Friends
+    if (accepted.length > 0) {
+        friendsList.innerHTML = accepted.map(f => {
+            const isUserA = f.user_id === currentUser.id;
+            const u = isUserA ? f.friend : f.user;
+            return `
+                <div class="user-card">
+                    <img src="${u.avatar_url || 'avatars/avatar_recluta.png'}" class="user-card__avatar">
+                    <h5 class="user-card__name">${u.callsign}</h5>
+                    <p class="user-card__meta">${u.specialty} | LVL ${Math.floor(u.exp || 0)}</p>
+                    <div class="user-card__actions">
+                        <button class="btn btn--outline btn--sm" onclick="viewFriendProfile('${u.id}')">VER FICHA</button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    } else {
+        friendsList.innerHTML = '<p class="u-text-muted u-small">Aún no tienes amigos agregados.</p>';
+    }
+
+    window.acceptFriend = async (id) => {
+        if (await api.updateFriendship(id, 'accepted')) renderFriends(api, currentUser);
+    };
+    window.rejectFriend = async (id) => {
+        if (confirm('¿Rechazar esta solicitud?')) {
+            if (await api.deleteFriendship(id)) renderFriends(api, currentUser);
+        }
+    };
+    window.viewFriendProfile = async (userId) => {
+        const user = await api.getProfile(userId);
+        if (user) {
+            alert(`FICHA TÉCNICA: ${user.callsign}\n-----------------\nRANGO: ${Math.floor(user.exp || 0)}\nESPECIALIDAD: ${user.specialty}\nFACCIÓN: ${user.faction}\nMISIONES: ${user.exp}`);
+            // For now a simple alert, but we could make a nice modal.
+        }
+    };
+};
+

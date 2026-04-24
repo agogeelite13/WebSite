@@ -620,5 +620,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Admin globals & logic already handled by setupAuthUI calling admin.update...
         // But we ensure globals are attached
         admin.attachAdminGlobals(api, sunKey);
+    } else if (path.includes('perfil.html')) {
+        profile.initSocial(api, currentUser);
     }
 });

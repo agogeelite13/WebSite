@@ -5040,3 +5040,75 @@ select.form-input option {
     pointer-events: none;
     opacity: 0.6;
 }
+
+/* --- SOCIAL HUB STYLES --- */
+.profile-social-hub {
+    background: rgba(20, 20, 20, 0.4);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.search-results-grid, .friends-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.user-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.user-card:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--gold);
+    transform: translateY(-3px);
+}
+
+.user-card__avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    margin-bottom: 10px;
+    object-fit: cover;
+}
+
+.user-card__name {
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    color: var(--white);
+    margin-bottom: 5px;
+}
+
+.user-card__meta {
+    font-size: 0.7rem;
+    color: var(--bronze-light);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+}
+
+.user-card__actions {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+}
+
+.user-card__btn {
+    flex: 1;
+    padding: 8px;
+    font-size: 0.65rem;
+    border-radius: 4px;
+    font-weight: 700;
+}
+

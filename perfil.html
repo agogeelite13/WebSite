@@ -188,6 +188,39 @@
                         </div>
                     </div>
 
+                    <!-- COMMUNITY & FRIENDS SECTION -->
+                    <div id="socialSection" class="profile-social-hub u-margin-b-lg">
+                        <div class="sec-view-toggle u-margin-b-md">
+                            <button id="viewMyProfileBtn" class="sec-toggle-btn active">MI FICHA</button>
+                            <button id="viewCommunityBtn" class="sec-toggle-btn">COMUNIDAD</button>
+                        </div>
+
+                        <div id="communityView" class="hidden">
+                            <div class="community-search-box u-margin-b-md">
+                                <h4 class="sidebar-title">BUSCAR OPERADORES</h4>
+                                <div class="form-group" style="display: flex; gap: 10px;">
+                                    <input type="text" id="userSearchInput" class="form-input" placeholder="Buscar por Callsign..." style="flex:1;">
+                                    <button id="userSearchBtn" class="btn btn--primary" style="padding: 10px 20px;">BUSCAR</button>
+                                </div>
+                                <div id="userSearchResults" class="search-results-grid u-margin-t-sm">
+                                    <!-- Results injected here -->
+                                </div>
+                            </div>
+
+                            <div class="friends-list-container">
+                                <div id="pendingRequestsArea" class="hidden u-margin-b-md">
+                                    <h4 class="sidebar-title" style="color:var(--gold);">SOLICITUDES PENDIENTES</h4>
+                                    <div id="pendingRequestsList" class="friends-grid"></div>
+                                </div>
+
+                                <h4 class="sidebar-title">MIS CAMARADAS</h4>
+                                <div id="friendsList" class="friends-grid">
+                                    <p class="u-text-muted u-small">Aún no tienes amigos agregados.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Profile Edit Form -->
                     <form id="profileEditForm" class="profile-edit-form hidden">
                         <h3 class="form-title">ACTUALIZACIÓN DE DATOS</h3>

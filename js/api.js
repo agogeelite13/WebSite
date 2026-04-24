@@ -225,18 +225,46 @@ export const api = {
             if (dbError) throw dbError;
 
             // 2. Extract path and delete from Storage
-            // URL format typically: .../storage/v1/object/public/community_photos/filename.jpg
             const pathParts = imageUrl.split('/community_photos/');
             if (pathParts.length > 1) {
                 const filePath = pathParts[1];
-                const { error: storageError } = await supabase.storage.from('community_photos').remove([filePath]);
-                if (storageError) console.warn('Storage delete warning:', storageError);
+                await supabase.storage.from('community_photos').remove([filePath]);
             }
-
             return true;
         } catch (error) {
             console.error('Delete photo error:', error);
             return false;
         }
+    },
+
+    // --- SOCIAL SYSTEM ---
+    async searchUsers(query) {
+        const { data } = await supabase.from('users')
+            .select('id, callsign, name, specialty, faction, exp, avatar_url')
+            .or(`callsign.ilike.%${query}%,name.ilike.%${query}%`)
+            .limit(10);
+        return data || [];
+    },
+    async sendFriendRequest(userId, friendId) {
+        const { error } = await supabase.from('friendships').insert({ user_id: userId, friend_id: friendId, status: 'pending' });
+        return !error;
+    },
+    async getFriendships(userId) {
+        const { data } = await supabase.from('friendships')
+            .select(`
+                id, status, user_id, friend_id,
+                user:user_id(id, callsign, avatar_url, specialty, faction, exp),
+                friend:friend_id(id, callsign, avatar_url, specialty, faction, exp)
+            `)
+            .or(`user_id.eq.${userId},friend_id.eq.${userId}`);
+        return data || [];
+    },
+    async updateFriendship(id, status) {
+        const { error } = await supabase.from('friendships').update({ status }).eq('id', id);
+        return !error;
+    },
+    async deleteFriendship(id) {
+        const { error } = await supabase.from('friendships').delete().eq('id', id);
+        return !error;
     }
 };
