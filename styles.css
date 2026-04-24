@@ -3203,9 +3203,10 @@ select.form-input option {
 }
 
 .sec-toggle-btn.active {
-    background: var(--gold);
-    color: var(--black);
-    box-shadow: 0 0 15px rgba(212,175,55,0.3);
+    background: rgba(212, 175, 55, 0.15);
+    color: var(--gold);
+    border: 1px solid var(--gold);
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.05);
 }
 
 .sec-stat-card--expense {
