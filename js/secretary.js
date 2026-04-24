@@ -15,10 +15,11 @@ export const initSecretary = (api) => {
         filterType: document.getElementById('secFilterType'),
         stats: {
             day: document.getElementById('statIncomeDay'),
-            week: document.getElementById('statIncomeWeek'),
             month: document.getElementById('statIncomeMonth'),
             expMonth: document.getElementById('statExpenseMonth'),
             netBalance: document.getElementById('statNetBalance'),
+            incomeTotal: document.getElementById('statIncomeTotal'),
+            balanceTotal: document.getElementById('statBalanceTotal'),
             count: document.getElementById('statAttendanceCount')
         },
         // Toggles
@@ -175,20 +176,27 @@ const renderSecretaryDashboard = async (api, els) => {
         return d.getMonth() === thisMonth && d.getFullYear() === thisYear;
     }).reduce((sum, e) => sum + (e.amount || 0), 0);
 
-    const incomeWeek = logs.filter(l => {
-        const d = new Date(l.date);
-        const diff = Math.ceil(Math.abs(now - d) / (1000 * 60 * 60 * 24));
-        return diff <= 7;
-    }).reduce((sum, l) => sum + (l.total_price || 0), 0);
+    const incomeTotal = logs.reduce((sum, l) => sum + (l.total_price || 0), 0);
+    const expenseTotal = expenses.reduce((sum, e) => sum + (e.amount || 0), 0);
 
     if (els.stats.day) els.stats.day.textContent = `${incomeDay.toFixed(2)} €`;
-    if (els.stats.week) els.stats.week.textContent = `${incomeWeek.toFixed(2)} €`;
     if (els.stats.month) els.stats.month.textContent = `${incomeMonth.toFixed(2)} €`;
     if (els.stats.expMonth) els.stats.expMonth.textContent = `${expenseMonth.toFixed(2)} €`;
+    
     if (els.stats.netBalance) {
         const net = incomeMonth - expenseMonth;
         els.stats.netBalance.textContent = `${net.toFixed(2)} €`;
         els.stats.netBalance.style.color = net >= 0 ? 'var(--gold)' : 'var(--blood-light)';
+    }
+
+    if (els.stats.incomeTotal) {
+        els.stats.incomeTotal.textContent = `${incomeTotal.toFixed(2)} €`;
+    }
+
+    if (els.stats.balanceTotal) {
+        const globalNet = incomeTotal - expenseTotal;
+        els.stats.balanceTotal.textContent = `${globalNet.toFixed(2)} €`;
+        els.stats.balanceTotal.style.color = globalNet >= 0 ? 'var(--gold)' : 'var(--blood-light)';
     }
     
     // Attendance Table

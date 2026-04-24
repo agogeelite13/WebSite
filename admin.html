@@ -205,14 +205,10 @@
                     </div>
                     
                     <!-- Summary Stats -->
-                    <div class="secretary-stats-grid">
+                    <div class="secretary-stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));">
                         <div class="sec-stat-card">
                             <span class="sec-stat-card__label">INGRESO HOY</span>
                             <span id="statIncomeDay" class="sec-stat-card__value">0 €</span>
-                        </div>
-                        <div class="sec-stat-card">
-                            <span class="sec-stat-card__label">ESTA SEMANA</span>
-                            <span id="statIncomeWeek" class="sec-stat-card__value">0 €</span>
                         </div>
                         <div class="sec-stat-card">
                             <span class="sec-stat-card__label">ESTE MES</span>
@@ -223,8 +219,16 @@
                             <span id="statExpenseMonth" class="sec-stat-card__value" style="color:var(--blood-light);">0 €</span>
                         </div>
                         <div class="sec-stat-card sec-stat-card--balance">
-                            <span class="sec-stat-card__label">BALANCE NETO</span>
+                            <span class="sec-stat-card__label">BALANCE MES</span>
                             <span id="statNetBalance" class="sec-stat-card__value" style="color:var(--gold);">0 €</span>
+                        </div>
+                        <div class="sec-stat-card">
+                            <span class="sec-stat-card__label">INGRESO TOTAL</span>
+                            <span id="statIncomeTotal" class="sec-stat-card__value">0 €</span>
+                        </div>
+                        <div class="sec-stat-card sec-stat-card--balance">
+                            <span class="sec-stat-card__label">BALANCE GLOBAL</span>
+                            <span id="statBalanceTotal" class="sec-stat-card__value" style="color:var(--gold);">0 €</span>
                         </div>
                     </div>
 
