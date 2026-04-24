@@ -357,4 +357,54 @@ const renderSecretaryDashboard = async (api, els) => {
             <td style="font-family:monospace; font-size:0.7rem;">${e.date}</td>
             <td><span class="sec-type-badge sec-type-badge--${e.category.toLowerCase()}">${e.category.toUpperCase()}</span></td>
             <td style="font-weight:bold;">${e.concept}</td>
+            <td style="color:var(--blood-light);">${e.amount.toFixed(2)} €</td>
+            <td>
+                <button class="btn btn--outline btn--sm" onclick="adminDeleteExpense('${e.id}')">Borrar</button>
+            </td>
+        </tr>
+    `).join('') : `<tr><td colspan="5" class="u-text-center">No hay gastos registrados</td></tr>`;
+    
+    // Bonos Table
+    if (els.bonosList) {
+        els.bonosList.innerHTML = bonos.length > 0 ? bonos.map(b => `
+            <tr style="opacity: ${b.is_active ? '1' : '0.5'};">
+                <td style="font-weight:bold; color:var(--gold);">${b.group_name}</td>
+                <td style="font-family:monospace;">${b.sessions_used} / ${b.total_sessions}</td>
+                <td>${b.price_total.toFixed(2)} € <span style="font-size:0.7rem; color:var(--bronze-light);">(${b.price_per_session.toFixed(2)}€/s)</span></td>
+                <td><span class="sec-type-badge ${b.is_active ? 'sec-type-badge--grupo' : 'sec-type-badge--individual'}">${b.is_active ? 'ACTIVO' : 'AGOTADO'}</span></td>
+                <td>
+                    <button class="btn btn--outline btn--sm" onclick="adminDeleteBonus('${b.id}')">Borrar</button>
+                </td>
+            </tr>
+        `).join('') : `<tr><td colspan="5" class="u-text-center">No hay bonos activos</td></tr>`;
+    }
+
+    // Populate the dropdown in Attendance Modal
+    const attBonusSelect = document.getElementById('attBonusSelect');
+    if (attBonusSelect) {
+        const activeBonos = bonos.filter(b => b.is_active);
+        attBonusSelect.innerHTML = `<option value="">-- No asociar a ningún bono --</option>` + 
+            activeBonos.map(b => `<option value="${b.id}" data-name="${b.group_name}" data-price="${b.price_per_session}" data-total="${b.total_sessions}" data-used="${b.sessions_used}" data-pax="1">${b.group_name} (${b.total_sessions - b.sessions_used} restantes)</option>`).join('');
+    }
+
+    // Attach search handlers
+    const renderFiltered = () => {
+        const q = (els.search?.value || '').toLowerCase();
+        const d = els.filterDate?.value || '';
+        const t = els.filterType?.value || 'all';
+
+        Array.from(els.list.children).forEach(tr => {
+            const dateStr = tr.children[0].textContent;
+            const typeStr = tr.children[1].textContent.toLowerCase();
+            const nameStr = tr.children[2].textContent.toLowerCase();
+            const matchQ = !q || nameStr.includes(q);
+            const matchD = !d || dateStr === d;
+            const matchT = t === 'all' || typeStr === t;
+            tr.style.display = matchQ && matchD && matchT ? '' : 'none';
+        });
+    };
+
+    els.search?.addEventListener('input', renderFiltered);
+    els.filterDate?.addEventListener('change', renderFiltered);
+    els.filterType?.addEventListener('change', renderFiltered);
 };
