@@ -277,6 +277,42 @@
                             <p id="uploadFeedback" class="hidden u-margin-t-sm u-bold"></p>
                         </form>
                     </div>
+                    <!-- OPERATOR CARD MODAL (FOR FRIENDS) -->
+                    <div id="operatorCardModal" class="modal-wrap hidden">
+                        <div class="modal-content profile-card--premium" style="max-width: 500px; position: relative;">
+                            <button id="closeOpCard" class="modal-close">&times;</button>
+                            <div class="profile-header-premium">
+                                <div class="operator-avatar-frame">
+                                    <img src="avatars/avatar_recluta.png" alt="Avatar" id="opCardAvatar" class="operator-avatar">
+                                </div>
+                                <div class="profile-header-info">
+                                    <h3 id="opCardCallsign" class="profile-callsign">-</h3>
+                                    <p id="opCardRank" class="rank-pill" data-rank="recluta">RECLUTA</p>
+                                </div>
+                            </div>
+                            <div class="profile-stats-hub u-margin-t-md" style="grid-template-columns: 1fr 1fr;">
+                                <div class="stat-node">
+                                    <span class="stat-node__label">ESPECIALIDAD</span>
+                                    <span id="opCardSpecialty" class="stat-node__value">-</span>
+                                </div>
+                                <div id="opCardFactionNode" class="stat-node">
+                                    <span class="stat-node__label">FACCIÓN</span>
+                                    <span id="opCardFaction" class="stat-node__value">-</span>
+                                </div>
+                                <div class="stat-node">
+                                    <span class="stat-node__label">MISIONES</span>
+                                    <span id="opCardMissions" class="stat-node__value">0</span>
+                                </div>
+                                <div class="stat-node">
+                                    <span class="stat-node__label">EXP</span>
+                                    <span id="opCardXP" class="stat-node__value">0</span>
+                                </div>
+                            </div>
+                            <div style="margin-top:20px; text-align:center;">
+                                <p class="u-text-muted u-small" style="letter-spacing:1px;">ESTADO: <span style="color:var(--gold);">OPERATIVO</span></p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

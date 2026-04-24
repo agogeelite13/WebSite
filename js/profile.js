@@ -413,8 +413,33 @@ export const renderFriends = async (api, currentUser) => {
     window.viewFriendProfile = async (userId) => {
         const user = await api.getProfile(userId);
         if (user) {
-            alert(`FICHA TÉCNICA: ${user.callsign}\n-----------------\nRANGO: ${Math.floor(user.exp || 0)}\nESPECIALIDAD: ${user.specialty}\nFACCIÓN: ${user.faction}\nMISIONES: ${user.exp}`);
-            // For now a simple alert, but we could make a nice modal.
+            const modal = document.getElementById('operatorCardModal');
+            document.getElementById('opCardCallsign').textContent = user.callsign || '-';
+            document.getElementById('opCardAvatar').src = user.avatar_url || 'avatars/avatar_recluta.png';
+            document.getElementById('opCardSpecialty').textContent = (user.specialty || 'Asalto').toUpperCase();
+            document.getElementById('opCardMissions').textContent = user.exp || 0;
+            document.getElementById('opCardXP').textContent = user.exp || 0;
+            
+            const factionMap = { 'none': 'SIN FACCIÓN', 'taskforce': 'TASK FORCE', 'uprising': 'UPRISING' };
+            document.getElementById('opCardFaction').textContent = factionMap[user.faction] || 'SIN FACCIÓN';
+            
+            const rankPill = document.getElementById('opCardRank');
+            const exp = user.exp || 0;
+            let rank = 'recluta';
+            if (exp >= 30) rank = 'comandante';
+            else if (exp >= 20) rank = 'veterano';
+            else if (exp >= 10) rank = 'operador';
+            
+            rankPill.textContent = rank.toUpperCase();
+            rankPill.setAttribute('data-rank', rank);
+            
+            modal.classList.remove('hidden');
+            modal.style.display = 'flex';
+            
+            document.getElementById('closeOpCard').onclick = () => {
+                modal.classList.add('hidden');
+                modal.style.display = 'none';
+            };
         }
     };
 };
