@@ -204,20 +204,27 @@ export const api = {
         return urlData.publicUrl;
     },
     async generateMissionWithGemini(apiKey) {
-        // Plan D: Pollinations con modelo Qwen (Muy estable y rápido)
+        // Plan E: Conexión robusta vía POST (OpenAI compatible)
         const prompt = `Genera una misión de Airsoft en este formato JSON exacto:
         {"title_loc":"...","objective":"...","gear":"...","map_prompt":"..."}.
         No uses listas ni guiones. Párrafos fluidos.`;
-        
-        const url = `https://text.pollinations.ai/${encodeURIComponent(prompt)}?model=qwen&json=true&seed=${Date.now()}`;
 
         try {
-            const resp = await fetch(url);
-            if (!resp.ok) throw new Error('Servidor ocupado. Intenta en 10 segundos.');
+            const resp = await fetch('https://text.pollinations.ai/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    messages: [{ role: 'user', content: prompt }],
+                    model: 'qwen',
+                    jsonMode: true
+                })
+            });
+
+            if (!resp.ok) throw new Error('Servidor ocupado o rechazado');
             
-            let text = await resp.text();
+            const text = await resp.text();
             const jsonMatch = text.match(/\{[\s\S]*\}/);
-            if (!jsonMatch) throw new Error('Error de formato');
+            if (!jsonMatch) throw new Error('Respuesta de IA ilegible');
             
             const data = JSON.parse(jsonMatch[0]);
             return {
