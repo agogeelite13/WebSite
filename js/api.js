@@ -204,12 +204,14 @@ export const api = {
         return urlData.publicUrl;
     },
     async generateMissionWithGemini(apiKey) {
-        const promptText = `Genera una misión de Airsoft en este formato JSON exacto: {"title_loc":"...","objective":"...","gear":"...","map_prompt":"..."}. No uses listas ni guiones. Párrafos fluidos.`;
+        const promptText = `Genera una misión de Airsoft profesional y muy detallada. Tono militar.
+        Escribe párrafos largos y realistas. No uses listas.
+        Formato JSON: {"title_loc":"...","objective":"...","gear":"...","map_prompt":"..."}.`;
 
         const normalize = (data) => ({
-            title_loc: data.title_loc || data.title || data.situation || data.titulo || 'OPERACIÓN AGOGE',
-            objective: data.objective || data.mission || data.description || data.objetivo || 'Objetivos tácticos pendientes.',
-            gear: data.gear || data.equipment || data.rules || data.equipacion || 'Equipación estándar.',
+            title_loc: data.title_loc || data.title || data.situation || 'OPERACIÓN AGOGE - SECTOR X',
+            objective: data.objective || data.mission || data.description || 'Objetivos tácticos pendientes de confirmación por el mando central.',
+            gear: data.gear || data.equipment || data.rules || 'Equipación estándar de la unidad. Consultar normativa de munición.',
             map_prompt: data.map_prompt || data.map || 'Tactical airsoft map',
             is_fallback: data.is_fallback || false
         });
@@ -235,7 +237,7 @@ export const api = {
 
         // --- INTENTO 2: IA RESPALDO ---
         try {
-            const pollUrl = `https://text.pollinations.ai/Genera%20una%20mision%20airsoft%20en%20JSON?model=openai&json=true`;
+            const pollUrl = `https://text.pollinations.ai/${encodeURIComponent(promptText)}?model=openai&json=true`;
             const resp = await fetch(pollUrl);
             if (resp.ok) {
                 const text = await resp.text();
@@ -244,20 +246,20 @@ export const api = {
             }
         } catch (e) { console.error('Respaldo Error:', e); }
 
-        // --- INTENTO 3: LOCAL DB ---
+        // --- INTENTO 3: LOCAL DB (Misiones de Élite) ---
         const backup = [
             {
-                title_loc: "OPERACIÓN CENTINELA - Sector Bravo",
-                objective: "Localizar y escoltar al VIP hasta la zona de extracción.",
-                gear: "Munición limitada y radio.",
-                map_prompt: "Urban combat tactical map",
+                title_loc: "OPERACIÓN CENTINELA - Sector Bravo (Sierra de Madrid)",
+                objective: "Infiltración silenciosa en territorio hostil para localizar y asegurar un paquete de inteligencia crítica. La unidad debe evitar el contacto directo hasta asegurar la zona de extracción en el punto Alfa-6. Se espera resistencia moderada en los puntos de control intermedios.",
+                gear: "Uniforme árido/multicam. Munición limitada: 300 BBs por cargador. Prohibido el uso de granadas en interiores. Radio canal 4 obligatoria.",
+                map_prompt: "Military tactical map, woodland area, top-down view, high detail",
                 is_fallback: true
             },
             {
-                title_loc: "SABOTAJE EN LA FRONTERA - Puesto Avanzado",
-                objective: "Infiltrarse en el campamento enemigo y colocar cargas.",
-                gear: "Equipo ligero.",
-                map_prompt: "Forest military camp blueprint",
+                title_loc: "SABOTAJE EN LA FRONTERA - Puesto de Avanzada Delta",
+                objective: "Misión de búsqueda y destrucción. El equipo debe neutralizar tres emplazamientos de comunicaciones enemigos antes de que se complete la transmisión de datos. Coordinación esencial entre equipos de asalto y apoyo. El tiempo estimado de operación es de 120 minutos.",
+                gear: "Uniforme boscoso. Uso de fumígenos permitido en zonas abiertas. Gafas de protección con sello de goma obligatorio. Se recomienda llevar hidratación extra.",
+                map_prompt: "Border outpost tactical map, mountain terrain",
                 is_fallback: true
             }
         ];
