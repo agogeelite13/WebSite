@@ -144,7 +144,20 @@
 
                         <!-- Config Column -->
                         <div class="admin-col admin-col--config">
-                            <h3 class="admin-section-title">CONFIGURACIÓN DE OPORD</h3>
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                                <h3 class="admin-section-title" style="margin-bottom:0;">CONFIGURACIÓN DE OPORD</h3>
+                                <div class="ai-controls">
+                                    <button type="button" id="aiConfigBtn" class="btn btn--secondary" style="padding:5px 10px; font-size:0.7rem;" title="Configurar IA">⚙️</button>
+                                    <button type="button" id="aiGenerateBtn" class="btn btn--primary" style="padding:5px 15px; font-size:0.8rem; background:linear-gradient(45deg, #cd7f32, #ffd700);">✨ GENERAR CON IA</button>
+                                </div>
+                            </div>
+
+                            <div id="aiConfigPanel" class="hidden" style="background:rgba(0,0,0,0.4); padding:15px; border:1px solid var(--border); margin-bottom:20px; border-radius:4px;">
+                                <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:10px;">Configura tu <strong>Google Gemini API Key</strong> (Gratis) para usar el generador:</p>
+                                <input type="password" id="aiGeminiKey" class="form-input" placeholder="sk-..." style="padding:8px; font-size:0.8rem; margin-bottom:10px;">
+                                <button type="button" id="saveAiConfig" class="btn btn--secondary btn--full" style="padding:8px; font-size:0.75rem;">GUARDAR CONFIGURACIÓN</button>
+                            </div>
+
                             <form id="adminMissionForm" class="admin-manual-form">
                                 <div class="form-group">
                                     <label>Situación Táctica:</label>

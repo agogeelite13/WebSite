@@ -236,8 +236,9 @@ export const renderAdminPhotos = async (api) => {
 // -----------------------------------------------------------------------------
 export const attachAdminGlobals = (api, nextSundayKey) => {
     
-    // Initialize OPORD form
+    // Initialize OPORD form & AI
     setupMissionConfig(api, nextSundayKey);
+    setupAIConfig(api, nextSundayKey);
 
     // Manual enrollment form button (in admin.html HTML)
     const manualEnrollBtn = document.querySelector('[onclick*="adminEnrollUser"]');
@@ -519,6 +520,9 @@ export const setupMissionConfig = async (api, nextSundayKey) => {
         if (ok) {
             feedback.textContent = '¡OPERACIÓN ACTUALIZADA CON ÉXITO!';
             feedback.style.color = '#2ecc71';
+            // Actualizar mapa actual si se subió uno nuevo
+            currentMapUrl = finalMapUrl;
+            if (mapStatus) mapStatus.textContent = 'Mapa actual cargado.';
         } else {
             feedback.textContent = 'ERROR DE COMUNICACIÓN CON MANDO.';
             feedback.style.color = 'var(--red)';
@@ -529,6 +533,72 @@ export const setupMissionConfig = async (api, nextSundayKey) => {
         
         setTimeout(() => { feedback.style.display = 'none'; }, 5000);
     });
+};
+
+export const setupAIConfig = (api, nextSundayKey) => {
+    const aiConfigBtn = document.getElementById('aiConfigBtn');
+    const aiConfigPanel = document.getElementById('aiConfigPanel');
+    const aiGeminiKey = document.getElementById('aiGeminiKey');
+    const saveAiConfig = document.getElementById('saveAiConfig');
+    const aiGenerateBtn = document.getElementById('aiGenerateBtn');
+
+    if (!aiConfigBtn || !aiGenerateBtn) return;
+
+    // Cargar clave guardada
+    const savedKey = localStorage.getItem('agoge_gemini_key');
+    if (savedKey) aiGeminiKey.value = savedKey;
+
+    aiConfigBtn.onclick = () => aiConfigPanel.classList.toggle('hidden');
+
+    saveAiConfig.onclick = () => {
+        const key = aiGeminiKey.value.trim();
+        if (key) {
+            localStorage.setItem('agoge_gemini_key', key);
+            alert('Configuración IA guardada correctamente.');
+            aiConfigPanel.classList.add('hidden');
+        }
+    };
+
+    aiGenerateBtn.onclick = async () => {
+        const key = localStorage.getItem('agoge_gemini_key');
+        if (!key) {
+            alert('Por favor, configura primero tu Google Gemini API Key pulsando el icono del engranaje.');
+            aiConfigPanel.classList.remove('hidden');
+            return;
+        }
+
+        aiGenerateBtn.disabled = true;
+        aiGenerateBtn.textContent = '🧠 IA PENSANDO...';
+
+        const mission = await api.generateMissionWithGemini(key);
+        if (mission) {
+            document.getElementById('confSituation').value = mission.situation;
+            document.getElementById('confMission').value = mission.mission;
+            document.getElementById('confGear').value = mission.gear;
+
+            // Generar mapa (Pollinations es gratis y no necesita API key)
+            aiGenerateBtn.textContent = '🗺️ DIBUJANDO MAPA...';
+            const mapPrompt = encodeURIComponent(mission.map_prompt + " tactical airsoft map, top-down view, military blueprint style, highly detailed");
+            const seed = Math.floor(Math.random() * 1000000);
+            const aiImageUrl = `https://image.pollinations.ai/prompt/${mapPrompt}?width=1200&height=800&nologo=true&seed=${seed}`;
+            
+            // Subir el mapa a Supabase para que sea permanente
+            const finalMapUrl = await api.proxyUploadFromUrl(aiImageUrl, nextSundayKey);
+            if (finalMapUrl) {
+                const mapStatus = document.getElementById('confMapStatus');
+                if (mapStatus) mapStatus.textContent = 'Mapa generado por IA listo.';
+                // Nota: Guardamos la URL en una variable global o la inyectamos en el flujo de guardado
+                // En este caso, el usuario verá el formulario relleno y podrá darle a PUBLICAR.
+            }
+            
+            alert('¡Misión generada con éxito por la IA! Revisa los campos y pulsa "PUBLICAR ACTUALIZACIÓN".');
+        } else {
+            alert('Error al conectar con la Inteligencia Artificial. Revisa tu API Key.');
+        }
+
+        aiGenerateBtn.disabled = false;
+        aiGenerateBtn.textContent = '✨ GENERAR CON IA';
+    };
 };
 
 // -----------------------------------------------------------------------------

@@ -203,6 +203,47 @@ export const api = {
 
         return urlData.publicUrl;
     },
+    async generateMissionWithGemini(apiKey) {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+        const prompt = `Actúa como un Comandante de Operaciones Especiales de Airsoft.
+        Genera una misión táctica emocionante para el próximo domingo.
+        Responde exclusivamente en formato JSON con la siguiente estructura:
+        {
+            "situation": "Breve contexto táctico (máx 150 palabras)",
+            "mission": "Objetivos claros y directos",
+            "gear": "Reglas de equipo o munición",
+            "map_prompt": "Descripción visual detallada para generar un mapa táctico cenital de esta misión"
+        }
+        No incluyas texto fuera del JSON. La misión debe ser realista y variada (CQB, rescate, sabotaje, etc).`;
+
+        try {
+            const resp = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+            });
+            const result = await resp.json();
+            const text = result.candidates[0].content.parts[0].text;
+            // Limpiar posibles bloques de código markdown
+            const cleanJson = text.replace(/```json/g, '').replace(/```/g, '').trim();
+            return JSON.parse(cleanJson);
+        } catch (e) {
+            console.error('Gemini API Error:', e);
+            return null;
+        }
+    },
+    async proxyUploadFromUrl(imageUrl, sunKey) {
+        if (!window._adminSupabaseClient) return null;
+        try {
+            const response = await fetch(imageUrl);
+            const blob = await response.blob();
+            const file = new File([blob], `ai_map_${sunKey}.jpg`, { type: 'image/jpeg' });
+            return await this.uploadMissionMap(file, sunKey);
+        } catch (e) {
+            console.error('Proxy Upload Error:', e);
+            return null;
+        }
+    },
     async uploadCommunityPhoto(file, userId, caption) {
         // 1. Upload to Storage
         const fileExt = file.name.split('.').pop();
