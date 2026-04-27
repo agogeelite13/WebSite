@@ -177,7 +177,10 @@ export const updateProfileView = (userProfile) => {
             opt.classList.add('selected');
             // Save to DB
             const api = window._api_instance;
-            if (api) await api.saveProfile({ id: userProfile.id, avatar: newAvatar });
+            if (api) {
+                userProfile.avatar = newAvatar; // Actualizamos el objeto local
+                await api.saveProfile({ ...userProfile, avatar: newAvatar });
+            }
         };
     });
 
