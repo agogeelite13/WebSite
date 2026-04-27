@@ -204,32 +204,42 @@ export const api = {
         return urlData.publicUrl;
     },
     async generateMissionWithGemini(apiKey) {
-        // Cambiamos a mistral que suele estar menos saturado que openai
-        const prompt = `Genera una misión de Airsoft en este formato JSON exacto:
-        {"title_loc":"...","objective":"...","gear":"...","map_prompt":"..."}.
-        No uses listas ni guiones. Párrafos fluidos.`;
+        // Plan C: Hugging Face (Más estable y gratuito)
+        const prompt = `<|system|>
+        Actúa como un experto en Airsoft. Genera una misión realista para el domingo.
+        IMPORTANTE: No uses listas, ni guiones, ni números. Escribe en párrafos naturales.
+        Responde exclusivamente en formato JSON con estos campos:
+        {"title_loc":"...","objective":"...","gear":"...","map_prompt":"..."}
+        <|user|>
+        Genera la misión ahora.`;
         
-        const url = `https://text.pollinations.ai/${encodeURIComponent(prompt)}?model=mistral&json=true&seed=${Date.now()}`;
+        const url = `https://api-inference.huggingface.co/models/HuggingFaceH4/zephyr-7b-beta`;
 
         try {
-            const resp = await fetch(url);
-            if (!resp.ok) throw new Error('Servidor de IA ocupado');
+            const resp = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ inputs: prompt })
+            });
+
+            if (!resp.ok) throw new Error('Servidor de IA en mantenimiento. Prueba en unos minutos.');
             
-            let text = await resp.text();
-            // Limpieza agresiva de JSON
+            const result = await resp.json();
+            const text = Array.isArray(result) ? result[0].generated_text : result.generated_text;
+            
+            // Limpiar JSON de la respuesta
             const jsonMatch = text.match(/\{[\s\S]*\}/);
-            if (jsonMatch) text = jsonMatch[0];
+            if (!jsonMatch) throw new Error('Formato de respuesta inválido');
             
-            const data = JSON.parse(text);
+            const data = JSON.parse(jsonMatch[0]);
             return {
-                title_loc: data.title_loc || data.situation || 'Misión sin título',
-                objective: data.objective || data.mission || 'Objetivos no generados',
-                gear: data.gear || 'Equipación estándar',
-                map_prompt: data.map_prompt || 'Tactical map'
+                title_loc: data.title_loc || 'OPERACIÓN AGOGE',
+                objective: data.objective || 'Objetivos tácticos pendientes.',
+                gear: data.gear || 'Equipación estándar.',
+                map_prompt: data.map_prompt || 'Tactical airsoft map'
             };
         } catch (e) {
-            alert('ERROR IA: ' + e.message);
-            console.error('AI Parse Error. Raw text:', e);
+            alert('IA NOTA: ' + e.message);
             return null;
         }
     },
