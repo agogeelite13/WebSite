@@ -204,37 +204,41 @@ export const api = {
         return urlData.publicUrl;
     },
     async generateMissionWithGemini(apiKey) {
-        const promptText = `Genera una misión de Airsoft profesional y muy detallada. Tono militar.
-        Escribe párrafos largos y realistas. No uses listas.
-        Formato JSON: {"title_loc":"...","objective":"...","gear":"...","map_prompt":"..."}.`;
+        const promptText = `Genera una misión de Airsoft detallada en formato JSON: {"title_loc":"...","objective":"...","gear":"...","map_prompt":"..."}.`;
+        const cleanKey = apiKey.trim(); // Limpiar espacios accidentales
 
         const normalize = (data, source) => ({
             title_loc: data.title_loc || data.title || data.situation || 'OPERACIÓN AGOGE - SECTOR X',
-            objective: data.objective || data.mission || data.description || 'Objetivos tácticos pendientes de confirmación por el mando central.',
-            gear: data.gear || data.equipment || data.rules || 'Equipación estándar de la unidad. Consultar normativa de munición.',
+            objective: data.objective || data.mission || data.description || 'Objetivos tácticos pendientes.',
+            gear: data.gear || data.equipment || data.rules || 'Equipación estándar.',
             map_prompt: data.map_prompt || data.map || 'Tactical airsoft map',
             is_fallback: data.is_fallback || false,
             source: source
         });
 
-        // --- INTENTO 1: GOOGLE GEMINI (v1beta) ---
-        if (apiKey && apiKey.length > 10) {
-            try {
-                // Actualizado a gemini-2.0-flash que es el modelo activo para esta clave
-                const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-                const resp = await fetch(geminiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
-                });
+        // --- INTENTO 1: GOOGLE GEMINI (Con reintentos de modelos) ---
+        if (cleanKey.length > 10) {
+            const models = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-pro'];
+            for (const model of models) {
+                try {
+                    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${cleanKey}`;
+                    const resp = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
+                    });
 
-                if (resp.ok) {
-                    const result = await resp.json();
-                    const text = result.candidates[0].content.parts[0].text;
-                    const jsonMatch = text.match(/\{[\s\S]*\}/);
-                    if (jsonMatch) return normalize(JSON.parse(jsonMatch[0]), 'Google Gemini');
-                }
-            } catch (e) { console.error('Gemini Error:', e); }
+                    if (resp.ok) {
+                        const result = await resp.json();
+                        const text = result.candidates[0].content.parts[0].text;
+                        const jsonMatch = text.match(/\{[\s\S]*\}/);
+                        if (jsonMatch) return normalize(JSON.parse(jsonMatch[0]), `Google ${model}`);
+                    } else if (resp.status === 403 || resp.status === 400) {
+                        console.error(`Error Google (${model}): ${resp.status}`);
+                        break; // Si es error de clave, no seguimos probando modelos
+                    }
+                } catch (e) { console.error(`Fallo en modelo ${model}:`, e); }
+            }
         }
 
         // --- INTENTO 2: IA RESPALDO ---
@@ -248,24 +252,25 @@ export const api = {
             }
         } catch (e) { console.error('Respaldo Error:', e); }
 
-        // --- INTENTO 3: LOCAL DB (Misiones de Élite) ---
+        // --- INTENTO 3: LOCAL DB ---
         const backup = [
             {
-                title_loc: "OPERACIÓN CENTINELA - Sector Bravo (Sierra de Madrid)",
-                objective: "Infiltración silenciosa en territorio hostil para localizar y asegurar un paquete de inteligencia crítica. La unidad debe evitar el contacto directo hasta asegurar la zona de extracción en el punto Alfa-6. Se espera resistencia moderada en los puntos de control intermedios.",
-                gear: "Uniforme árido/multicam. Munición limitada: 300 BBs por cargador. Prohibido el uso de granadas en interiores. Radio canal 4 obligatoria.",
-                map_prompt: "Military tactical map, woodland area, top-down view, high detail",
+                title_loc: "OPERACIÓN CENTINELA - Sector Bravo",
+                objective: "Infiltración silenciosa para asegurar inteligencia crítica.",
+                gear: "Uniforme multicam y radio obligatoria.",
+                map_prompt: "Tactical forest map",
                 is_fallback: true
             },
             {
-                title_loc: "SABOTAJE EN LA FRONTERA - Puesto de Avanzada Delta",
-                objective: "Misión de búsqueda y destrucción. El equipo debe neutralizar tres emplazamientos de comunicaciones enemigos antes de que se complete la transmisión de datos. Coordinación esencial entre equipos de asalto y apoyo. El tiempo estimado de operación es de 120 minutos.",
-                gear: "Uniforme boscoso. Uso de fumígenos permitido en zonas abiertas. Gafas de protección con sello de goma obligatorio. Se recomienda llevar hidratación extra.",
-                map_prompt: "Border outpost tactical map, mountain terrain",
+                title_loc: "SABOTAJE EN LA FRONTERA - Delta",
+                objective: "Neutralizar comunicaciones enemigas en 120 min.",
+                gear: "Uniforme boscoso y gafas de protección.",
+                map_prompt: "Mountain border map",
                 is_fallback: true
             }
         ];
         return backup[Math.floor(Math.random() * backup.length)];
+    },backup.length)];
     },
     async proxyUploadFromUrl(imageUrl, sunKey) {
         // Asegurar que el cliente admin esté listo
