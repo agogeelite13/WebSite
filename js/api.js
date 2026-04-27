@@ -205,9 +205,15 @@ export const api = {
     },
     async generateMissionWithGemini(apiKey) {
         // Plan B: Usamos Pollinations AI (Gratis, sin Key necesaria y muy estable)
-        const systemPrompt = `Actúa como un experto en Airsoft. Genera una misión en formato JSON puro.
-        Estructura: { "situation": "contexto", "mission": "objetivos", "gear": "normas", "map_prompt": "descripción para dibujo" }.
-        Responde SOLO el JSON.`;
+        const systemPrompt = `Actúa como un experto en Airsoft y operaciones militares. Genera una misión realista para el domingo.
+        Responde exclusivamente en formato JSON con estos campos exactos:
+        {
+          "title_loc": "TÍTULO DE LA MISIÓN y LOCALIZACIÓN (Ej: OPERACIÓN HALCÓN - Sector Sierra)",
+          "objective": "Objetivos detallados de la misión",
+          "gear": "Equipación necesaria y normas de munición",
+          "map_prompt": "Descripción visual para un mapa táctico militar cenital"
+        }
+        El tono debe ser serio y táctico. Responde SOLO el JSON sin texto extra.`;
         
         const url = `https://text.pollinations.ai/${encodeURIComponent(systemPrompt)}?model=openai&json=true`;
 

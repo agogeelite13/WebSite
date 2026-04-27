@@ -553,9 +553,9 @@ export const setupAIConfig = (api, nextSundayKey) => {
 
         const mission = await api.generateMissionWithGemini(key);
         if (mission) {
-            document.getElementById('confSituation').value = mission.situation;
-            document.getElementById('confMission').value = mission.mission;
-            document.getElementById('confGear').value = mission.gear;
+            document.getElementById('confSituation').value = mission.title_loc || '';
+            document.getElementById('confMission').value = mission.objective || '';
+            document.getElementById('confGear').value = mission.gear || '';
 
             // Generar mapa (Pollinations es gratis y no necesita API key)
             aiGenerateBtn.textContent = '🗺️ DIBUJANDO MAPA...';
