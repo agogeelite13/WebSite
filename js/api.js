@@ -204,76 +204,60 @@ export const api = {
         return urlData.publicUrl;
     },
     async generateMissionWithGemini(apiKey) {
-        const promptText = `Actúa como un experto en Airsoft. Genera una misión realista en formato JSON puro.
-        IMPORTANTE: No uses listas ni guiones. Párrafos fluidos.
+        const promptText = `Genera una misión de Airsoft realista en formato JSON puro. Párrafos fluidos.
         Estructura: {"title_loc":"...","objective":"...","gear":"...","map_prompt":"..."}.`;
 
-        // --- INTENTO 1: GOOGLE GEMINI (Tu clave) ---
+        // --- INTENTO 1: GOOGLE GEMINI ---
         if (apiKey && apiKey.length > 10) {
             try {
                 const geminiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-                const geminiResp = await fetch(geminiUrl, {
+                const resp = await fetch(geminiUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
                 });
 
-                if (geminiResp.ok) {
-                    const result = await geminiResp.json();
+                if (resp.ok) {
+                    const result = await resp.json();
                     const text = result.candidates[0].content.parts[0].text;
                     const jsonMatch = text.match(/\{[\s\S]*\}/);
-                    if (jsonMatch) {
-                        const data = JSON.parse(jsonMatch[0]);
-                        return { ...data, is_fallback: false, source: 'Google Gemini' };
-                    }
+                    if (jsonMatch) return { ...JSON.parse(jsonMatch[0]), is_fallback: false, source: 'Google Gemini' };
                 } else {
-                    console.warn('Gemini falló, saltando a IA de respaldo...');
+                    console.warn(`Gemini falló (Status ${resp.status}). Usando respaldo...`);
                 }
             } catch (e) {
-                console.error('Error en Gemini:', e);
+                console.error('Error crítico Gemini:', e);
             }
         }
 
-        // --- INTENTO 2: IA DE RESPALDO (Pollinations) ---
+        // --- INTENTO 2: IA RESPALDO (Pollinations GET - Más fiable) ---
         try {
-            const pollResp = await fetch('https://text.pollinations.ai/', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    messages: [{ role: 'user', content: promptText }],
-                    model: 'openai'
-                })
-            });
-
-            if (pollResp.ok) {
-                const text = await pollResp.text();
+            const pollUrl = `https://text.pollinations.ai/${encodeURIComponent(promptText)}?model=openai&json=true&seed=${Date.now()}`;
+            const resp = await fetch(pollUrl);
+            if (resp.ok) {
+                const text = await resp.text();
                 const jsonMatch = text.match(/\{[\s\S]*\}/);
-                if (jsonMatch) {
-                    const data = JSON.parse(jsonMatch[0]);
-                    return { ...data, is_fallback: false, source: 'IA Respaldo' };
-                }
+                if (jsonMatch) return { ...JSON.parse(jsonMatch[0]), is_fallback: false, source: 'IA Respaldo' };
             }
         } catch (e) {
-            console.warn('IA de respaldo falló, usando base de datos local...');
+            console.warn('Fallo IA Respaldo:', e);
         }
 
-        // --- INTENTO 3: BASE DE DATOS LOCAL (Emergencia) ---
+        // --- INTENTO 3: LOCAL DB ---
         const backup = [
             {
                 title_loc: "OPERACIÓN CENTINELA - Sector Bravo",
-                objective: "Localizar y escoltar al VIP hasta la zona de extracción mientras se repelen ataques enemigos.",
-                gear: "Munición limitada y radio para coordinación.",
+                objective: "Localizar y escoltar al VIP hasta la zona de extracción.",
+                gear: "Munición limitada y radio.",
                 map_prompt: "Urban combat tactical map",
-                is_fallback: true,
-                source: 'Local DB'
+                is_fallback: true
             },
             {
                 title_loc: "SABOTAJE EN LA FRONTERA - Puesto Avanzado",
-                objective: "Infiltrarse en el campamento enemigo para colocar cargas simuladas.",
-                gear: "Equipo ligero para movimiento rápido.",
+                objective: "Infiltrarse en el campamento enemigo y colocar cargas.",
+                gear: "Equipo ligero.",
                 map_prompt: "Forest military camp blueprint",
-                is_fallback: true,
-                source: 'Local DB'
+                is_fallback: true
             }
         ];
         return backup[Math.floor(Math.random() * backup.length)];
