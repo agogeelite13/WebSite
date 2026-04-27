@@ -217,10 +217,11 @@ export const api = {
             source: source
         });
 
-        // --- INTENTO 1: GOOGLE GEMINI ---
+        // --- INTENTO 1: GOOGLE GEMINI (v1beta) ---
         if (apiKey && apiKey.length > 10) {
             try {
-                const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+                // Actualizado a gemini-2.0-flash que es el modelo activo para esta clave
+                const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
                 const resp = await fetch(geminiUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
