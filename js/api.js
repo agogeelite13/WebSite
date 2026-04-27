@@ -241,7 +241,7 @@ export const api = {
     async searchUsers(query) {
         // Usamos una consulta más robusta para el OR
         const { data, error } = await supabase.from('users')
-            .select('id, callsign, name, specialty, faction, exp, avatar_url')
+            .select('id, callsign, name, specialty, faction, exp')
             .or(`callsign.ilike.%${query}%,name.ilike.%${query}%`)
             .limit(15);
         
@@ -249,7 +249,7 @@ export const api = {
             console.error('Supabase Search Error:', error.message);
             // Reintento simplificado por callsign
             const { data: retryData } = await supabase.from('users')
-                .select('id, callsign, name, specialty, faction, exp, avatar_url')
+                .select('id, callsign, name, specialty, faction, exp')
                 .ilike('callsign', `%${query}%`)
                 .limit(10);
             return retryData || [];
