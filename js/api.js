@@ -204,7 +204,8 @@ export const api = {
         return urlData.publicUrl;
     },
     async generateMissionWithGemini(apiKey) {
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+        // Probamos con v1 que es más estable para producción
+        const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
         const prompt = `Actúa como un Comandante de Operaciones Especiales de Airsoft.
         Genera una misión táctica emocionante para el próximo domingo.
         Responde exclusivamente en formato JSON con la siguiente estructura:
@@ -222,13 +223,22 @@ export const api = {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
             });
+            
+            if (!resp.ok) {
+                const errorData = await resp.json();
+                console.error('Gemini API Error Response:', errorData);
+                return null;
+            }
+
             const result = await resp.json();
+            if (!result.candidates || !result.candidates[0]) return null;
+
             const text = result.candidates[0].content.parts[0].text;
             // Limpiar posibles bloques de código markdown
             const cleanJson = text.replace(/```json/g, '').replace(/```/g, '').trim();
             return JSON.parse(cleanJson);
         } catch (e) {
-            console.error('Gemini API Error:', e);
+            console.error('Gemini API Fetch Error:', e);
             return null;
         }
     },
