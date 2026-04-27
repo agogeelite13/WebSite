@@ -5112,3 +5112,14 @@ select.form-input option {
     font-weight: 700;
 }
 
+
+/* Fix textarea resize in admin forms */
+textarea.form-input {
+    resize: vertical !important;
+}
+
+/* Fix line breaks in Intel Briefing */
+.briefing-item p {
+    white-space: pre-wrap;
+}
+
