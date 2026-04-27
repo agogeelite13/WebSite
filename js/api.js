@@ -204,30 +204,32 @@ export const api = {
         return urlData.publicUrl;
     },
     async generateMissionWithGemini(apiKey) {
-        // Plan B: Usamos Pollinations AI (Gratis, sin Key necesaria y muy estable)
-        const systemPrompt = `Actúa como un experto en Airsoft y operaciones militares. Genera una misión realista para el domingo.
-        IMPORTANTE: No uses listas numeradas, ni guiones, ni puntos de enumeración. Escribe exclusivamente en párrafos naturales y fluidos.
-        Responde exclusivamente en formato JSON con estos campos exactos:
-        {
-          "title_loc": "TÍTULO DE LA MISIÓN y LOCALIZACIÓN",
-          "objective": "Objetivos detallados en un párrafo fluido sin listas",
-          "gear": "Equipación y normas en un párrafo fluido sin listas",
-          "map_prompt": "Descripción visual detallada para un mapa táctico militar cenital"
-        }
-        El tono debe ser serio y táctico. Responde SOLO el JSON sin texto extra.`;
+        // Usamos Pollinations con un prompt muy directo para evitar fallos de formato
+        const prompt = `Genera una misión de Airsoft en este formato JSON exacto:
+        {"title_loc":"...","objective":"...","gear":"...","map_prompt":"..."}.
+        No uses listas ni guiones. Párrafos fluidos.`;
         
-        const url = `https://text.pollinations.ai/${encodeURIComponent(systemPrompt)}?model=openai&json=true`;
+        const url = `https://text.pollinations.ai/${encodeURIComponent(prompt)}?model=openai&json=true&seed=${Date.now()}`;
 
         try {
             const resp = await fetch(url);
-            if (!resp.ok) throw new Error('Error en el servidor de IA');
+            if (!resp.ok) throw new Error('Servidor de IA ocupado');
             
-            const text = await resp.text();
-            // Limpiar posibles bloques de código markdown
-            const cleanJson = text.replace(/```json/g, '').replace(/```/g, '').trim();
-            return JSON.parse(cleanJson);
+            let text = await resp.text();
+            // Limpieza agresiva de JSON
+            const jsonMatch = text.match(/\{[\s\S]*\}/);
+            if (jsonMatch) text = jsonMatch[0];
+            
+            const data = JSON.parse(text);
+            return {
+                title_loc: data.title_loc || data.situation || 'Misión sin título',
+                objective: data.objective || data.mission || 'Objetivos no generados',
+                gear: data.gear || 'Equipación estándar',
+                map_prompt: data.map_prompt || 'Tactical map'
+            };
         } catch (e) {
             alert('ERROR IA: ' + e.message);
+            console.error('AI Parse Error. Raw text:', e);
             return null;
         }
     },
