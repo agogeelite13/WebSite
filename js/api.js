@@ -175,6 +175,27 @@ export const api = {
         if (error) console.error('Supabase saveMission Error:', error.message, error.details, error.hint);
         return !error;
     },
+    async uploadMissionMap(file, sunKey) {
+        if (!window._adminSupabaseClient) return null;
+        
+        const fileExt = file.name.split('.').pop();
+        const fileName = `map_${sunKey}_${Date.now()}.${fileExt}`;
+        
+        const { data: uploadData, error: uploadError } = await window._adminSupabaseClient.storage
+            .from('mission_maps')
+            .upload(fileName, file);
+
+        if (uploadError) {
+            console.error('Storage Upload Map Error:', uploadError);
+            return null;
+        }
+
+        const { data: urlData } = window._adminSupabaseClient.storage
+            .from('mission_maps')
+            .getPublicUrl(fileName);
+
+        return urlData.publicUrl;
+    },
     async uploadCommunityPhoto(file, userId, caption) {
         // 1. Upload to Storage
         const fileExt = file.name.split('.').pop();

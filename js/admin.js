@@ -458,12 +458,15 @@ export const setupMissionConfig = async (api, nextSundayKey) => {
     const sitInput = document.getElementById('confSituation');
     const misInput = document.getElementById('confMission');
     const gearInput = document.getElementById('confGear');
-    const mapInput = document.getElementById('confMap');
+    const mapFileInput = document.getElementById('confMapFile');
+    const mapStatus = document.getElementById('confMapStatus');
     const modeSelect = document.getElementById('confMode');
     const feedback = document.getElementById('configFeedback');
     const submitBtn = form?.querySelector('button[type="submit"]');
 
     if (!form || !sitInput) return;
+
+    let currentMapUrl = '';
 
     // Load current config
     const config = await api.getMissionSettings(nextSundayKey);
@@ -471,8 +474,14 @@ export const setupMissionConfig = async (api, nextSundayKey) => {
         sitInput.value = config.situation || '';
         misInput.value = config.mission || '';
         gearInput.value = config.gear_rules || '';
-        mapInput.value = config.map_url || '';
         if (config.mode) modeSelect.value = config.mode;
+        
+        if (config.map_url) {
+            currentMapUrl = config.map_url;
+            if (mapStatus) mapStatus.textContent = 'Mapa actual cargado.';
+        } else {
+            if (mapStatus) mapStatus.textContent = 'Sin mapa.';
+        }
     }
 
     form.addEventListener('submit', async (e) => {
@@ -482,12 +491,26 @@ export const setupMissionConfig = async (api, nextSundayKey) => {
         submitBtn.textContent = 'PUBLICANDO...';
         feedback.style.display = 'none';
 
+        let finalMapUrl = currentMapUrl;
+        
+        // Handle file upload
+        if (mapFileInput && mapFileInput.files.length > 0) {
+            submitBtn.textContent = 'SUBIENDO MAPA...';
+            const file = mapFileInput.files[0];
+            const uploadedUrl = await api.uploadMissionMap(file, nextSundayKey);
+            if (uploadedUrl) {
+                finalMapUrl = uploadedUrl;
+            } else {
+                alert('No se ha podido subir el mapa. Se guardarán los textos sin actualizar el mapa.');
+            }
+        }
+
         const missionData = {
             sun_key: nextSundayKey,
             situation: sitInput.value.trim(),
             mission: misInput.value.trim(),
             gear_rules: gearInput.value.trim(),
-            map_url: mapInput.value.trim(),
+            map_url: finalMapUrl,
             mode: modeSelect.value
         };
 
