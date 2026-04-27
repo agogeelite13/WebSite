@@ -270,7 +270,6 @@ export const api = {
             }
         ];
         return backup[Math.floor(Math.random() * backup.length)];
-    },backup.length)];
     },
     async proxyUploadFromUrl(imageUrl, sunKey) {
         // Asegurar que el cliente admin esté listo
