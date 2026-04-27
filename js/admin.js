@@ -333,6 +333,8 @@ export const attachAdminGlobals = (api, nextSundayKey) => {
         configBtn.addEventListener('click', () => {
             configModal.classList.add('is-open');
             if (sheetsUrlInput) sheetsUrlInput.value = localStorage.getItem('sec_sheets_url') || '';
+            const geminiInput = document.getElementById('aiGeminiKeyModal');
+            if (geminiInput) geminiInput.value = localStorage.getItem('agoge_gemini_key') || '';
         });
         
         document.getElementById('configModalClose')?.addEventListener('click', () => {
@@ -345,13 +347,13 @@ export const attachAdminGlobals = (api, nextSundayKey) => {
 
     saveConfigBtn?.addEventListener('click', () => {
         const url = sheetsUrlInput?.value.trim();
-        if (url) {
-            localStorage.setItem('sec_sheets_url', url);
-            alert('Enlace con Google Sheets establecido correctamente.');
-            configModal?.classList.remove('is-open');
-        } else {
-            alert('Por favor, introduce una URL válida.');
-        }
+        const geminiKey = document.getElementById('aiGeminiKeyModal')?.value.trim();
+        
+        if (url) localStorage.setItem('sec_sheets_url', url);
+        if (geminiKey) localStorage.setItem('agoge_gemini_key', geminiKey);
+        
+        alert('Configuración guardada correctamente.');
+        configModal?.classList.remove('is-open');
     });
 };
 
@@ -536,34 +538,13 @@ export const setupMissionConfig = async (api, nextSundayKey) => {
 };
 
 export const setupAIConfig = (api, nextSundayKey) => {
-    const aiConfigBtn = document.getElementById('aiConfigBtn');
-    const aiConfigPanel = document.getElementById('aiConfigPanel');
-    const aiGeminiKey = document.getElementById('aiGeminiKey');
-    const saveAiConfig = document.getElementById('saveAiConfig');
     const aiGenerateBtn = document.getElementById('aiGenerateBtn');
-
-    if (!aiConfigBtn || !aiGenerateBtn) return;
-
-    // Cargar clave guardada
-    const savedKey = localStorage.getItem('agoge_gemini_key');
-    if (savedKey) aiGeminiKey.value = savedKey;
-
-    aiConfigBtn.onclick = () => aiConfigPanel.classList.toggle('hidden');
-
-    saveAiConfig.onclick = () => {
-        const key = aiGeminiKey.value.trim();
-        if (key) {
-            localStorage.setItem('agoge_gemini_key', key);
-            alert('Configuración IA guardada correctamente.');
-            aiConfigPanel.classList.add('hidden');
-        }
-    };
+    if (!aiGenerateBtn) return;
 
     aiGenerateBtn.onclick = async () => {
         const key = localStorage.getItem('agoge_gemini_key');
         if (!key) {
-            alert('Por favor, configura primero tu Google Gemini API Key pulsando el icono del engranaje.');
-            aiConfigPanel.classList.remove('hidden');
+            alert('Por favor, configura primero tu Google Gemini API Key en el panel de CONFIGURACIÓN (icono engranaje).');
             return;
         }
 
@@ -587,13 +568,11 @@ export const setupAIConfig = (api, nextSundayKey) => {
             if (finalMapUrl) {
                 const mapStatus = document.getElementById('confMapStatus');
                 if (mapStatus) mapStatus.textContent = 'Mapa generado por IA listo.';
-                // Nota: Guardamos la URL en una variable global o la inyectamos en el flujo de guardado
-                // En este caso, el usuario verá el formulario relleno y podrá darle a PUBLICAR.
             }
             
             alert('¡Misión generada con éxito por la IA! Revisa los campos y pulsa "PUBLICAR ACTUALIZACIÓN".');
         } else {
-            alert('Error al conectar con la Inteligencia Artificial. Revisa tu API Key.');
+            alert('Error al conectar con la Inteligencia Artificial. Revisa tu API Key en la configuración.');
         }
 
         aiGenerateBtn.disabled = false;

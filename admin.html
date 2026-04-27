@@ -92,7 +92,6 @@
             <div id="adminPanel" class="admin-panel">
                 <div class="admin-panel__header">
                     <h2 class="admin-panel__title">CENTRO DE MANDO ESTRATÉGICO</h2>
-                    <button id="openConfigBtn" class="btn btn--secondary btn--sm" title="Configuración Técnica">⚙️</button>
                 </div>
                 <div class="admin-panel__content">
                     <div class="admin-grid">
@@ -124,7 +123,10 @@
                                 </div>
                             </div>
                             
-                            <h3 class="admin-section-title">GESTIÓN DE OPERADORES</h3>
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                                <h3 class="admin-section-title" style="margin-bottom:0;">GESTIÓN DE OPERADORES</h3>
+                                <button id="openConfigBtn" class="btn btn--secondary btn--sm" title="Configuración Técnica">⚙️ CONFIG</button>
+                            </div>
                             <div class="admin-table-wrap">
                                 <table class="admin-table">
                                     <thead>
@@ -146,16 +148,7 @@
                         <div class="admin-col admin-col--config">
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
                                 <h3 class="admin-section-title" style="margin-bottom:0;">CONFIGURACIÓN DE OPORD</h3>
-                                <div class="ai-controls">
-                                    <button type="button" id="aiConfigBtn" class="btn btn--secondary" style="padding:5px 10px; font-size:0.7rem;" title="Configurar IA">⚙️</button>
-                                    <button type="button" id="aiGenerateBtn" class="btn btn--primary" style="padding:5px 15px; font-size:0.8rem; background:linear-gradient(45deg, #cd7f32, #ffd700);">✨ GENERAR CON IA</button>
-                                </div>
-                            </div>
-
-                            <div id="aiConfigPanel" class="hidden" style="background:rgba(0,0,0,0.4); padding:15px; border:1px solid var(--border); margin-bottom:20px; border-radius:4px;">
-                                <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:10px;">Configura tu <strong>Google Gemini API Key</strong> (Gratis) para usar el generador:</p>
-                                <input type="password" id="aiGeminiKey" class="form-input" placeholder="sk-..." style="padding:8px; font-size:0.8rem; margin-bottom:10px;">
-                                <button type="button" id="saveAiConfig" class="btn btn--secondary btn--full" style="padding:8px; font-size:0.75rem;">GUARDAR CONFIGURACIÓN</button>
+                                <button type="button" id="aiGenerateBtn" class="btn btn--primary" style="padding:5px 15px; font-size:0.8rem; background:linear-gradient(45deg, #cd7f32, #ffd700);">✨ GENERAR CON IA</button>
                             </div>
 
                             <form id="adminMissionForm" class="admin-manual-form">
@@ -473,12 +466,20 @@
         <div class="modal__content">
             <button class="modal__close" id="configModalClose">&times;</button>
             <h3 class="modal__title">CONFIGURACIÓN TÉCNICA</h3>
-            <div class="form-group">
+            
+            <div class="form-group" style="margin-bottom:20px;">
                 <label class="form-label">URL de Google Sheets (Apps Script)</label>
                 <input type="text" id="sheetsUrlInput" class="form-input" placeholder="https://script.google.com/macros/s/...">
-                <p class="u-text-muted" style="font-size:0.6rem; margin-top:5px;">Esta URL permite que la Oficina de Secretaría sincronice los datos automáticamente.</p>
+                <p class="u-text-muted" style="font-size:0.6rem; margin-top:5px;">Sincronización de Secretaría y Logística.</p>
             </div>
-            <button id="saveConfigBtn" class="btn btn--primary btn--full">GUARDAR CONFIGURACIÓN</button>
+
+            <div class="form-group" style="margin-bottom:20px;">
+                <label class="form-label">Google Gemini API Key (IA Gratis)</label>
+                <input type="password" id="aiGeminiKeyModal" class="form-input" placeholder="Pega tu clave de AI Studio aquí...">
+                <p class="u-text-muted" style="font-size:0.6rem; margin-top:5px;">Necesaria para el Generador Automático de Misiones.</p>
+            </div>
+
+            <button id="saveConfigBtn" class="btn btn--primary btn--full">GUARDAR TODO</button>
         </div>
     </div>
     
