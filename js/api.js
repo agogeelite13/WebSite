@@ -204,8 +204,8 @@ export const api = {
         return urlData.publicUrl;
     },
     async generateMissionWithGemini(apiKey) {
-        // Probamos con v1 que es más estable para producción
-        const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+        // Usamos gemini-1.5-flash-latest que suele ser el alias más compatible
+        const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
         const prompt = `Actúa como un Comandante de Operaciones Especiales de Airsoft.
         Genera una misión táctica emocionante para el próximo domingo.
         Responde exclusivamente en formato JSON con la siguiente estructura:
@@ -226,15 +226,21 @@ export const api = {
             
             if (!resp.ok) {
                 const errorData = await resp.json();
-                console.error('Gemini API Error Response:', errorData);
+                console.error('--- DETALLE ERROR GOOGLE ---');
+                console.error('Código:', resp.status);
+                console.error('Mensaje:', errorData.error?.message || 'Error desconocido');
+                console.error('Status:', errorData.error?.status || 'N/A');
+                console.error('----------------------------');
                 return null;
             }
 
             const result = await resp.json();
-            if (!result.candidates || !result.candidates[0]) return null;
+            if (!result.candidates || !result.candidates[0]) {
+                console.warn('Gemini no devolvió candidatos:', result);
+                return null;
+            }
 
             const text = result.candidates[0].content.parts[0].text;
-            // Limpiar posibles bloques de código markdown
             const cleanJson = text.replace(/```json/g, '').replace(/```/g, '').trim();
             return JSON.parse(cleanJson);
         } catch (e) {
