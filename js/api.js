@@ -204,62 +204,79 @@ export const api = {
         return urlData.publicUrl;
     },
     async generateMissionWithGemini(apiKey) {
-        // Plan F: Fallback de Emergencia + OpenAI POST
-        const prompt = `Genera una misión de Airsoft en este formato JSON exacto:
-        {"title_loc":"...","objective":"...","gear":"...","map_prompt":"..."}.
-        No uses listas ni guiones. Párrafos fluidos.`;
+        const promptText = `Actúa como un experto en Airsoft. Genera una misión realista en formato JSON puro.
+        IMPORTANTE: No uses listas ni guiones. Párrafos fluidos.
+        Estructura: {"title_loc":"...","objective":"...","gear":"...","map_prompt":"..."}.`;
 
+        // --- INTENTO 1: GOOGLE GEMINI (Tu clave) ---
+        if (apiKey && apiKey.length > 10) {
+            try {
+                const geminiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+                const geminiResp = await fetch(geminiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
+                });
+
+                if (geminiResp.ok) {
+                    const result = await geminiResp.json();
+                    const text = result.candidates[0].content.parts[0].text;
+                    const jsonMatch = text.match(/\{[\s\S]*\}/);
+                    if (jsonMatch) {
+                        const data = JSON.parse(jsonMatch[0]);
+                        return { ...data, is_fallback: false, source: 'Google Gemini' };
+                    }
+                } else {
+                    console.warn('Gemini falló, saltando a IA de respaldo...');
+                }
+            } catch (e) {
+                console.error('Error en Gemini:', e);
+            }
+        }
+
+        // --- INTENTO 2: IA DE RESPALDO (Pollinations) ---
         try {
-            // Timeout de 6 segundos para no hacer esperar al usuario
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 6000);
-
-            const resp = await fetch('https://text.pollinations.ai/', {
+            const pollResp = await fetch('https://text.pollinations.ai/', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                signal: controller.signal,
                 body: JSON.stringify({
-                    messages: [{ role: 'user', content: prompt }],
+                    messages: [{ role: 'user', content: promptText }],
                     model: 'openai'
                 })
             });
-            clearTimeout(timeoutId);
 
-            if (!resp.ok) throw new Error('Servidor IA no disponible');
-            
-            const text = await resp.text();
-            const jsonMatch = text.match(/\{[\s\S]*\}/);
-            if (!jsonMatch) throw new Error('Respuesta inválida');
-            
-            const data = JSON.parse(jsonMatch[0]);
-            return {
-                title_loc: data.title_loc || 'OPERACIÓN AGOGE',
-                objective: data.objective || 'Objetivos tácticos pendientes.',
-                gear: data.gear || 'Equipación estándar.',
-                map_prompt: data.map_prompt || 'Tactical airsoft map',
-                is_fallback: false
-            };
-        } catch (e) {
-            console.warn('Usando Misión de Emergencia por fallo en IA:', e.message);
-            // MISIÓN DE RESPALDO (Para que el usuario nunca vea un error)
-            const misionesBackup = [
-                {
-                    title_loc: "OPERACIÓN CENTINELA - Sector Bravo",
-                    objective: "Localizar y escoltar al VIP hasta la zona de extracción mientras se repelen ataques enemigos en el sector urbano.",
-                    gear: "Munición limitada, cargadores Mid-Cap recomendados y radio para coordinación de escuadras.",
-                    map_prompt: "Urban combat tactical map",
-                    is_fallback: true
-                },
-                {
-                    title_loc: "SABOTAJE EN LA FRONTERA - Puesto Avanzado",
-                    objective: "Infiltrarse en el campamento enemigo para colocar cargas simuladas en los depósitos de suministros y replegarse sin ser detectados.",
-                    gear: "Uniforme boscoso, linternas tácticas y equipo ligero para movimiento rápido.",
-                    map_prompt: "Forest military camp blueprint",
-                    is_fallback: true
+            if (pollResp.ok) {
+                const text = await pollResp.text();
+                const jsonMatch = text.match(/\{[\s\S]*\}/);
+                if (jsonMatch) {
+                    const data = JSON.parse(jsonMatch[0]);
+                    return { ...data, is_fallback: false, source: 'IA Respaldo' };
                 }
-            ];
-            return misionesBackup[Math.floor(Math.random() * misionesBackup.length)];
+            }
+        } catch (e) {
+            console.warn('IA de respaldo falló, usando base de datos local...');
         }
+
+        // --- INTENTO 3: BASE DE DATOS LOCAL (Emergencia) ---
+        const backup = [
+            {
+                title_loc: "OPERACIÓN CENTINELA - Sector Bravo",
+                objective: "Localizar y escoltar al VIP hasta la zona de extracción mientras se repelen ataques enemigos.",
+                gear: "Munición limitada y radio para coordinación.",
+                map_prompt: "Urban combat tactical map",
+                is_fallback: true,
+                source: 'Local DB'
+            },
+            {
+                title_loc: "SABOTAJE EN LA FRONTERA - Puesto Avanzado",
+                objective: "Infiltrarse en el campamento enemigo para colocar cargas simuladas.",
+                gear: "Equipo ligero para movimiento rápido.",
+                map_prompt: "Forest military camp blueprint",
+                is_fallback: true,
+                source: 'Local DB'
+            }
+        ];
+        return backup[Math.floor(Math.random() * backup.length)];
     },
     async proxyUploadFromUrl(imageUrl, sunKey) {
         // Asegurar que el cliente admin esté listo
