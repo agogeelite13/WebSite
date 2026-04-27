@@ -204,13 +204,12 @@ export const api = {
         return urlData.publicUrl;
     },
     async generateMissionWithGemini(apiKey) {
-        const promptText = `Genera una misión de Airsoft realista en formato JSON puro. Párrafos fluidos.
-        Estructura: {"title_loc":"...","objective":"...","gear":"...","map_prompt":"..."}.`;
+        const promptText = `Genera una misión de Airsoft realista en formato JSON: {"title_loc":"...","objective":"...","gear":"...","map_prompt":"..."}. No uses listas.`;
 
-        // --- INTENTO 1: GOOGLE GEMINI ---
+        // --- INTENTO 1: GOOGLE GEMINI (v1beta) ---
         if (apiKey && apiKey.length > 10) {
             try {
-                const geminiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+                const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
                 const resp = await fetch(geminiUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -223,21 +222,25 @@ export const api = {
                     const jsonMatch = text.match(/\{[\s\S]*\}/);
                     if (jsonMatch) return { ...JSON.parse(jsonMatch[0]), is_fallback: false, source: 'Google Gemini' };
                 } else {
-                    console.warn(`Gemini falló (Status ${resp.status}). Usando respaldo...`);
+                    console.warn(`Gemini Error ${resp.status}`);
+                    if (resp.status === 404) alert('GOOGLE: El modelo no se encuentra (404). Revisa si la API está activa.');
+                    else if (resp.status === 403) alert('GOOGLE: Clave API inválida o restringida (403).');
                 }
             } catch (e) {
-                console.error('Error crítico Gemini:', e);
+                console.error('Error Gemini:', e);
             }
         }
 
-        // --- INTENTO 2: IA RESPALDO (Pollinations GET - Más fiable) ---
+        // --- INTENTO 2: IA RESPALDO (Pollinations Simplificado) ---
         try {
-            const pollUrl = `https://text.pollinations.ai/${encodeURIComponent(promptText)}?model=openai&json=true&seed=${Date.now()}`;
+            const pollUrl = `https://text.pollinations.ai/${encodeURIComponent(promptText + " Responde SOLO el JSON")}?model=mistral`;
             const resp = await fetch(pollUrl);
             if (resp.ok) {
                 const text = await resp.text();
                 const jsonMatch = text.match(/\{[\s\S]*\}/);
                 if (jsonMatch) return { ...JSON.parse(jsonMatch[0]), is_fallback: false, source: 'IA Respaldo' };
+            } else {
+                alert('IA RESPALDO: Servidor ocupado (' + resp.status + ')');
             }
         } catch (e) {
             console.warn('Fallo IA Respaldo:', e);
