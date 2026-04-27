@@ -204,36 +204,23 @@ export const api = {
         return urlData.publicUrl;
     },
     async generateMissionWithGemini(apiKey) {
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
+        // Plan B: Usamos Pollinations AI (Gratis, sin Key necesaria y muy estable)
+        const systemPrompt = `Actúa como un experto en Airsoft. Genera una misión en formato JSON puro.
+        Estructura: { "situation": "contexto", "mission": "objetivos", "gear": "normas", "map_prompt": "descripción para dibujo" }.
+        Responde SOLO el JSON.`;
         
-        const payload = {
-            contents: [{
-                parts: [{
-                    text: `Actúa como un experto en Airsoft y operaciones militares. Genera una misión para el domingo en formato JSON puro.
-                    JSON: { "situation": "contexto", "mission": "objetivos", "gear": "normas", "map_prompt": "descripción para dibujo" }.`
-                }]
-            }]
-        };
+        const url = `https://text.pollinations.ai/${encodeURIComponent(systemPrompt)}?model=openai&json=true`;
 
         try {
-            const resp = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
+            const resp = await fetch(url);
+            if (!resp.ok) throw new Error('Error en el servidor de IA');
             
-            if (!resp.ok) {
-                const errorData = await resp.json();
-                alert(`ERROR GOOGLE (${resp.status}): ${errorData.error?.message || 'Sin mensaje'}`);
-                return null;
-            }
-
-            const result = await resp.json();
-            const text = result.candidates[0].content.parts[0].text;
+            const text = await resp.text();
+            // Limpiar posibles bloques de código markdown
             const cleanJson = text.replace(/```json/g, '').replace(/```/g, '').trim();
             return JSON.parse(cleanJson);
         } catch (e) {
-            alert('ERROR TÉCNICO: ' + e.message);
+            alert('ERROR IA: ' + e.message);
             return null;
         }
     },
