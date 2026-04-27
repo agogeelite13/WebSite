@@ -204,8 +204,10 @@ export const api = {
         return urlData.publicUrl;
     },
     async generateMissionWithGemini(apiKey) {
-        const promptText = `Genera una misión de Airsoft detallada en formato JSON: {"title_loc":"...","objective":"...","gear":"...","map_prompt":"..."}.`;
-        const cleanKey = apiKey.trim(); // Limpiar espacios accidentales
+        const promptText = `Eres un oficial de operaciones de Airsoft. Genera una misión breve, directa y con mucho ambiente táctico en ESPAÑOL.
+        Párrafos cortos. Sin listas.
+        JSON: {"title_loc":"...","objective":"...","gear":"...","map_prompt":"..."}.
+        En map_prompt describe un mapa militar con zonas marcadas como 'SECTOR ALFA', 'ZONA DE EXTRACCIÓN', 'PUNTO BRAVO'.`;
 
         const normalize = (data, source) => ({
             title_loc: data.title_loc || data.title || data.situation || 'OPERACIÓN AGOGE - SECTOR X',

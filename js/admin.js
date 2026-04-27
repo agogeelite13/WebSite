@@ -562,11 +562,11 @@ export const setupAIConfig = (api, nextSundayKey) => {
             document.getElementById('confMission').value = mission.objective || '';
             document.getElementById('confGear').value = mission.gear || '';
 
-            // Generar mapa (Pollinations es gratis y no necesita API key)
-            aiGenerateBtn.textContent = '🗺️ DIBUJANDO MAPA...';
-            const mapPrompt = encodeURIComponent(mission.map_prompt + " tactical airsoft map, top-down view, military blueprint style, highly detailed");
+            // Generar mapa con etiquetas de zona y calidad premium
+            aiGenerateBtn.textContent = '🗺️ DIBUJANDO MAPA TÁCTICO...';
+            const mapPrompt = encodeURIComponent(mission.map_prompt + " hyper-realistic tactical airsoft map, top-down view, military blueprint, labeled sectors ALPHA, BRAVO, CHARLIE, highly detailed, 4k, spanish labels");
             const seed = Math.floor(Math.random() * 1000000);
-            const aiImageUrl = `https://image.pollinations.ai/prompt/${mapPrompt}?width=1200&height=800&nologo=true&seed=${seed}`;
+            const aiImageUrl = `https://image.pollinations.ai/prompt/${mapPrompt}?width=1280&height=720&nologo=true&seed=${seed}`;
             
             // Subir el mapa a Supabase para que sea permanente
             const finalMapUrl = await api.proxyUploadFromUrl(aiImageUrl, nextSundayKey);
