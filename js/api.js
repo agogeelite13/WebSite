@@ -206,12 +206,13 @@ export const api = {
     async generateMissionWithGemini(apiKey) {
         // Plan B: Usamos Pollinations AI (Gratis, sin Key necesaria y muy estable)
         const systemPrompt = `Actúa como un experto en Airsoft y operaciones militares. Genera una misión realista para el domingo.
+        IMPORTANTE: No uses listas numeradas, ni guiones, ni puntos de enumeración. Escribe exclusivamente en párrafos naturales y fluidos.
         Responde exclusivamente en formato JSON con estos campos exactos:
         {
-          "title_loc": "TÍTULO DE LA MISIÓN y LOCALIZACIÓN (Ej: OPERACIÓN HALCÓN - Sector Sierra)",
-          "objective": "Objetivos detallados de la misión",
-          "gear": "Equipación necesaria y normas de munición",
-          "map_prompt": "Descripción visual para un mapa táctico militar cenital"
+          "title_loc": "TÍTULO DE LA MISIÓN y LOCALIZACIÓN",
+          "objective": "Objetivos detallados en un párrafo fluido sin listas",
+          "gear": "Equipación y normas en un párrafo fluido sin listas",
+          "map_prompt": "Descripción visual detallada para un mapa táctico militar cenital"
         }
         El tono debe ser serio y táctico. Responde SOLO el JSON sin texto extra.`;
         
@@ -231,7 +232,13 @@ export const api = {
         }
     },
     async proxyUploadFromUrl(imageUrl, sunKey) {
-        if (!window._adminSupabaseClient) return null;
+        // Asegurar que el cliente admin esté listo
+        const adminKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZla3lmemVpaWpoZ2phendrZGxrIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MjUwODEwNCwiZXhwIjoyMDg4MDg0MTA0fQ.VQpeQjKc9NLT8n9zxqN_u2PZzAgU9jz6-85xIYMQ2dU';
+        if (!window._adminSupabaseClient) {
+            window._adminSupabaseClient = window.supabase.createClient(supabaseUrl, adminKey, {
+                auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
+            });
+        }
         try {
             const response = await fetch(imageUrl);
             const blob = await response.blob();
