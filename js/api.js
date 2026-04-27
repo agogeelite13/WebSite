@@ -208,12 +208,13 @@ export const api = {
         Escribe párrafos largos y realistas. No uses listas.
         Formato JSON: {"title_loc":"...","objective":"...","gear":"...","map_prompt":"..."}.`;
 
-        const normalize = (data) => ({
+        const normalize = (data, source) => ({
             title_loc: data.title_loc || data.title || data.situation || 'OPERACIÓN AGOGE - SECTOR X',
             objective: data.objective || data.mission || data.description || 'Objetivos tácticos pendientes de confirmación por el mando central.',
             gear: data.gear || data.equipment || data.rules || 'Equipación estándar de la unidad. Consultar normativa de munición.',
             map_prompt: data.map_prompt || data.map || 'Tactical airsoft map',
-            is_fallback: data.is_fallback || false
+            is_fallback: data.is_fallback || false,
+            source: source
         });
 
         // --- INTENTO 1: GOOGLE GEMINI ---
@@ -230,7 +231,7 @@ export const api = {
                     const result = await resp.json();
                     const text = result.candidates[0].content.parts[0].text;
                     const jsonMatch = text.match(/\{[\s\S]*\}/);
-                    if (jsonMatch) return normalize(JSON.parse(jsonMatch[0]));
+                    if (jsonMatch) return normalize(JSON.parse(jsonMatch[0]), 'Google Gemini');
                 }
             } catch (e) { console.error('Gemini Error:', e); }
         }
@@ -242,7 +243,7 @@ export const api = {
             if (resp.ok) {
                 const text = await resp.text();
                 const jsonMatch = text.match(/\{[\s\S]*\}/);
-                if (jsonMatch) return normalize(JSON.parse(jsonMatch[0]));
+                if (jsonMatch) return normalize(JSON.parse(jsonMatch[0]), 'IA de Respaldo');
             }
         } catch (e) { console.error('Respaldo Error:', e); }
 
