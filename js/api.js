@@ -233,10 +233,11 @@ export const api = {
             
             const data = JSON.parse(jsonMatch[0]);
             return {
-                title_loc: data.title_loc || 'OPERACIÓN FÉNIX - Zona Centro',
-                objective: data.objective || 'Asegurar el perímetro y neutralizar objetivos.',
-                gear: data.gear || 'Equipación táctica completa.',
-                map_prompt: data.map_prompt || 'Tactical map'
+                title_loc: data.title_loc || 'OPERACIÓN AGOGE',
+                objective: data.objective || 'Objetivos tácticos pendientes.',
+                gear: data.gear || 'Equipación estándar.',
+                map_prompt: data.map_prompt || 'Tactical airsoft map',
+                is_fallback: false
             };
         } catch (e) {
             console.warn('Usando Misión de Emergencia por fallo en IA:', e.message);
@@ -246,13 +247,15 @@ export const api = {
                     title_loc: "OPERACIÓN CENTINELA - Sector Bravo",
                     objective: "Localizar y escoltar al VIP hasta la zona de extracción mientras se repelen ataques enemigos en el sector urbano.",
                     gear: "Munición limitada, cargadores Mid-Cap recomendados y radio para coordinación de escuadras.",
-                    map_prompt: "Urban combat tactical map"
+                    map_prompt: "Urban combat tactical map",
+                    is_fallback: true
                 },
                 {
                     title_loc: "SABOTAJE EN LA FRONTERA - Puesto Avanzado",
                     objective: "Infiltrarse en el campamento enemigo para colocar cargas simuladas en los depósitos de suministros y replegarse sin ser detectados.",
                     gear: "Uniforme boscoso, linternas tácticas y equipo ligero para movimiento rápido.",
-                    map_prompt: "Forest military camp blueprint"
+                    map_prompt: "Forest military camp blueprint",
+                    is_fallback: true
                 }
             ];
             return misionesBackup[Math.floor(Math.random() * misionesBackup.length)];

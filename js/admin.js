@@ -494,9 +494,14 @@ export const setupMissionConfig = async (api, nextSundayKey) => {
         submitBtn.textContent = 'PUBLICANDO...';
         feedback.style.display = 'none';
 
+        // Prioridad: 1. Archivo manual, 2. URL de IA (si se acaba de generar), 3. URL actual
         let finalMapUrl = currentMapUrl;
         
-        // Handle file upload
+        const aiMapUrlInput = document.getElementById('confAiMapUrl');
+        if (aiMapUrlInput && aiMapUrlInput.value) {
+            finalMapUrl = aiMapUrlInput.value;
+        }
+
         if (mapFileInput && mapFileInput.files.length > 0) {
             submitBtn.textContent = 'SUBIENDO MAPA...';
             const file = mapFileInput.files[0];
@@ -566,11 +571,19 @@ export const setupAIConfig = (api, nextSundayKey) => {
             // Subir el mapa a Supabase para que sea permanente
             const finalMapUrl = await api.proxyUploadFromUrl(aiImageUrl, nextSundayKey);
             if (finalMapUrl) {
+                const aiMapUrlInput = document.getElementById('confAiMapUrl');
+                if (aiMapUrlInput) aiMapUrlInput.value = finalMapUrl;
+                
                 const mapStatus = document.getElementById('confMapStatus');
-                if (mapStatus) mapStatus.textContent = 'Mapa generado por IA listo.';
+                if (mapStatus) mapStatus.textContent = 'MAPA IA LISTO ✅';
             }
             
-            alert('¡Misión generada con éxito por la IA! Revisa los campos y pulsa "PUBLICAR ACTUALIZACIÓN".');
+            const isFallback = mission.is_fallback;
+            if (isFallback) {
+                alert('MANDO INFORMA: Los satélites están ocupados. Se ha activado una misión táctica de la base de datos de reserva.');
+            } else {
+                alert('¡Misión generada con éxito por la IA! Revisa los campos y pulsa "PUBLICAR ACTUALIZACIÓN".');
+            }
         } else {
             alert('Error al conectar con la Inteligencia Artificial. Revisa tu API Key en la configuración.');
         }
