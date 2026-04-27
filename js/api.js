@@ -204,40 +204,36 @@ export const api = {
         return urlData.publicUrl;
     },
     async generateMissionWithGemini(apiKey) {
-        const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-        const prompt = `Actúa como un Comandante de Operaciones Especiales de Airsoft.
-        Genera una misión táctica emocionante para el próximo domingo.
-        Responde exclusivamente en formato JSON con la siguiente estructura:
-        {
-            "situation": "Breve contexto táctico (máx 150 palabras)",
-            "mission": "Objetivos claros y directos",
-            "gear": "Reglas de equipo o munición",
-            "map_prompt": "Descripción visual detallada para generar un mapa táctico cenital de esta misión"
-        }
-        No incluyas texto fuera del JSON. La misión debe ser realista y variada (CQB, rescate, sabotaje, etc).`;
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+        
+        const payload = {
+            contents: [{
+                parts: [{
+                    text: `Actúa como un experto en Airsoft y operaciones militares. Genera una misión para el domingo en formato JSON puro.
+                    JSON: { "situation": "contexto", "mission": "objetivos", "gear": "normas", "map_prompt": "descripción para dibujo" }.`
+                }]
+            }]
+        };
 
         try {
             const resp = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                body: JSON.stringify(payload)
             });
             
             if (!resp.ok) {
                 const errorData = await resp.json();
-                const msg = errorData.error?.message || 'Error desconocido';
-                alert('ERROR DE GOOGLE: ' + msg);
+                alert(`ERROR GOOGLE (${resp.status}): ${errorData.error?.message || 'Sin mensaje'}`);
                 return null;
             }
 
             const result = await resp.json();
-            if (!result.candidates || !result.candidates[0]) return null;
-
             const text = result.candidates[0].content.parts[0].text;
             const cleanJson = text.replace(/```json/g, '').replace(/```/g, '').trim();
             return JSON.parse(cleanJson);
         } catch (e) {
-            alert('ERROR DE CONEXIÓN: ' + e.message);
+            alert('ERROR TÉCNICO: ' + e.message);
             return null;
         }
     },
