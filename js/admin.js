@@ -235,6 +235,9 @@ export const renderAdminPhotos = async (api) => {
 // ATTACH GLOBAL HANDLERS (for manual enrollment form in admin.html)
 // -----------------------------------------------------------------------------
 export const attachAdminGlobals = (api, nextSundayKey) => {
+    
+    // Initialize OPORD form
+    setupMissionConfig(api, nextSundayKey);
 
     // Manual enrollment form button (in admin.html HTML)
     const manualEnrollBtn = document.querySelector('[onclick*="adminEnrollUser"]');
@@ -451,23 +454,57 @@ window.adminChangeUserRole = async (userId, newRole) => {
 // MISSION CONFIG
 // -----------------------------------------------------------------------------
 export const setupMissionConfig = async (api, nextSundayKey) => {
-    const titleInput = document.getElementById('missionTitleInput');
-    const saveBtn    = document.getElementById('saveMissionConfig');
-    if (!titleInput || !saveBtn) return;
+    const form = document.getElementById('adminMissionForm');
+    const sitInput = document.getElementById('confSituation');
+    const misInput = document.getElementById('confMission');
+    const gearInput = document.getElementById('confGear');
+    const mapInput = document.getElementById('confMap');
+    const modeSelect = document.getElementById('confMode');
+    const feedback = document.getElementById('configFeedback');
+    const submitBtn = form?.querySelector('button[type="submit"]');
+
+    if (!form || !sitInput) return;
 
     // Load current config
-    const config = await api.getMissionConfig(nextSundayKey);
-    if (config && config.title) titleInput.value = config.title;
+    const config = await api.getMissionSettings(nextSundayKey);
+    if (config) {
+        sitInput.value = config.situation || '';
+        misInput.value = config.mission || '';
+        gearInput.value = config.gear_rules || '';
+        mapInput.value = config.map_url || '';
+        if (config.mode) modeSelect.value = config.mode;
+    }
 
-    saveBtn.addEventListener('click', async () => {
-        const title = titleInput.value.trim();
-        if (!title) return alert('Pon un título a la misión.');
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
         
-        saveBtn.disabled = true; saveBtn.textContent = '...';
-        const ok = await api.saveMissionConfig(nextSundayKey, { title });
-        if (ok) { alert('Misión configurada.'); }
-        else    { alert('Error al configurar.'); }
-        saveBtn.disabled = false; saveBtn.textContent = 'GUARDAR MISIÓN';
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'PUBLICANDO...';
+        feedback.style.display = 'none';
+
+        const missionData = {
+            sun_key: nextSundayKey,
+            situation: sitInput.value.trim(),
+            mission: misInput.value.trim(),
+            gear_rules: gearInput.value.trim(),
+            map_url: mapInput.value.trim(),
+            mode: modeSelect.value
+        };
+
+        const ok = await api.saveMissionSettings(missionData);
+        
+        if (ok) {
+            feedback.textContent = '¡OPERACIÓN ACTUALIZADA CON ÉXITO!';
+            feedback.style.color = '#2ecc71';
+        } else {
+            feedback.textContent = 'ERROR DE COMUNICACIÓN CON MANDO.';
+            feedback.style.color = 'var(--red)';
+        }
+        feedback.style.display = 'block';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'PUBLICAR ACTUALIZACIÓN';
+        
+        setTimeout(() => { feedback.style.display = 'none'; }, 5000);
     });
 };
 
