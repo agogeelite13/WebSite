@@ -4480,7 +4480,6 @@ select.form-input option {
 .intel-map-container {
     background: #0d1b1e;
     border: 1px solid #1e3a3f;
-    aspect-ratio: 16/9;
     position: relative;
     display: flex;
     align-items: center;
@@ -4522,8 +4521,8 @@ select.form-input option {
 
 #intelMapImg {
     width: 100%;
-    height: 100%;
-    object-fit: contain;
+    height: auto;
+    display: block;
 }
 
 @media (max-width: 900px) {
