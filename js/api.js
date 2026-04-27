@@ -162,12 +162,13 @@ export const api = {
         // Use service_role to bypass RLS. Specify onConflict to handle updates correctly.
         const adminKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZla3lmemVpaWpoZ2phendrZGxrIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MjUwODEwNCwiZXhwIjoyMDg4MDg0MTA0fQ.VQpeQjKc9NLT8n9zxqN_u2PZzAgU9jz6-85xIYMQ2dU';
         
-        // We create a temporary client with the master key
-        const tempClient = window.supabase.createClient(supabaseUrl, adminKey, {
-            auth: { persistSession: false } // Avoid 'Multiple GoTrueClient' warnings
-        });
+        if (!window._adminSupabaseClient) {
+            window._adminSupabaseClient = window.supabase.createClient(supabaseUrl, adminKey, {
+                auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false } // Avoid warnings
+            });
+        }
 
-        const { error } = await tempClient
+        const { error } = await window._adminSupabaseClient
             .from('missions')
             .upsert(mission, { onConflict: 'sun_key' });
 
