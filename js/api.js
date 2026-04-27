@@ -204,38 +204,58 @@ export const api = {
         return urlData.publicUrl;
     },
     async generateMissionWithGemini(apiKey) {
-        // Plan E: Conexión robusta vía POST (OpenAI compatible)
+        // Plan F: Fallback de Emergencia + OpenAI POST
         const prompt = `Genera una misión de Airsoft en este formato JSON exacto:
         {"title_loc":"...","objective":"...","gear":"...","map_prompt":"..."}.
         No uses listas ni guiones. Párrafos fluidos.`;
 
         try {
+            // Timeout de 6 segundos para no hacer esperar al usuario
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 6000);
+
             const resp = await fetch('https://text.pollinations.ai/', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                signal: controller.signal,
                 body: JSON.stringify({
                     messages: [{ role: 'user', content: prompt }],
-                    model: 'qwen',
-                    jsonMode: true
+                    model: 'openai'
                 })
             });
+            clearTimeout(timeoutId);
 
-            if (!resp.ok) throw new Error('Servidor ocupado o rechazado');
+            if (!resp.ok) throw new Error('Servidor IA no disponible');
             
             const text = await resp.text();
             const jsonMatch = text.match(/\{[\s\S]*\}/);
-            if (!jsonMatch) throw new Error('Respuesta de IA ilegible');
+            if (!jsonMatch) throw new Error('Respuesta inválida');
             
             const data = JSON.parse(jsonMatch[0]);
             return {
-                title_loc: data.title_loc || 'OPERACIÓN AGOGE',
-                objective: data.objective || 'Objetivos tácticos pendientes.',
-                gear: data.gear || 'Equipación estándar.',
-                map_prompt: data.map_prompt || 'Tactical airsoft map'
+                title_loc: data.title_loc || 'OPERACIÓN FÉNIX - Zona Centro',
+                objective: data.objective || 'Asegurar el perímetro y neutralizar objetivos.',
+                gear: data.gear || 'Equipación táctica completa.',
+                map_prompt: data.map_prompt || 'Tactical map'
             };
         } catch (e) {
-            alert('IA NOTA: ' + e.message);
-            return null;
+            console.warn('Usando Misión de Emergencia por fallo en IA:', e.message);
+            // MISIÓN DE RESPALDO (Para que el usuario nunca vea un error)
+            const misionesBackup = [
+                {
+                    title_loc: "OPERACIÓN CENTINELA - Sector Bravo",
+                    objective: "Localizar y escoltar al VIP hasta la zona de extracción mientras se repelen ataques enemigos en el sector urbano.",
+                    gear: "Munición limitada, cargadores Mid-Cap recomendados y radio para coordinación de escuadras.",
+                    map_prompt: "Urban combat tactical map"
+                },
+                {
+                    title_loc: "SABOTAJE EN LA FRONTERA - Puesto Avanzado",
+                    objective: "Infiltrarse en el campamento enemigo para colocar cargas simuladas en los depósitos de suministros y replegarse sin ser detectados.",
+                    gear: "Uniforme boscoso, linternas tácticas y equipo ligero para movimiento rápido.",
+                    map_prompt: "Forest military camp blueprint"
+                }
+            ];
+            return misionesBackup[Math.floor(Math.random() * misionesBackup.length)];
         }
     },
     async proxyUploadFromUrl(imageUrl, sunKey) {
