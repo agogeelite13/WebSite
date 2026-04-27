@@ -582,7 +582,8 @@ export const setupAIConfig = (api, nextSundayKey) => {
             if (isFallback) {
                 alert('MANDO INFORMA: Los satélites están ocupados. Se ha activado una misión táctica de la base de datos de reserva.');
             } else {
-                alert('¡Misión generada con éxito por la IA! Revisa los campos y pulsa "PUBLICAR ACTUALIZACIÓN".');
+                const source = mission.source || 'Inteligencia Artificial';
+                alert(`¡Misión generada con éxito por ${source}! Revisa los campos y pulsa "PUBLICAR ACTUALIZACIÓN".`);
             }
         } else {
             alert('Error al conectar con la Inteligencia Artificial. Revisa tu API Key en la configuración.');
