@@ -204,12 +204,19 @@ export const api = {
         return urlData.publicUrl;
     },
     async generateMissionWithGemini(apiKey) {
-        const promptText = `Genera una misión de Airsoft en formato JSON: {"title_loc":"...","objective":"...","gear":"...","map_prompt":"..."}.`;
+        const promptText = `Genera una misión de Airsoft en este formato JSON exacto: {"title_loc":"...","objective":"...","gear":"...","map_prompt":"..."}. No uses listas ni guiones. Párrafos fluidos.`;
 
-        // --- INTENTO 1: GOOGLE GEMINI (Ruta completa) ---
+        const normalize = (data) => ({
+            title_loc: data.title_loc || data.title || data.situation || data.titulo || 'OPERACIÓN AGOGE',
+            objective: data.objective || data.mission || data.description || data.objetivo || 'Objetivos tácticos pendientes.',
+            gear: data.gear || data.equipment || data.rules || data.equipacion || 'Equipación estándar.',
+            map_prompt: data.map_prompt || data.map || 'Tactical airsoft map',
+            is_fallback: data.is_fallback || false
+        });
+
+        // --- INTENTO 1: GOOGLE GEMINI ---
         if (apiKey && apiKey.length > 10) {
             try {
-                // Probamos con la ruta de modelo completa que a veces Google exige
                 const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
                 const resp = await fetch(geminiUrl, {
                     method: 'POST',
@@ -221,28 +228,21 @@ export const api = {
                     const result = await resp.json();
                     const text = result.candidates[0].content.parts[0].text;
                     const jsonMatch = text.match(/\{[\s\S]*\}/);
-                    if (jsonMatch) return { ...JSON.parse(jsonMatch[0]), is_fallback: false, source: 'Google Gemini' };
-                } else {
-                    console.warn(`Gemini falló (Status ${resp.status}). Intentando respaldo...`);
+                    if (jsonMatch) return normalize(JSON.parse(jsonMatch[0]));
                 }
-            } catch (e) {
-                console.error('Error Gemini:', e);
-            }
+            } catch (e) { console.error('Gemini Error:', e); }
         }
 
-        // --- INTENTO 2: IA RESPALDO (Pollinations - URL Infalible) ---
+        // --- INTENTO 2: IA RESPALDO ---
         try {
-            // URL simplificada al máximo para evitar el 404
-            const pollUrl = `https://text.pollinations.ai/Genera%20mision%20airsoft%20JSON?model=openai&json=true`;
+            const pollUrl = `https://text.pollinations.ai/Genera%20una%20mision%20airsoft%20en%20JSON?model=openai&json=true`;
             const resp = await fetch(pollUrl);
             if (resp.ok) {
                 const text = await resp.text();
                 const jsonMatch = text.match(/\{[\s\S]*\}/);
-                if (jsonMatch) return { ...JSON.parse(jsonMatch[0]), is_fallback: false, source: 'IA Respaldo' };
+                if (jsonMatch) return normalize(JSON.parse(jsonMatch[0]));
             }
-        } catch (e) {
-            console.warn('Fallo IA Respaldo:', e);
-        }
+        } catch (e) { console.error('Respaldo Error:', e); }
 
         // --- INTENTO 3: LOCAL DB ---
         const backup = [
