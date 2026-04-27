@@ -204,12 +204,12 @@ export const api = {
         return urlData.publicUrl;
     },
     async generateMissionWithGemini(apiKey) {
-        // Usamos Pollinations con un prompt muy directo para evitar fallos de formato
+        // Cambiamos a mistral que suele estar menos saturado que openai
         const prompt = `Genera una misión de Airsoft en este formato JSON exacto:
         {"title_loc":"...","objective":"...","gear":"...","map_prompt":"..."}.
         No uses listas ni guiones. Párrafos fluidos.`;
         
-        const url = `https://text.pollinations.ai/${encodeURIComponent(prompt)}?model=openai&json=true&seed=${Date.now()}`;
+        const url = `https://text.pollinations.ai/${encodeURIComponent(prompt)}?model=mistral&json=true&seed=${Date.now()}`;
 
         try {
             const resp = await fetch(url);
