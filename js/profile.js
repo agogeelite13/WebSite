@@ -338,7 +338,7 @@ const renderSearchResults = (users, api, currentUser) => {
 
     container.innerHTML = users.filter(u => u.id !== currentUser.id).map(user => `
         <div class="user-card">
-            <img src="${user.avatar_url || 'avatars/avatar_recluta.png'}" class="user-card__avatar">
+            <img src="${user.avatar || 'avatars/avatar_recluta.png'}" class="user-card__avatar">
             <h5 class="user-card__name">${user.callsign || user.name}</h5>
             <p class="user-card__meta">${user.specialty || 'RECLUTA'} | LVL ${Math.floor(user.exp || 0)}</p>
             <div class="user-card__actions">
@@ -374,7 +374,7 @@ export const renderFriends = async (api, currentUser) => {
             const u = f.user;
             return `
                 <div class="user-card" style="border-color:var(--gold);">
-                    <img src="${u.avatar_url || 'avatars/avatar_recluta.png'}" class="user-card__avatar">
+                    <img src="${u.avatar || 'avatars/avatar_recluta.png'}" class="user-card__avatar">
                     <h5 class="user-card__name">${u.callsign}</h5>
                     <div class="user-card__actions">
                         <button class="btn btn--primary btn--sm" onclick="acceptFriend('${f.id}')">ACEPTAR</button>
@@ -394,7 +394,7 @@ export const renderFriends = async (api, currentUser) => {
             const u = isUserA ? f.friend : f.user;
             return `
                 <div class="user-card">
-                    <img src="${u.avatar_url || 'avatars/avatar_recluta.png'}" class="user-card__avatar">
+                    <img src="${u.avatar || 'avatars/avatar_recluta.png'}" class="user-card__avatar">
                     <h5 class="user-card__name">${u.callsign}</h5>
                     <p class="user-card__meta">${u.specialty} | LVL ${Math.floor(u.exp || 0)}</p>
                     <div class="user-card__actions">
@@ -420,7 +420,7 @@ export const renderFriends = async (api, currentUser) => {
         if (user) {
             const modal = document.getElementById('operatorCardModal');
             document.getElementById('opCardCallsign').textContent = user.callsign || '-';
-            document.getElementById('opCardAvatar').src = user.avatar_url || 'avatars/avatar_recluta.png';
+            document.getElementById('opCardAvatar').src = user.avatar || 'avatars/avatar_recluta.png';
             document.getElementById('opCardSpecialty').textContent = (user.specialty || 'Asalto').toUpperCase();
             document.getElementById('opCardMissions').textContent = user.exp || 0;
             document.getElementById('opCardXP').textContent = user.exp || 0;

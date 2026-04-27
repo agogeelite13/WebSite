@@ -264,8 +264,8 @@ export const api = {
         const { data } = await supabase.from('friendships')
             .select(`
                 id, status, user_id, friend_id,
-                user:user_id(id, callsign, avatar_url, specialty, faction, exp),
-                friend:friend_id(id, callsign, avatar_url, specialty, faction, exp)
+                user:user_id(id, callsign, avatar, specialty, faction, exp),
+                friend:friend_id(id, callsign, avatar, specialty, faction, exp)
             `)
             .or(`user_id.eq.${userId},friend_id.eq.${userId}`);
         return data || [];
