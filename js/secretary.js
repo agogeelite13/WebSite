@@ -1,9 +1,14 @@
 /**
  * AGOGE ELITE - Secretary Module
  * Attendance & Financial Management (Income & Expenses)
+ * v2 - Bono fix + Cartera/Banco separation
  */
 
 let activeBonosData = [];
+
+// Saldos iniciales (anteriores al sistema digital)
+const INITIAL_BALANCE_EFECTIVO = 856.25;
+const INITIAL_BALANCE_BANCO = 882.81; // 657.81 + 225 (nuevo bono)
 
 export const initSecretary = (api) => {
     if (window._secretaryInitialized) return;
@@ -26,6 +31,8 @@ export const initSecretary = (api) => {
             netBalance: document.getElementById('statNetBalance'),
             incomeTotal: document.getElementById('statIncomeTotal'),
             balanceTotal: document.getElementById('statBalanceTotal'),
+            walletTotal: document.getElementById('statWalletTotal'),
+            bankTotal: document.getElementById('statBankTotal'),
             count: document.getElementById('statAttendanceCount')
         },
         // Toggles
@@ -98,12 +105,12 @@ export const initSecretary = (api) => {
                 </select>
                 <select class="form-input row-bonus hidden" style="flex: 2; font-size: 0.7rem; height: 35px; padding: 0 5px;">
                     <option value="">-- Bono --</option>
-                    ${activeBonosData.map(b => `<option value="${b.id}" data-name="${b.group_name}" data-price="${b.price_per_session}" data-total="${b.total_sessions}" data-used="${b.sessions_used}">${b.group_name} (${b.total_sessions - b.sessions_used})</option>`).join('')}
+                    ${activeBonosData.map(b => `<option value="${b.id}" data-name="${b.group_name}" data-price="${b.price_per_session}" data-total="${b.total_sessions}" data-used="${b.sessions_used}">${b.group_name} (${b.total_sessions - b.sessions_used} restantes)</option>`).join('')}
                 </select>
                 <input type="text" class="form-input row-name" placeholder="Nombre" style="flex: 2; font-size: 0.7rem; height: 35px;">
                 <button type="button" class="btn btn--outline remove-row-btn" style="padding: 0 10px; border-color: rgba(229,57,53,0.3); color: var(--red); height: 35px;">&times;</button>
             </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
                 <div style="display: flex; align-items: center; gap: 5px;">
                     <span style="font-size: 0.6rem; color: #666;">PAX:</span>
                     <input type="number" class="form-input row-pax" value="1" min="1" style="font-size: 0.7rem; height: 30px; padding: 0 5px;">
@@ -111,6 +118,12 @@ export const initSecretary = (api) => {
                 <div style="display: flex; align-items: center; gap: 5px;">
                     <span style="font-size: 0.6rem; color: #666;">TOTAL:</span>
                     <input type="number" class="form-input row-price" value="0.00" step="0.01" style="font-size: 0.7rem; height: 30px; padding: 0 5px;">
+                </div>
+                <div style="display: flex; align-items: center; gap: 5px;">
+                    <select class="form-input row-payment" style="font-size: 0.65rem; height: 30px; padding: 0 3px;">
+                        <option value="efectivo">💰 EFECTIVO</option>
+                        <option value="banco">🏦 BANCO</option>
+                    </select>
                 </div>
             </div>
         `;
@@ -122,13 +135,17 @@ export const initSecretary = (api) => {
         const nameInput = row.querySelector('.row-name');
         const paxInput = row.querySelector('.row-pax');
         const priceInput = row.querySelector('.row-price');
+        const paymentSelect = row.querySelector('.row-payment');
 
         typeSelect.addEventListener('change', () => {
             const val = typeSelect.value;
             bonusSelect.classList.toggle('hidden', val !== 'bono');
             nameInput.classList.toggle('hidden', val === 'bono');
             priceInput.readOnly = (val === 'bono');
-            if (val === 'bono') paxInput.value = 1;
+            if (val === 'bono') {
+                paxInput.value = 1;
+                paymentSelect.value = 'banco'; // Bonos suelen ser por banco
+            }
             if (val === 'inyeccion') nameInput.value = 'Ingreso Extra';
             updateSessionTotals();
         });
@@ -153,6 +170,7 @@ export const initSecretary = (api) => {
             nameInput.value = data.name || '';
             paxInput.value = data.pax || 1;
             priceInput.value = data.price || 0;
+            if (data.payment) paymentSelect.value = data.payment;
             typeSelect.dispatchEvent(new Event('change'));
         }
     };
@@ -220,6 +238,7 @@ export const initSecretary = (api) => {
             let name = row.querySelector('.row-name').value;
             const pax = parseInt(row.querySelector('.row-pax').value) || 0;
             const price = parseFloat(row.querySelector('.row-price').value) || 0;
+            const payment = row.querySelector('.row-payment').value;
 
             if (type === 'bono') {
                 const bonusSelect = row.querySelector('.row-bonus');
@@ -229,10 +248,23 @@ export const initSecretary = (api) => {
                 const maxSess = parseInt(opt.getAttribute('data-total'));
                 const currentSess = parseInt(opt.getAttribute('data-used')) + 1;
                 name = `${opt.getAttribute('data-name')} [BONO ${currentSess}/${maxSess}]`;
-                await api.saveGroupBonus({ id: bonusId, sessions_used: currentSess, is_active: currentSess < maxSess });
+                
+                // FIX: Use update() instead of upsert() for partial updates
+                await api.updateGroupBonus(bonusId, { 
+                    sessions_used: currentSess, 
+                    is_active: currentSess < maxSess 
+                });
             }
 
-            const logData = { date, type: type === 'bono' ? 'grupo' : type, name, players: pax, total_price: price, price_per_pax: pax > 0 ? (price / pax) : 0 };
+            const logData = { 
+                date, 
+                type: type === 'bono' ? 'grupo' : type, 
+                name, 
+                players: pax, 
+                total_price: price, 
+                price_per_pax: pax > 0 ? (price / pax) : 0,
+                payment_method: payment
+            };
             if (await api.saveAttendanceLog(logData)) {
                 await api.syncToSheets(logData, 'attendance');
                 successCount++;
@@ -263,8 +295,7 @@ export const initSecretary = (api) => {
             date: document.getElementById('expDate').value,
             concept: document.getElementById('expConcept').value,
             category: document.getElementById('expCategory').value,
-            amount: parseFloat(document.getElementById('expAmount').value),
-            responsible: document.getElementById('expResponsible').value || 'ADMIN'
+            amount: parseFloat(document.getElementById('expAmount').value)
         };
         if (await api.saveExpenseLog(data)) {
             await api.syncToSheets(data, 'expenses');
@@ -350,6 +381,25 @@ export const renderSecretaryDashboard = async (api, els) => {
     const incomeTotal = logs.reduce((sum, l) => sum + (l.total_price || 0), 0);
     const expenseTotal = expenses.reduce((sum, e) => sum + (e.amount || 0), 0);
 
+    // Cartera/Banco: Calcular por método de pago
+    // Registros antiguos sin payment_method se consideran efectivo
+    const incomeEfectivo = logs
+        .filter(l => !l.payment_method || l.payment_method === 'efectivo')
+        .reduce((sum, l) => sum + (l.total_price || 0), 0);
+    const incomeBanco = logs
+        .filter(l => l.payment_method === 'banco')
+        .reduce((sum, l) => sum + (l.total_price || 0), 0);
+
+    // Saldos = Inicial + ingresos digitales (los iniciales ya incluyen el histórico)
+    const walletBalance = INITIAL_BALANCE_EFECTIVO + incomeEfectivo - incomeTotal + incomeBanco > 0 
+        ? INITIAL_BALANCE_EFECTIVO + incomeEfectivo - (logs.filter(l => !l.payment_method || l.payment_method === 'efectivo').filter(l => l.created_at).reduce((s,l) => s + (l.total_price||0), 0))
+        : INITIAL_BALANCE_EFECTIVO;
+    const bankBalance = INITIAL_BALANCE_BANCO + incomeBanco - (logs.filter(l => l.payment_method === 'banco').filter(l => l.created_at).reduce((s,l) => s + (l.total_price||0), 0));
+
+    // Mostrar solo los saldos base + nuevos ingresos digitales (con payment_method definido)
+    const newEfectivo = logs.filter(l => l.payment_method === 'efectivo').reduce((sum, l) => sum + (l.total_price || 0), 0);
+    const newBanco = logs.filter(l => l.payment_method === 'banco').reduce((sum, l) => sum + (l.total_price || 0), 0);
+
     if (els.stats.day) els.stats.day.textContent = `${incomeDay.toFixed(2)} €`;
     if (els.stats.incomeTotal) els.stats.incomeTotal.textContent = `${incomeTotal.toFixed(2)} €`;
     if (els.stats.balanceTotal) {
@@ -357,6 +407,8 @@ export const renderSecretaryDashboard = async (api, els) => {
         els.stats.balanceTotal.textContent = `${net.toFixed(2)} €`;
         els.stats.balanceTotal.style.color = net >= 0 ? 'var(--gold)' : 'var(--blood-light)';
     }
+    if (els.stats.walletTotal) els.stats.walletTotal.textContent = `${(INITIAL_BALANCE_EFECTIVO + newEfectivo).toFixed(2)} €`;
+    if (els.stats.bankTotal) els.stats.bankTotal.textContent = `${(INITIAL_BALANCE_BANCO + newBanco).toFixed(2)} €`;
 
     // Render Grouped Attendance
     els.list.innerHTML = sortedDates.length > 0 ? sortedDates.map(date => {
@@ -382,6 +434,7 @@ export const renderSecretaryDashboard = async (api, els) => {
                                     <th style="text-align:left; padding: 5px;">NOMBRE / CONCEPTO</th>
                                     <th style="padding: 5px;">PAX</th>
                                     <th style="padding: 5px;">TOTAL</th>
+                                    <th style="padding: 5px;">PAGO</th>
                                     <th style="padding: 5px;">ACCIONES</th>
                                 </tr>
                             </thead>
@@ -392,6 +445,7 @@ export const renderSecretaryDashboard = async (api, els) => {
                                         <td style="text-align:left;">${item.name}</td>
                                         <td>${item.players}</td>
                                         <td>${item.total_price.toFixed(2)} €</td>
+                                        <td><span style="font-size:0.6rem;">${item.payment_method === 'banco' ? '🏦' : '💰'}</span></td>
                                         <td><button class="btn btn--outline btn--sm" style="font-size:0.55rem; padding: 2px 6px; border-color:var(--red); color:var(--red);" onclick="event.stopPropagation(); adminDeleteAttendance('${item.id}')">Borrar</button></td>
                                     </tr>
                                 `).join('')}
@@ -414,12 +468,12 @@ export const renderSecretaryDashboard = async (api, els) => {
         </tr>
     `).join('') : '<tr><td colspan="5">No hay gastos.</td></tr>';
 
-    // Render Bonos
+    // Render Bonos (CON CONTADOR CORRECTO)
     if (els.bonosList) {
         els.bonosList.innerHTML = bonos.length > 0 ? bonos.map(b => `
             <tr style="opacity: ${b.is_active ? '1' : '0.5'};">
                 <td style="font-weight:bold; color:var(--gold);">${b.group_name}</td>
-                <td style="font-family:monospace;">${b.sessions_used} / ${b.total_sessions}</td>
+                <td style="font-family:monospace; font-weight:bold; color:${b.is_active ? 'var(--bronze-light)' : '#888'};">${b.sessions_used} / ${b.total_sessions}</td>
                 <td>${b.price_total.toFixed(2)} € <span style="font-size:0.7rem; color:var(--bronze-light);">(${b.price_per_session.toFixed(2)}€/s)</span></td>
                 <td><span class="sec-type-badge ${b.is_active ? 'sec-type-badge--grupo' : 'sec-type-badge--individual'}">${b.is_active ? 'ACTIVO' : 'AGOTADO'}</span></td>
                 <td><button class="btn btn--outline btn--sm" onclick="adminDeleteBonus('${b.id}')">Borrar</button></td>

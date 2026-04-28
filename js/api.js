@@ -72,6 +72,11 @@ export const api = {
         if (error) console.error('Supabase saveGroupBonus Error:', error);
         return !error;
     },
+    async updateGroupBonus(bonusId, updates) {
+        const { error } = await supabase.from('group_bonuses').update(updates).eq('id', bonusId);
+        if (error) console.error('Supabase updateGroupBonus Error:', error);
+        return !error;
+    },
     async deleteGroupBonus(bonusId) {
         const { error } = await supabase.from('group_bonuses').delete().eq('id', bonusId);
         return !error;
