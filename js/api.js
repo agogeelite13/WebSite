@@ -209,6 +209,7 @@ export const api = {
         return urlData.publicUrl;
     },
     async generateMissionWithGemini(apiKey) {
+        const cleanKey = apiKey ? apiKey.trim() : '';
         const promptText = `Eres un oficial de operaciones de Airsoft. Genera una misión breve, directa y con mucho ambiente táctico en ESPAÑOL.
         Párrafos cortos. Sin listas.
         JSON: {"title_loc":"...","objective":"...","gear":"...","map_prompt":"..."}.
