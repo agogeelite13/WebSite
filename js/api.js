@@ -224,17 +224,29 @@ export const api = {
             source: source
         });
 
-        // --- INTENTO 1: GOOGLE GEMINI (Con reintentos de modelos) ---
+        // --- INTENTO 1: GOOGLE GEMINI ---
         if (cleanKey.length > 10) {
-            const models = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-pro'];
+            // Solo modelos que existen en tu cuenta (verificado)
+            const models = ['gemini-2.0-flash-lite', 'gemini-2.0-flash', 'gemini-2.5-flash'];
             for (const model of models) {
                 try {
                     const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${cleanKey}`;
-                    const resp = await fetch(url, {
+                    let resp = await fetch(url, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
                     });
+
+                    // Si Google dice "espera" (429), reintentar una vez tras 3 segundos
+                    if (resp.status === 429) {
+                        console.warn(`Gemini ${model}: Rate limit. Reintentando en 3s...`);
+                        await new Promise(r => setTimeout(r, 3000));
+                        resp = await fetch(url, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
+                        });
+                    }
 
                     if (resp.ok) {
                         const result = await resp.json();
@@ -243,7 +255,7 @@ export const api = {
                         if (jsonMatch) return normalize(JSON.parse(jsonMatch[0]), `Google ${model}`);
                     } else if (resp.status === 403 || resp.status === 400) {
                         console.error(`Error Google (${model}): ${resp.status}`);
-                        break; // Si es error de clave, no seguimos probando modelos
+                        break;
                     }
                 } catch (e) { console.error(`Fallo en modelo ${model}:`, e); }
             }
