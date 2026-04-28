@@ -105,7 +105,7 @@ export const initSecretary = (api) => {
                 </select>
                 <select class="form-input row-bonus hidden" style="flex: 2; font-size: 0.7rem; height: 35px; padding: 0 5px;">
                     <option value="">-- Bono --</option>
-                    ${activeBonosData.map(b => `<option value="${b.id}" data-name="${b.group_name}" data-price="${b.price_per_session}" data-total="${b.total_sessions}" data-used="${b.sessions_used}">${b.group_name} (${b.total_sessions - b.sessions_used} restantes)</option>`).join('')}
+                    ${activeBonosData.map(b => `<option value="${b.id}" data-name="${b.group_name}" data-price="${b.price_per_session}" data-total="${b.total_sessions}" data-used="${b.sessions_used}" data-players="${b.players || 1}">${b.group_name} (${b.total_sessions - b.sessions_used} restantes - ${b.players || 1} pax)</option>`).join('')}
                 </select>
                 <input type="text" class="form-input row-name" placeholder="Nombre" style="flex: 2; font-size: 0.7rem; height: 35px;">
                 <button type="button" class="btn btn--outline remove-row-btn" style="padding: 0 10px; border-color: rgba(229,57,53,0.3); color: var(--red); height: 35px;">&times;</button>
@@ -154,7 +154,7 @@ export const initSecretary = (api) => {
             const opt = bonusSelect.options[bonusSelect.selectedIndex];
             if (opt.value) {
                 priceInput.value = opt.getAttribute('data-price');
-                paxInput.value = 1;
+                paxInput.value = opt.getAttribute('data-players') || 1;
             }
             updateSessionTotals();
         });
@@ -318,12 +318,14 @@ export const initSecretary = (api) => {
         e.preventDefault();
         const sess = parseInt(document.getElementById('bonusSessions').value);
         const price = parseFloat(document.getElementById('bonusPrice').value);
+        const players = parseInt(document.getElementById('bonusPlayers')?.value) || 1;
         const data = {
             group_name: document.getElementById('bonusName').value,
             total_sessions: sess,
             sessions_used: 0,
             price_total: price,
             price_per_session: (price / sess),
+            players: players,
             is_active: true
         };
         if (await api.saveGroupBonus(data)) {
@@ -472,7 +474,7 @@ export const renderSecretaryDashboard = async (api, els) => {
     if (els.bonosList) {
         els.bonosList.innerHTML = bonos.length > 0 ? bonos.map(b => `
             <tr style="opacity: ${b.is_active ? '1' : '0.5'};">
-                <td style="font-weight:bold; color:var(--gold);">${b.group_name}</td>
+                <td style="font-weight:bold; color:var(--gold);">${b.group_name} <span style="font-size:0.65rem; color:var(--text-muted);">(${b.players || 1} pax)</span></td>
                 <td style="font-family:monospace; font-weight:bold; color:${b.is_active ? 'var(--bronze-light)' : '#888'};">${b.sessions_used} / ${b.total_sessions}</td>
                 <td>${b.price_total.toFixed(2)} € <span style="font-size:0.7rem; color:var(--bronze-light);">(${b.price_per_session.toFixed(2)}€/s)</span></td>
                 <td><span class="sec-type-badge ${b.is_active ? 'sec-type-badge--grupo' : 'sec-type-badge--individual'}">${b.is_active ? 'ACTIVO' : 'AGOTADO'}</span></td>
