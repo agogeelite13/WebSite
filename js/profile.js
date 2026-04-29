@@ -190,6 +190,18 @@ export const updateProfileView = (userProfile, userLogs = []) => {
     if (avatarFrame) {
         avatarFrame.className = 'operator-avatar-frame';
         avatarFrame.classList.add(frameClass);
+        
+        // Remove old tag if exists
+        const oldTag = avatarFrame.querySelector('.overlord-tag');
+        if (oldTag) oldTag.remove();
+
+        // Add new tag for Overlord
+        if (frameClass === 'tier-overlord') {
+            const tag = document.createElement('div');
+            tag.className = 'overlord-tag';
+            tag.textContent = 'SUPREMO';
+            avatarFrame.appendChild(tag);
+        }
     }
 
     // Avatar Picker: highlight current & attach click handlers
