@@ -2,11 +2,11 @@
  * AGOGE ELITE - Profile & Gamification Module
  */
 
-export const renderMedals = (userProfile, enrollments, nextSundayKey) => {
+export const renderMedals = (userProfile, enrollments, nextSundayKey, userLogs = []) => {
     const medalsList = document.getElementById('medalsList');
     if (!medalsList || !userProfile) return;
 
-    const totalMissions = (userProfile.exp || 0);
+    const totalMissions = userLogs.length;
     const hasClan = !!userProfile.clan;
     const isEnrolled = enrollments[nextSundayKey]?.some(e => e.user_id === userProfile.id);
 
@@ -51,7 +51,7 @@ export const renderMedals = (userProfile, enrollments, nextSundayKey) => {
     `).join('');
 };
 
-export const updateProfileView = (userProfile) => {
+export const updateProfileView = (userProfile, userLogs = []) => {
     if (!userProfile) return;
     
     const elements = {
@@ -97,7 +97,7 @@ export const updateProfileView = (userProfile) => {
     };
     if (elements.profSpecialty) elements.profSpecialty.textContent = specMap[userProfile.specialty] || 'ASALTO';
 
-    const missions = (userProfile.exp || 0);
+    const missions = userLogs.length;
     const level = Math.floor(missions / 5) + 1;
     const currentLevelXP = missions % 5;
     const xpPercent = (currentLevelXP / 5) * 100;
@@ -201,23 +201,13 @@ export const updateProfileView = (userProfile) => {
     }
 
     if (elements.missionLogList) {
-        let history = userProfile.missionHistory || [];
-        
-        // Demo for Admin (Requested by user)
-        if (userProfile.role === 'admin' && history.length === 0) {
-            history = [
-                { date: '2026-04-12', operation: 'OPERACIÓN TERMITA', role: 'LÍDER DE ESCUADRA' },
-                { date: '2026-04-05', operation: 'FUEGO CRUZADO', role: 'FRANCOTIRADOR' },
-                { date: '2026-03-29', operation: 'TORMENTA DE ARENA', role: 'MÉDICO' }
-            ];
-        }
+        let history = userLogs;
 
         elements.missionLogList.innerHTML = history.length > 0 ?
             history.map(item => {
-                const isObj = typeof item === 'object';
-                const missionName = isObj ? item.operation : `OPERACIÓN: SUNDAY ${item}`;
-                const roleText = (isObj && item.role) ? `<span class="log-role">${item.role}</span>` : '';
-                const dateText = isObj ? item.date : item;
+                const missionName = item.name || 'OPERACIÓN';
+                const roleText = item.type === 'grupo' ? `<span class="log-role">BONO</span>` : '';
+                const dateText = item.date || new Date().toISOString().split('T')[0];
                 
                 return `
                     <div class="mission-log-entry">
@@ -225,7 +215,7 @@ export const updateProfileView = (userProfile) => {
                             <span class="log-date">${dateText}</span>
                             ${roleText}
                         </div>
-                        <div class="log-op-name">${missionName}</div>
+                        <div class="log-op-name" style="text-transform: uppercase;">${missionName}</div>
                     </div>
                 `;
             }).join('') :

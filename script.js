@@ -101,8 +101,19 @@ const updateUI = async () => {
         const path = window.location.pathname;
         if (path.includes('perfil.html')) {
             window._api_instance = api;
-            profile.updateProfileView(userProfile);
-            profile.renderMedals(userProfile, enrollments, getNextSundayKey());
+            
+            // Get user's real attendance history
+            const allLogs = await api.getAttendanceLogs();
+            const userCallsign = userProfile.callsign ? userProfile.callsign.toLowerCase() : '';
+            const userRealName = userProfile.name ? userProfile.name.toLowerCase() : '';
+            const userLogs = allLogs.filter(log => {
+                const logName = log.name ? log.name.toLowerCase() : '';
+                return (userCallsign && logName.includes(userCallsign)) || 
+                       (userRealName && logName.includes(userRealName));
+            });
+
+            profile.updateProfileView(userProfile, userLogs);
+            profile.renderMedals(userProfile, enrollments, getNextSundayKey(), userLogs);
         } else if (path.includes('admin.html')) {
             if (!hasAdminAccess) window.location.href = 'index.html';
             const sunKey = getNextSundayKey();
