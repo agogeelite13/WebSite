@@ -549,7 +549,12 @@ const renderVoting = async () => {
 
 const renderCommunityBoard = async () => {
     const grid = document.getElementById('approvedPhotosGrid');
+    const uploadBtn = document.getElementById('openUploadBtn');
     if (!grid) return;
+
+    if (currentUser) {
+        uploadBtn?.classList.remove('hidden');
+    }
 
     const photos = await api.getCommunityPhotos('approved');
     
@@ -559,19 +564,73 @@ const renderCommunityBoard = async () => {
     }
 
     grid.innerHTML = photos.map(photo => `
-        <article class="community-card" style="background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:8px; overflow:hidden; transition:transform 0.3s ease;">
-            <div class="community-card__img-wrap" style="aspect-ratio:1/1; overflow:hidden; position:relative;">
+        <article class="community-card" style="background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:8px; overflow:hidden; transition:all 0.3s ease; position:relative;">
+            <div class="community-card__img-wrap" style="aspect-ratio:1/1; overflow:hidden; position:relative; cursor:pointer;" onclick="openLightbox('${photo.image_url}', '${photo.caption || 'Intel'}')">
                 <img src="${photo.image_url}" alt="Intel" style="width:100%; height:100%; object-fit:cover; transition:transform 0.5s ease;" loading="lazy">
-                <div class="community-card__overlay" style="position:absolute; bottom:0; left:0; width:100%; padding:15px; background:linear-gradient(transparent, rgba(0,0,0,0.8));">
-                    <span class="community-card__user" style="font-size:0.7rem; color:var(--bronze); font-weight:bold; text-transform:uppercase;">OP: ${photo.users?.callsign || (photo.user_id ? photo.user_id.split('-')[0] : 'ANÓNIMO')}</span>
+                <div class="community-card__overlay" style="position:absolute; bottom:0; left:0; width:100%; padding:15px; background:linear-gradient(transparent, rgba(0,0,0,0.9));">
+                    <span class="community-card__user" style="font-size:0.7rem; color:var(--bronze); font-weight:bold; text-transform:uppercase; display:block;">OP: ${photo.users?.callsign || (photo.user_id ? photo.user_id.split('-')[0] : 'ANÓNIMO')}</span>
                 </div>
             </div>
-            <div class="community-card__content" style="padding:15px;">
-                <p class="community-card__caption" style="font-size:0.8rem; line-height:1.4; color:var(--white);">"${photo.caption || 'Sin reporte adicional.'}"</p>
-                <div class="community-card__meta" style="margin-top:10px; font-size:0.6rem; color:var(--text-muted);">${new Date(photo.created_at).toLocaleDateString()}</div>
+            <div class="community-card__content" style="padding:15px; position:relative;">
+                <p class="community-card__caption" style="font-size:0.8rem; line-height:1.4; color:var(--white); margin-bottom:15px;">"${photo.caption || 'Sin reporte adicional.'}"</p>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div class="community-card__meta" style="font-size:0.6rem; color:var(--text-muted);">${new Date(photo.created_at).toLocaleDateString()}</div>
+                    <button class="respect-btn" onclick="castRespect('${photo.id}')" style="background:none; border:none; color:var(--text-muted); font-size:0.75rem; cursor:pointer; display:flex; align-items:center; gap:5px; transition:color 0.2s;">
+                        <i class="fas fa-fist-raised"></i> <span>RESPECTS (${photo.respects || 0})</span>
+                    </button>
+                </div>
             </div>
         </article>
     `).join('');
+
+    // Global helper for respects
+    window.castRespect = async (photoId) => {
+        if (!currentUser) return ui.showToast('Acceso Denegado', 'Debes estar logueado para dar respetos.', 'warning');
+        if (await api.addRespect(photoId)) {
+            renderCommunityBoard(); // Quick refresh
+        }
+    };
+};
+
+const setupUploadUI = () => {
+    const els = {
+        modal: document.getElementById('uploadModal'),
+        openBtn: document.getElementById('openUploadBtn'),
+        closeBtn: document.getElementById('uploadModalClose'),
+        overlay: document.getElementById('uploadModalOverlay'),
+        form: document.getElementById('uploadPhotoForm')
+    };
+
+    if (!els.modal) return;
+
+    els.openBtn?.addEventListener('click', () => els.modal.classList.add('is-open'));
+    [els.closeBtn, els.overlay].forEach(e => e?.addEventListener('click', () => els.modal.classList.remove('is-open')));
+
+    els.form?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const file = document.getElementById('photoFile').files[0];
+        const caption = document.getElementById('photoCaption').value;
+        const submitBtn = document.getElementById('uploadSubmitBtn');
+
+        if (!file) return;
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'TRANSMITIENDO...';
+
+        try {
+            const result = await api.uploadCommunityPhoto(currentUser.id, file, caption);
+            if (result) {
+                ui.showToast('Misión Completada', 'Reporte visual enviado para revisión.', 'success');
+                els.modal.classList.remove('is-open');
+                els.form.reset();
+            }
+        } catch (err) {
+            ui.showToast('Error de Enlace', err.message, 'error');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'TRANSMITIR ARCHIVO';
+        }
+    });
 };
 
 const setupVotingListeners = () => {
@@ -599,6 +658,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     ui.initReveal();
     ui.initSmoothScroll();
     ui.initActiveNav();
+    setupUploadUI();
     ui.initFAQ();
     ui.initTerminalLog();
     ui.initCountdown();

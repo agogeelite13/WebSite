@@ -371,6 +371,36 @@ export const api = {
             return false;
         }
     },
+    async addRespect(photoId) {
+        try {
+            const { data } = await supabase.from('community_photos').select('respects').eq('id', photoId).single();
+            const newRespects = (data?.respects || 0) + 1;
+            const { error } = await supabase.from('community_photos').update({ respects: newRespects }).eq('id', photoId);
+            return !error;
+        } catch (err) {
+            console.error('Respect error:', err);
+            return false;
+        }
+    },
+    async uploadCommunityPhoto(userId, file, caption) {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `op_${userId}_${Date.now()}.${fileExt}`;
+        const { data: uploadData, error: uploadError } = await supabase.storage.from('community_photos').upload(fileName, file);
+        if (uploadError) throw uploadError;
+        
+        const { data: urlData } = supabase.storage.from('community_photos').getPublicUrl(fileName);
+        
+        const { error: dbError } = await supabase.from('community_photos').insert({
+            user_id: userId,
+            image_url: urlData.publicUrl,
+            caption: caption,
+            status: 'pending',
+            respects: 0
+        });
+        
+        if (dbError) throw dbError;
+        return true;
+    },
 
     // --- SOCIAL SYSTEM ---
     async searchUsers(query) {

@@ -314,6 +314,7 @@ export const initLightbox = () => {
         lightbox.classList.add('is-open');
         document.body.classList.add('nav-open');
     };
+    window.openLightbox = open;
 
     const close = () => {
         lightbox.classList.remove('is-open');
