@@ -416,3 +416,43 @@ export const initTerminalLog = () => {
         i = (i + 1) % messages.length;
     }, 8000);
 };
+
+export const showToast = (title, message, type = 'info') => {
+    let container = document.getElementById('toastContainer');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toastContainer';
+        container.className = 'toast-container';
+        document.body.appendChild(container);
+    }
+
+    const toast = document.createElement('div');
+    toast.className = `toast toast--${type}`;
+    
+    let icon = 'info-circle';
+    if (type === 'success') icon = 'check-circle';
+    else if (type === 'error') icon = 'exclamation-triangle';
+    else if (type === 'warning') icon = 'exclamation-circle';
+
+    toast.innerHTML = `
+        <div class="toast__icon"><i class="fas fa-${icon}"></i></div>
+        <div class="toast__content">
+            <div class="toast__title">${title}</div>
+            <div class="toast__message">${message}</div>
+        </div>
+        <button class="toast__close">&times;</button>
+    `;
+
+    container.appendChild(toast);
+
+    // Animate in
+    setTimeout(() => toast.classList.add('is-visible'), 10);
+
+    const removeToast = () => {
+        toast.classList.remove('is-visible');
+        setTimeout(() => toast.remove(), 300);
+    };
+
+    toast.querySelector('.toast__close').addEventListener('click', removeToast);
+    setTimeout(removeToast, 5000);
+};

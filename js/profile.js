@@ -1,6 +1,4 @@
-/**
- * AGOGE ELITE - Profile & Gamification Module
- */
+import { showToast } from './ui.js';
 
 export const renderMedals = (userProfile, enrollments, nextSundayKey, userLogs = []) => {
     const medalsList = document.getElementById('medalsList');
@@ -342,7 +340,7 @@ const renderSearchResults = (users, api, currentUser) => {
 
     window.sendFriendRequest = async (friendId) => {
         if (await api.sendFriendRequest(currentUser.id, friendId)) {
-            alert('Solicitud enviada!');
+            showToast('Social', '¡Solicitud de amistad enviada!', 'success');
             handleSearch(); // Refresh results to hide or show status
         }
     };

@@ -224,7 +224,7 @@ const createClan = async () => {
     const name = prompt('Nombre de tu nueva Fuerza de Tareas:');
     if (!name) return;
     clans = await api.getClans();
-    if (clans.some(c => c.name.toLowerCase() === name.toLowerCase())) return alert('Nombre en uso.');
+    if (clans.some(c => c.name.toLowerCase() === name.toLowerCase())) return ui.showToast('Error', 'Ese nombre de clan ya está en uso.', 'error');
     if (await api.createClan(name, userProfile.id, userProfile.email)) {
         userProfile.clan = name;
         await api.saveProfile(userProfile);
@@ -237,7 +237,7 @@ const joinClan = async () => {
     if (!name) return;
     clans = await api.getClans();
     const clan = clans.find(c => c.name.toLowerCase() === name.toLowerCase());
-    if (!clan) return alert('No existe.');
+    if (!clan) return ui.showToast('Error', 'Ese clan no existe en la base de datos.', 'error');
     userProfile.clan = clan.name;
     await api.saveProfile(userProfile);
     refreshData();
@@ -306,8 +306,11 @@ const setupAuthUI = () => {
         const email = document.getElementById('loginEmail').value;
         const pass = document.getElementById('loginPass').value;
         const { data, error } = await supabase.auth.signInWithPassword({ email, password: pass });
-        if (error) alert(error.message);
-        else els.authModal.classList.remove('is-open');
+        if (error) ui.showToast('Error de Enlace', error.message, 'error');
+        else {
+            els.authModal.classList.remove('is-open');
+            ui.showToast('Enlace Establecido', 'Bienvenido de nuevo, Operador.', 'success');
+        }
     });
 
     els.registerForm?.addEventListener('submit', async (e) => {
@@ -315,7 +318,7 @@ const setupAuthUI = () => {
         const email = document.getElementById('regEmail').value;
         const pass = document.getElementById('regPass').value;
         const { data, error } = await supabase.auth.signUp({ email, password: pass });
-        if (error) alert(error.message);
+        if (error) ui.showToast('Fallo en Reclutamiento', error.message, 'error');
         else {
             await api.saveProfile({
                 id: data.user.id,
@@ -326,14 +329,14 @@ const setupAuthUI = () => {
                 faction: document.getElementById('regFaction').value || 'none',
                 exp: 0, is_admin: false
             });
-            alert('Registro OK. Verifica tu email.');
+            ui.showToast('Reclutamiento OK', 'Verifica tu email para acceder.', 'success');
         }
     });
 
     els.enrollBtn?.addEventListener('click', async () => {
         const waiver = document.getElementById('rulesWaiver');
         const roleSelect = document.getElementById('enrollRole');
-        if (!waiver?.checked) return alert('Acepta la normativa de seguridad.');
+        if (!waiver?.checked) return ui.showToast('Atención', 'Acepta la normativa de seguridad.', 'warning');
         
         const selectedRole = roleSelect?.value || 'assault';
         
@@ -343,7 +346,7 @@ const setupAuthUI = () => {
             userProfile.specialty = selectedRole;
             await api.saveProfile(userProfile);
             refreshData();
-            alert('¡Inscripción confirmada! Te vemos en el campo, operador.');
+            ui.showToast('Inscripción Confirmada', 'Te vemos en el campo, operador.', 'success');
         }
     });
 
@@ -412,7 +415,7 @@ const setupAuthUI = () => {
             profile.updateProfileView(userProfile);
             profileEditForm.classList.add('hidden');
             profileView.classList.remove('hidden');
-            alert('SITREP Actualizado, Operador.');
+            ui.showToast('Actualización', 'SITREP Actualizado, Operador.', 'success');
         }
     });
 
@@ -577,7 +580,7 @@ const setupVotingListeners = () => {
         const newBtn = btn.cloneNode(true);
         btn.parentNode.replaceChild(newBtn, btn);
         newBtn.addEventListener('click', async () => {
-            if (!currentUser) return alert('Debes estar logueado para votar.');
+            if (!currentUser) return ui.showToast('Acceso Denegado', 'Debes estar logueado para votar.', 'warning');
             if (await api.castVote(getNextSundayKey(), currentUser.id, userProfile.email, newBtn.dataset.mode)) {
                 renderVoting();
             }
