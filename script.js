@@ -900,9 +900,10 @@ const initAdminScanner = () => {
     confirmBtn.addEventListener('click', async () => {
         if (!currentScannedUserId) return;
         
-        // Use the existing manual enrollment logic but with ID
+        // Use the existing manual enrollment logic but with ID + attended flag
         const sunKey = getNextSundayKey();
-        const success = await api.enroll(sunKey, currentScannedUserId, 'Check-in via QR', 'own');
+        const operator = await api.getProfile(currentScannedUserId);
+        const success = await api.enroll(sunKey, currentScannedUserId, operator?.email || 'qr-checkin', 'own', true);
         
         if (success) {
             ui.showToast('Check-in', 'Asistencia confirmada (+1 XP).', 'success');

@@ -115,15 +115,38 @@ export const api = {
         });
         return transformed;
     },
-    async enroll(sunKey, userId, email, gear) {
-        const { error } = await supabase.from('enrollments').insert({
-            sun_key: sunKey,
-            user_id: userId,
-            user_email: email,
-            gear: gear
-        });
-        if (error) console.error('Supabase enroll Error:', error.message, error.details, error.hint);
-        return !error;
+    async enroll(sunKey, userId, email, gear, attended = false) {
+        // Check if already enrolled for this date
+        const { data: existing } = await supabase
+            .from('enrollments')
+            .select('id')
+            .eq('sun_key', sunKey)
+            .eq('user_id', userId)
+            .single();
+
+        if (existing) {
+            // Update existing record
+            const { error } = await supabase
+                .from('enrollments')
+                .update({ 
+                    gear: gear, 
+                    user_email: email, // ensure email is correct
+                    attended: attended // We assume the column exists or is handled gracefully
+                })
+                .eq('id', existing.id);
+            return !error;
+        } else {
+            // New enrollment
+            const { error } = await supabase.from('enrollments').insert({
+                sun_key: sunKey,
+                user_id: userId,
+                user_email: email,
+                gear: gear,
+                attended: attended
+            });
+            if (error) console.error('Supabase enroll Error:', error.message);
+            return !error;
+        }
     },
     async enrollGuest(sunKey, name, email, gear) {
         const { error } = await supabase.from('enrollments').insert({
