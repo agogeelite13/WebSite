@@ -21,7 +21,8 @@
             <div class="top-bar__ticker"><p>ACCESO AUTORIZADO — CALENDARIO DE OPERACIONES — AGOGE ELITE</p></div>
             <span class="top-bar__date" id="topBarDate"></span>
         </div>
-    </di    <header class="site-header scrolled" id="siteHeader">
+    </div>
+    <header class="site-header scrolled" id="siteHeader">
         <div class="container header__inner">
             <a href="index.html" class="header__logo">
                 <img src="logo.jpg" alt="Logo" width="40" height="40">
@@ -135,10 +136,22 @@
                                 <div class="briefing-item briefing-item--full">
                                     <strong>VOTACIÓN ESTRATÉGICA (OPERADOR):</strong>
                                     <div id="votingOptions" class="voting-options">
-                                        <button class="vote-btn" data-mode="tdm">Eliminación por Equipos</button>
-                                        <button class="vote-btn" data-mode="ctf">Captura de Bandera</button>
-                                        <button class="vote-btn" data-mode="vip">Protección de VIP</button>
-                                        <button class="vote-btn" data-mode="dom">Dominación de Sectores</button>
+                                        <button class="vote-btn" data-mode="tdm">
+                                            <span class="vote-title">Eliminación por Equipos</span>
+                                            <span class="vote-desc">Tiempo límite 15 min. Respawn en base.</span>
+                                        </button>
+                                        <button class="vote-btn" data-mode="ctf">
+                                            <span class="vote-title">Captura de Bandera</span>
+                                            <span class="vote-desc">Captura y extrae. Sin respawn.</span>
+                                        </button>
+                                        <button class="vote-btn" data-mode="vip">
+                                            <span class="vote-title">Protección de VIP</span>
+                                            <span class="vote-desc">Escolta vs Emboscada. VIP armado con pistola.</span>
+                                        </button>
+                                        <button class="vote-btn" data-mode="dom">
+                                            <span class="vote-title">Dominación de Sectores</span>
+                                            <span class="vote-desc">Controla 3 zonas. Puntos por tiempo.</span>
+                                        </button>
                                     </div>
                                     <div id="votingResults" class="voting-results hidden">
                                         <p>VOTO ASIGNADO. RESULTADOS ACTUALES:</p>
@@ -276,13 +289,9 @@
             </address>
         </div>
         <div class="footer__bottom">
-            <p>&copy; 2025 Agoge Elite &ndash; CQB Airsoft Camp. Todos los derechos reservados.</p>
+            <p>&copy; 2026 Agoge Elite &ndash; CQB Airsoft Camp. Todos los derechos reservados.</p>
         </div>
     </footer>
-</p>
-        </div>
-    </footer>
-
     <!-- Auth Modal Shared -->
     <div id="authModal" class="modal">
         <div class="modal__overlay" id="modalOverlay"></div>
