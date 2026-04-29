@@ -5412,3 +5412,21 @@ textarea.form-input {
         width: auto;
     }
 }
+}
+
+/* RANK EFFECTS FOR AVATAR FRAMES */
+.operator-avatar-frame { transition: all 0.5s ease; }
+.operator-avatar-frame.tier-soldado { border-color: #3498db !important; box-shadow: 0 0 15px rgba(52, 152, 219, 0.4); }
+.operator-avatar-frame.tier-veterano { border-color: var(--bronze) !important; animation: framePulseBronze 3s infinite ease-in-out; }
+.operator-avatar-frame.tier-comandante { border-color: #ffd700 !important; box-shadow: 0 0 25px rgba(212, 175, 55, 0.6); animation: frameGlowGold 4s linear infinite; }
+
+@keyframes framePulseBronze {
+    0%, 100% { box-shadow: 0 0 5px rgba(205, 127, 50, 0.2); }
+    50% { box-shadow: 0 0 20px rgba(205, 127, 50, 0.6); }
+}
+
+@keyframes frameGlowGold {
+    0% { border-color: #ffd700; box-shadow: 0 0 15px rgba(212, 175, 55, 0.4); }
+    50% { border-color: #ffffff; box-shadow: 0 0 30px rgba(212, 175, 55, 0.8); }
+    100% { border-color: #ffd700; box-shadow: 0 0 15px rgba(212, 175, 55, 0.4); }
+}

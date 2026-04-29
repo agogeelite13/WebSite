@@ -148,20 +148,25 @@ export const updateProfileView = (userProfile, userLogs = []) => {
         if (elements.profXPText) elements.profXPText.textContent = `∞ / ∞ XP`;
         if (elements.profXPFill) elements.profXPFill.style.width = `100%`;
     } else {
-        if (missions >= 10) {
-            rank = 'ÉLITE';
+        if (level >= 10) {
+            rank = 'COMANDANTE';
             tier = 'elite';
-            frameClass = 'frame-elite';
+            frameClass = 'tier-comandante';
             avatarSrc = 'avatars/avatar_operador.png';
-        } else if (missions >= 6) {
+        } else if (level >= 6) {
             rank = 'VETERANO';
             tier = 'standard';
-            frameClass = 'frame-veterano';
+            frameClass = 'tier-veterano';
             avatarSrc = 'avatars/avatar_operador.png';
-        } else if (missions >= 3) {
-            rank = 'OPERADOR';
+        } else if (level >= 3) {
+            rank = 'SOLDADO';
             tier = 'standard';
-            frameClass = 'frame-operador';
+            frameClass = 'tier-soldado';
+            avatarSrc = 'avatars/avatar_operador.png';
+        } else {
+            rank = 'RECLUTA';
+            tier = 'basic';
+            frameClass = 'tier-recluta';
             avatarSrc = 'avatars/avatar_operador.png';
         }
         
