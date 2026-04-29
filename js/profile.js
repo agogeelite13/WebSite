@@ -244,6 +244,71 @@ export const updateProfileView = (userProfile, userLogs = []) => {
             }).join('') :
             '<div class="mission-item">SIN ACTIVIDAD REGISTRADA</div>';
     }
+
+    // Render Challenges
+    const api = window._api_instance;
+    if (api && userProfile) {
+        renderWeeklyChallenges(api, userProfile, userLogs);
+    }
+};
+
+export const renderWeeklyChallenges = async (api, userProfile, userLogs = []) => {
+    const list = document.getElementById('weeklyChallengesList');
+    if (!list) return;
+
+    // 1. Check Enrollment Challenge
+    const nextSunday = window.getNextSundayKey ? window.getNextSundayKey() : '';
+    const enrollments = await api.getEnrollments();
+    const isEnrolled = enrollments[nextSunday]?.some(e => e.user_id === userProfile.id);
+
+    // 2. Check Voting Challenge
+    const votes = await api.getVotes();
+    const hasVoted = votes[nextSunday]?.some(v => v.user_id === userProfile.id);
+
+    // 3. Check Community Challenge (Upload or Respect in last 7 days)
+    const photos = await api.getCommunityPhotos();
+    const last7Days = new Date();
+    last7Days.setDate(last7Days.getDate() - 7);
+    const hasUploaded = photos.some(p => p.user_id === userProfile.id && new Date(p.created_at) > last7Days);
+
+    const challenges = [
+        {
+            title: 'RESERVA TÁCTICA',
+            desc: 'Preinscríbete para la misión del domingo.',
+            completed: isEnrolled,
+            xp: 2,
+            icon: 'fa-calendar-check'
+        },
+        {
+            title: 'VOTO ESTRATÉGICO',
+            desc: 'Vota el modo de juego de la semana.',
+            completed: hasVoted,
+            xp: 1,
+            icon: 'fa-vote-yea'
+        },
+        {
+            title: 'REPORTA AL CENTRO',
+            desc: 'Sube una foto a la galería esta semana.',
+            completed: hasUploaded,
+            xp: 1,
+            icon: 'fa-camera'
+        }
+    ];
+
+    list.innerHTML = challenges.map(c => `
+        <div class="challenge-item" style="background:rgba(255,255,255,${c.completed ? '0.08' : '0.03'}); border:1px solid ${c.completed ? 'var(--bronze)' : 'var(--border)'}; padding:12px; border-radius:4px; display:flex; align-items:center; gap:15px; transition: all 0.3s ease;">
+            <div style="width:35px; height:35px; background:${c.completed ? 'var(--bronze)' : 'rgba(255,255,255,0.05)'}; border-radius:50%; display:flex; align-items:center; justify-content:center; color:${c.completed ? 'black' : 'var(--text-muted)'};">
+                <i class="fas ${c.icon}"></i>
+            </div>
+            <div style="flex:1;">
+                <h5 style="font-size:0.75rem; color:${c.completed ? 'var(--bronze)' : 'var(--white)'}; margin:0; letter-spacing:1px;">${c.title} ${c.completed ? '✅' : ''}</h5>
+                <p style="font-size:0.65rem; color:var(--text-muted); margin:2px 0 0 0;">${c.desc}</p>
+            </div>
+            <div style="text-align:right;">
+                <span style="font-size:0.7rem; font-weight:bold; color:var(--bronze);">+${c.xp} XP</span>
+            </div>
+        </div>
+    `).join('');
 };
 
 export const renderClanView = async (userProfile, clans, allUsers, actions) => {
