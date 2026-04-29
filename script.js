@@ -424,6 +424,38 @@ const setupAuthUI = () => {
         }
     });
 
+    // QR Logic
+    const showQrBtn = document.getElementById('showQrBtn');
+    const qrModal = document.getElementById('qrModal');
+    const qrContainer = document.getElementById('qrcode');
+    const closeQrBtns = [document.getElementById('closeQrModal'), document.getElementById('closeQrModalBtn'), document.getElementById('qrModalOverlay')];
+
+    let qrCodeInstance = null;
+
+    showQrBtn?.addEventListener('click', () => {
+        if (!currentUser) return;
+        
+        qrContainer.innerHTML = ''; // Clear previous
+        qrCodeInstance = new QRCode(qrContainer, {
+            text: currentUser.id,
+            width: 200,
+            height: 200,
+            colorDark : "#000000",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H
+        });
+        
+        qrModal.classList.add('is-open');
+        document.body.classList.add('nav-open');
+    });
+
+    const closeQr = () => {
+        qrModal.classList.remove('is-open');
+        document.body.classList.remove('nav-open');
+    };
+
+    closeQrBtns.forEach(btn => btn?.addEventListener('click', closeQr));
+
     // Subida de Fotos Comunitarias
     const uploadPhotoForm = document.getElementById('uploadPhotoForm');
     const uploadFeedback = document.getElementById('uploadFeedback');
@@ -786,10 +818,88 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Admin globals & logic already handled by setupAuthUI calling admin.update...
         // But we ensure globals are attached
         admin.attachAdminGlobals(api, sunKey);
+        initAdminScanner();
     } else if (path.includes('perfil.html')) {
         profile.initSocial(api, currentUser);
     }
 });
+
+/** --- ADMIN QR SCANNER LOGIC --- **/
+const initAdminScanner = () => {
+    const startBtn = document.getElementById('startScannerBtn');
+    const stopBtn = document.getElementById('stopScannerBtn');
+    const scannerResult = document.getElementById('scannerResult');
+    const scannedOpName = document.getElementById('scannedOpName');
+    const confirmBtn = document.getElementById('confirmCheckInBtn');
+    const cancelBtn = document.getElementById('cancelScannerBtn');
+    
+    let html5QrCode = null;
+    let currentScannedUserId = null;
+
+    if (!startBtn) return;
+
+    startBtn.addEventListener('click', () => {
+        html5QrCode = new Html5Qrcode("reader");
+        const qrCodeSuccessCallback = async (decodedText, decodedResult) => {
+            // decodedText should be the user ID
+            currentScannedUserId = decodedText;
+            html5QrCode.stop();
+            
+            // Fetch operator info
+            const operator = await api.getProfile(currentScannedUserId);
+            if (operator) {
+                scannedOpName.textContent = (operator.callsign || operator.name).toUpperCase();
+                scannerResult.classList.remove('hidden');
+                ui.showToast('Escáner', 'Operador identificado.', 'success');
+            } else {
+                ui.showToast('Error', 'ID de operador no válido.', 'error');
+                html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, qrCodeSuccessCallback);
+            }
+        };
+
+        html5QrCode.start(
+            { facingMode: "environment" }, 
+            { fps: 10, qrbox: 250 },
+            qrCodeSuccessCallback
+        ).catch(err => {
+            ui.showToast('Error Cámara', 'No se pudo acceder a la cámara.', 'error');
+        });
+        
+        startBtn.disabled = true;
+    });
+
+    stopBtn.addEventListener('click', () => {
+        if (html5QrCode) {
+            html5QrCode.stop().then(() => {
+                startBtn.disabled = false;
+            });
+        }
+    });
+
+    confirmBtn.addEventListener('click', async () => {
+        if (!currentScannedUserId) return;
+        
+        // Use the existing manual enrollment logic but with ID
+        const sunKey = getNextSundayKey();
+        const success = await api.enroll(sunKey, currentScannedUserId, 'Check-in via QR', 'own');
+        
+        if (success) {
+            ui.showToast('Check-in', 'Asistencia confirmada (+1 XP).', 'success');
+            scannerResult.classList.add('hidden');
+            // Refresh admin view if possible
+            refreshData();
+            // Restart scanner
+            startBtn.disabled = false;
+            startBtn.click(); 
+        }
+    });
+
+    cancelBtn.addEventListener('click', () => {
+        scannerResult.classList.add('hidden');
+        startBtn.disabled = false;
+        startBtn.click();
+    });
+};
 
 // PWA Service Worker Registration
 if ('serviceWorker' in navigator) {

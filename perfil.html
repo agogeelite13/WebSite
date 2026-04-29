@@ -182,9 +182,12 @@
                                 <div id="profArmory" style="font-size:0.85rem; color:var(--text-muted); line-height:1.5; white-space:pre-wrap;">No se ha registrado equipamiento en la armería.</div>
                             </div>
 
-                            <div class="profile-actions">
-                                <button id="editProfileBtn" class="btn btn--outline flex-1">Configurar</button>
-                                <a href="operaciones.html#intel" class="btn btn--primary flex-1">Inteligencia</a>
+                            <div class="profile-actions" style="display:flex; flex-direction:column; gap:10px;">
+                                <div style="display:flex; gap:10px;">
+                                    <button id="editProfileBtn" class="btn btn--outline flex-1">Configurar</button>
+                                    <button id="showQrBtn" class="btn btn--primary flex-1" style="background:var(--bronze); color:black;"><i class="fas fa-qrcode"></i> ID MÓVIL</button>
+                                </div>
+                                <a href="operaciones.html#intel" class="btn btn--primary btn--full">Inteligencia</a>
                             </div>
                         </div>
 
@@ -406,6 +409,20 @@
         </div>
     </div>
 
+    <!-- QR MODAL -->
+    <div id="qrModal" class="modal">
+        <div class="modal__overlay" id="qrModalOverlay"></div>
+        <div class="modal__content" style="max-width:400px; text-align:center; background:var(--bg); border:1px solid var(--bronze);">
+            <button class="modal__close" id="closeQrModalBtn" style="top:10px; right:10px;">&times;</button>
+            <h3 style="color:var(--bronze); font-family:var(--font-display); margin-bottom:20px; font-size:1.4rem;">IDENTIFICACIÓN TÁCTICA</h3>
+            <div id="qrcode" style="background:white; padding:15px; display:inline-block; border-radius:8px; margin-bottom:20px;"></div>
+            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:20px; line-height:1.4;">Presenta este código en el puesto de mando para el check-in rápido y registro de XP.</p>
+            <button class="btn btn--outline btn--full" id="closeQrModal">CERRAR ENLACE</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script type="module" src="script.js"></script>
 </body>
 </html>
