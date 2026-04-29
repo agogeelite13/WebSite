@@ -65,7 +65,21 @@
                         </ul>
                     </li>
                     <li><a href="index.html#contact" class="nav__link nav__link--cta">Contacto</a></li>
-                    <li class="nav__auth-wrap">
+                    <li class="nav__auth-wrap" style="display:flex; align-items:center; gap:15px;">
+                        <!-- NOTIFICATION SYSTEM -->
+                        <div class="notification-wrap">
+                            <button id="notifBtn" class="notif-btn" aria-label="Notificaciones">
+                                <i class="fas fa-bell"></i>
+                                <span id="notifBadge" class="notif-badge hidden">0</span>
+                            </button>
+                            <div id="notifPanel" class="notif-panel hidden">
+                                <div class="notif-header">NOTIFICACIONES TÁCTICAS</div>
+                                <div id="notifList" class="notif-list">
+                                    <p class="notif-empty">No hay comunicaciones pendientes.</p>
+                                </div>
+                            </div>
+                        </div>
+
                         <button id="authTrigger" class="nav__link nav__link--auth">Acceso Operador</button>
                         <div id="userMenu" class="user-menu hidden">
                             <span id="userName" class="user-menu__name"></span>
@@ -160,6 +174,20 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+
+                    <!-- FACTION BALANCE INDICATOR -->
+                    <div class="faction-balance reveal" style="margin-top:20px; background:rgba(0,0,0,0.3); border:1px solid var(--border); padding:20px; border-radius:8px;">
+                        <h4 style="color:var(--bronze); font-size:0.7rem; text-transform:uppercase; letter-spacing:2px; margin-bottom:15px; text-align:center;">EQUILIBRIO DE FUERZAS</h4>
+                        <div class="faction-bar" style="height:12px; background:rgba(255,255,255,0.05); border-radius:6px; display:flex; overflow:hidden; border:1px solid rgba(255,255,255,0.1);">
+                            <div id="tfBar" style="width:50%; background:#3498db; transition:width 0.5s ease;"></div>
+                            <div id="upBar" style="width:50%; background:#e74c3c; transition:width 0.5s ease;"></div>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin-top:10px; font-size:0.75rem; font-weight:bold;">
+                            <span style="color:#3498db;">TASK FORCE: <span id="tfCount">0</span></span>
+                            <span style="color:#e74c3c;">UPRISING: <span id="upCount">0</span></span>
+                        </div>
+                        <p id="factionIntelMsg" style="font-size:0.65rem; color:var(--text-muted); text-align:center; margin-top:10px; font-style:italic;">Calculando despliegue de tropas...</p>
                     </div>
                 </div>
             </div>

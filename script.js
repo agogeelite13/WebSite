@@ -160,6 +160,26 @@ const updateUI = async () => {
         if (els.playerCount) els.playerCount.textContent = `${count}/${capacity}`;
         if (els.nextMissionDate) els.nextMissionDate.textContent = getNextSunday().toUpperCase();
 
+        // Faction Balance Logic
+        if (document.getElementById('tfBar')) {
+            const allUsers = await api.getUsers();
+            const enrolledUsers = missionEnrollments.map(e => allUsers.find(u => u.id === e.user_id)).filter(Boolean);
+            
+            const tfCount = enrolledUsers.filter(u => u.faction === 'taskforce').length;
+            const upCount = enrolledUsers.filter(u => u.faction === 'uprising').length;
+            const total = tfCount + upCount || 1; // Avoid div by zero
+
+            document.getElementById('tfCount').textContent = tfCount;
+            document.getElementById('upCount').textContent = upCount;
+            document.getElementById('tfBar').style.width = `${(tfCount / total) * 100}%`;
+            document.getElementById('upBar').style.width = `${(upCount / total) * 100}%`;
+
+            const msgEl = document.getElementById('factionIntelMsg');
+            if (tfCount > upCount + 2) msgEl.textContent = 'INTEL: TASK FORCE DOMINA EL DESPLIEGUE. REFUERZOS UPRISING NECESARIOS.';
+            else if (upCount > tfCount + 2) msgEl.textContent = 'INTEL: UPRISING EN SUPERIORIDAD NUMÉRICA. TASK FORCE SOLICITA APOYO.';
+            else msgEl.textContent = 'INTEL: FUERZAS EQUILIBRADAS. SE PREVÉ COMBATE INTENSO.';
+        }
+
         if (isEnrolled) {
             if (els.enrollStatus) {
                 els.enrollStatus.textContent = 'ESTADO: INSCRITO — TE VEO EN EL CAMPO';
@@ -789,6 +809,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     ui.initStatsCounter();
     ui.initCalendar((date) => showMissionDetails(date));
     ui.initLightbox();
+    initNotifications();
 
     // b. Supabase & Data Logic
     supabase = initSupabase();
@@ -899,6 +920,107 @@ const initAdminScanner = () => {
         startBtn.disabled = false;
         startBtn.click();
     });
+};
+
+/** --- NOTIFICATION SYSTEM LOGIC --- **/
+const initNotifications = () => {
+    const btn = document.getElementById('notifBtn');
+    const panel = document.getElementById('notifPanel');
+    const badge = document.getElementById('notifBadge');
+    const list = document.getElementById('notifList');
+
+    if (!btn) return;
+
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        panel.classList.toggle('hidden');
+        if (!panel.classList.contains('hidden')) {
+            markNotificationsAsRead();
+        }
+    });
+
+    document.addEventListener('click', () => panel.classList.add('hidden'));
+    panel.addEventListener('click', (e) => e.stopPropagation());
+
+    const markNotificationsAsRead = () => {
+        badge.classList.add('hidden');
+        badge.textContent = '0';
+        localStorage.setItem('lastNotifCheck', new Date().toISOString());
+    };
+
+    // Simulated/Real-time Notification Generator
+    const checkForNewNotifications = async () => {
+        if (!currentUser) return;
+        
+        const lastCheck = new Date(localStorage.getItem('lastNotifCheck') || 0);
+        const notifications = [];
+
+        // 1. Mission Reminder
+        const sunKey = getNextSundayKey();
+        const enrollments = await api.getEnrollments();
+        const isEnrolled = enrollments[sunKey]?.some(e => e.user_id === currentUser.id);
+        
+        if (!isEnrolled) {
+            notifications.push({
+                id: 'enroll_remind',
+                icon: 'fa-exclamation-triangle',
+                title: 'ORDEN DE MOVILIZACIÓN',
+                body: 'Aún no te has inscrito para la misión del domingo. ¡El bando te necesita!',
+                time: 'URGENTE'
+            });
+        }
+
+        // 2. XP Milestone
+        if (userProfile && userProfile.xp >= 10 && lastCheck < new Date()) {
+            notifications.push({
+                id: 'xp_milestone',
+                icon: 'fa-medal',
+                title: 'ASCENSO DETECTADO',
+                body: 'Has alcanzado el Nivel 10. Revisa tus condecoraciones en el perfil.',
+                time: 'SITREP'
+            });
+        }
+
+        // 3. Community Photos (Recent)
+        const photos = await api.getCommunityPhotos();
+        const recentPhotos = photos.filter(p => new Date(p.created_at) > lastCheck && p.user_id !== currentUser.id);
+        if (recentPhotos.length > 0) {
+            notifications.push({
+                id: 'new_photos',
+                icon: 'fa-images',
+                title: 'INTELIGENCIA VISUAL',
+                body: `Se han publicado ${recentPhotos.length} nuevas fotos de la comunidad.`,
+                time: 'RECIENTE'
+            });
+        }
+
+        renderNotifications(notifications);
+    };
+
+    const renderNotifications = (notifs) => {
+        if (notifs.length === 0) {
+            list.innerHTML = '<p class="notif-empty">No hay comunicaciones pendientes.</p>';
+            badge.classList.add('hidden');
+            return;
+        }
+
+        badge.textContent = notifs.length;
+        badge.classList.remove('hidden');
+
+        list.innerHTML = notifs.map(n => `
+            <div class="notif-item unread">
+                <div class="notif-icon"><i class="fas ${n.icon}"></i></div>
+                <div class="notif-content">
+                    <div class="notif-title">${n.title}</div>
+                    <div class="notif-body">${n.body}</div>
+                    <div class="notif-time">${n.time}</div>
+                </div>
+            </div>
+        `).join('');
+    };
+
+    // Check periodically or on load
+    setTimeout(checkForNewNotifications, 2000);
 };
 
 // PWA Service Worker Registration

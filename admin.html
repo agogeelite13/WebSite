@@ -67,7 +67,20 @@
                             <li><a href="logistica.html#leaderboard" class="nav__link">Ranking Clanes</a></li>
                         </ul>
                     </li>
-                    <li class="nav__auth-wrap">
+                    <li class="nav__auth-wrap" style="display:flex; align-items:center; gap:15px;">
+                        <div class="notification-wrap">
+                            <button id="notifBtn" class="notif-btn" aria-label="Notificaciones">
+                                <i class="fas fa-bell"></i>
+                                <span id="notifBadge" class="notif-badge hidden">0</span>
+                            </button>
+                            <div id="notifPanel" class="notif-panel hidden">
+                                <div class="notif-header">NOTIFICACIONES TÁCTICAS</div>
+                                <div id="notifList" class="notif-list">
+                                    <p class="notif-empty">No hay comunicaciones pendientes.</p>
+                                </div>
+                            </div>
+                        </div>
+
                         <div id="userMenu" class="user-menu hidden">
                             <span id="userName" class="user-menu__name"></span>
                             <div class="user-menu__actions">
