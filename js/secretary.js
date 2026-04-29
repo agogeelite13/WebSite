@@ -255,15 +255,14 @@ export const initSecretary = (api) => {
                 });
             }
 
-            // Bonos: precio 0 porque ya se cobró al crear el bono
-            const finalPrice = (type === 'bono') ? 0 : price;
+            // Bonos: el precio por sesión se cuenta como ingreso al aplicar
             const logData = { 
                 date, 
                 type: type === 'bono' ? 'grupo' : type, 
                 name, 
                 players: pax, 
-                total_price: finalPrice, 
-                price_per_pax: pax > 0 ? (finalPrice / pax) : 0,
+                total_price: price, 
+                price_per_pax: pax > 0 ? (price / pax) : 0,
                 payment_method: payment
             };
             if (await api.saveAttendanceLog(logData)) {
@@ -332,18 +331,6 @@ export const initSecretary = (api) => {
             is_active: true
         };
         if (await api.saveGroupBonus(data)) {
-            // Registrar el pago del bono como ingreso único
-            const incomeLog = {
-                date: new Date().toISOString().split('T')[0],
-                type: 'bono',
-                name: `PAGO BONO: ${groupName} (${sess} sesiones)`,
-                players: players,
-                total_price: price,
-                price_per_pax: players > 0 ? (price / players) : 0,
-                payment_method: bonoPayment
-            };
-            await api.saveAttendanceLog(incomeLog);
-            await api.syncToSheets(incomeLog, 'attendance');
             document.getElementById('authModal')?.classList.remove('is-open');
             renderSecretaryDashboard(api, els);
         }
