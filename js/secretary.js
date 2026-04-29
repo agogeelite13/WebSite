@@ -8,7 +8,7 @@ let activeBonosData = [];
 
 // Saldos iniciales (anteriores al sistema digital)
 const INITIAL_BALANCE_EFECTIVO = 856.25;
-const INITIAL_BALANCE_BANCO = 882.81; // 657.81 + 225 (nuevo bono)
+const INITIAL_BALANCE_BANCO = 657.81;
 
 export const initSecretary = (api) => {
     if (window._secretaryInitialized) return;
@@ -249,20 +249,21 @@ export const initSecretary = (api) => {
                 const currentSess = parseInt(opt.getAttribute('data-used')) + 1;
                 name = `${opt.getAttribute('data-name')} [BONO ${currentSess}/${maxSess}]`;
                 
-                // FIX: Use update() instead of upsert() for partial updates
                 await api.updateGroupBonus(bonusId, { 
                     sessions_used: currentSess, 
                     is_active: currentSess < maxSess 
                 });
             }
 
+            // Bonos: precio 0 porque ya se cobró al crear el bono
+            const finalPrice = (type === 'bono') ? 0 : price;
             const logData = { 
                 date, 
                 type: type === 'bono' ? 'grupo' : type, 
                 name, 
                 players: pax, 
-                total_price: price, 
-                price_per_pax: pax > 0 ? (price / pax) : 0,
+                total_price: finalPrice, 
+                price_per_pax: pax > 0 ? (finalPrice / pax) : 0,
                 payment_method: payment
             };
             if (await api.saveAttendanceLog(logData)) {
@@ -319,8 +320,10 @@ export const initSecretary = (api) => {
         const sess = parseInt(document.getElementById('bonusSessions').value);
         const price = parseFloat(document.getElementById('bonusPrice').value);
         const players = parseInt(document.getElementById('bonusPlayers')?.value) || 1;
+        const bonoPayment = document.getElementById('bonusPaymentMethod')?.value || 'banco';
+        const groupName = document.getElementById('bonusName').value;
         const data = {
-            group_name: document.getElementById('bonusName').value,
+            group_name: groupName,
             total_sessions: sess,
             sessions_used: 0,
             price_total: price,
@@ -329,6 +332,18 @@ export const initSecretary = (api) => {
             is_active: true
         };
         if (await api.saveGroupBonus(data)) {
+            // Registrar el pago del bono como ingreso único
+            const incomeLog = {
+                date: new Date().toISOString().split('T')[0],
+                type: 'bono',
+                name: `PAGO BONO: ${groupName} (${sess} sesiones)`,
+                players: players,
+                total_price: price,
+                price_per_pax: players > 0 ? (price / players) : 0,
+                payment_method: bonoPayment
+            };
+            await api.saveAttendanceLog(incomeLog);
+            await api.syncToSheets(incomeLog, 'attendance');
             document.getElementById('authModal')?.classList.remove('is-open');
             renderSecretaryDashboard(api, els);
         }
