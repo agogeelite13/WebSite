@@ -165,13 +165,29 @@
                     <span class="section__label">Competición</span>
                     <h2 class="section__title">Ranking Clanes</h2>
                 </header>
-                <div class="leaderboard-wrap reveal">
-                    <table class="leaderboard-table">
-                        <thead>
-                            <tr><th>POS</th><th>CLAN / UNIDAD</th><th>OPERADORES</th><th>NIVEL SOCIAL</th><th>XP TOTAL</th></tr>
-                        </thead>
-                        <tbody id="clanLeaderboardBody"></tbody>
-                    </table>
+                
+                <div class="leaderboard-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                    <!-- Ranking Clanes -->
+                    <div class="leaderboard-wrap reveal">
+                        <h3 style="color: var(--bronze); margin-bottom: 1rem; text-align: center; text-transform: uppercase;">Top Clanes</h3>
+                        <table class="leaderboard-table">
+                            <thead>
+                                <tr><th>POS</th><th>CLAN / UNIDAD</th><th>OPERADORES</th><th>NIVEL SOCIAL</th><th>XP TOTAL</th></tr>
+                            </thead>
+                            <tbody id="clanLeaderboardBody"></tbody>
+                        </table>
+                    </div>
+
+                    <!-- Ranking Individual -->
+                    <div class="leaderboard-wrap reveal">
+                        <h3 style="color: var(--bronze); margin-bottom: 1rem; text-align: center; text-transform: uppercase;">Top 10 Operadores</h3>
+                        <table class="leaderboard-table">
+                            <thead>
+                                <tr><th>POS</th><th>CALLSIGN</th><th>FACCIÓN</th><th>XP TOTAL</th></tr>
+                            </thead>
+                            <tbody id="operatorLeaderboardBody"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </section>

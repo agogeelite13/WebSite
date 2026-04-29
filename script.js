@@ -142,6 +142,7 @@ const updateUI = async () => {
                 tfStatsId: 'tfStats',
                 upStatsId: 'upStats'
             });
+            profile.renderOperatorLeaderboard(api, allUsers);
         }
 
         if (document.getElementById('approvedPhotosGrid')) {

@@ -442,3 +442,50 @@ export const renderFriends = async (api, currentUser) => {
     };
 };
 
+export const renderOperatorLeaderboard = async (api, allUsers) => {
+    const tbody = document.getElementById('operatorLeaderboardBody');
+    if (!tbody) return;
+
+    const logs = await api.getAttendanceLogs();
+    const xpMap = {};
+
+    // Aggregate XP based on attendance logs
+    logs.forEach(log => {
+        if (!log.name) return;
+        const nameKey = log.name.trim().toLowerCase();
+        xpMap[nameKey] = (xpMap[nameKey] || 0) + 1;
+    });
+
+    // Create operator list mapping to allUsers to get faction if possible
+    const operators = [];
+    for (const [nameKey, xp] of Object.entries(xpMap)) {
+        // Try to find a matching user in allUsers
+        const matchedUser = allUsers.find(u => (u.callsign && u.callsign.toLowerCase() === nameKey) || (u.name && u.name.toLowerCase() === nameKey));
+        operators.push({
+            callsign: matchedUser ? matchedUser.callsign : nameKey.toUpperCase(),
+            faction: matchedUser ? matchedUser.faction : 'none',
+            xp: xp
+        });
+    }
+
+    // Sort by XP descending
+    operators.sort((a, b) => b.xp - a.xp);
+
+    const factionLabels = {
+        'taskforce': '<span style="color:#3498db; font-size:0.75rem; font-weight:bold;">TASK FORCE</span>',
+        'uprising': '<span style="color:#e74c3c; font-size:0.75rem; font-weight:bold;">UPRISING</span>',
+        'none': '<span style="color:#95a5a6; font-size:0.75rem; font-weight:bold;">NEUTRAL</span>'
+    };
+
+    // Get top 10
+    const top10 = operators.slice(0, 10);
+
+    tbody.innerHTML = top10.map((op, i) => `
+        <tr>
+            <td style="color:var(--bronze); font-weight:bold;">#${i + 1}</td>
+            <td style="font-weight:bold; color:var(--white);">${op.callsign}</td>
+            <td>${factionLabels[op.faction] || factionLabels['none']}</td>
+            <td style="color:var(--bronze); font-weight:bold;">${op.xp} XP</td>
+        </tr>
+    `).join('');
+};
