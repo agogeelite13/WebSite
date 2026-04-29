@@ -36,6 +36,27 @@ export const renderMedals = (userProfile, enrollments, nextSundayKey, userLogs =
             desc: 'Compromiso total (Registrado)',
             unlocked: true,
             img: 'medals/loyalty.png'
+        },
+        {
+            id: 'veteran_25',
+            title: 'Veterano de Bronce',
+            desc: '25+ misiones completadas',
+            unlocked: totalMissions >= 25,
+            img: 'medals/veteran_25.png'
+        },
+        {
+            id: 'veteran_50',
+            title: 'Veterano de Oro',
+            desc: '50+ misiones completadas',
+            unlocked: totalMissions >= 50,
+            img: 'medals/veteran_50.png'
+        },
+        {
+            id: 'specialist',
+            title: 'Especialista Élite',
+            desc: 'Alcanzar el Nivel 10',
+            unlocked: (Math.floor(totalMissions / 5) + 1) >= 10,
+            img: 'medals/specialist.png'
         }
     ];
 
