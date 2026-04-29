@@ -459,6 +459,40 @@
         </div>
     </div>
 
+    <!-- ONBOARDING MODAL (MANUAL DEL RECLUTA) -->
+    <div id="onboardingModal" class="modal">
+        <div class="modal__overlay" id="onboardingOverlay"></div>
+        <div class="modal__content" style="max-width:700px; padding:0; background:var(--bg); border:1px solid var(--bronze); overflow:hidden;">
+            <div style="background:var(--bronze); color:black; padding:15px 25px; display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="font-family:var(--font-display); margin:0; font-size:1.2rem; letter-spacing:2px;">MANUAL DEL RECLUTA v1.0</h3>
+                <span style="font-size:0.7rem; font-weight:bold; opacity:0.8;">CONFIDENCIAL // SOLO PARA OPERADORES</span>
+            </div>
+            <div style="padding:30px; max-height:70vh; overflow-y:auto;">
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:25px;">
+                    <div>
+                        <h4 style="color:var(--bronze); font-size:0.8rem; margin-bottom:10px;"><i class="fas fa-id-card"></i> 1. TU PERFIL TÁCTICO</h4>
+                        <p style="font-size:0.8rem; color:var(--text-muted); line-height:1.4;">Configura tu armería, elige tu especialidad y sube de rango completando misiones reales.</p>
+                    </div>
+                    <div>
+                        <h4 style="color:var(--bronze); font-size:0.8rem; margin-bottom:10px;"><i class="fas fa-calendar-alt"></i> 2. CENTRO DE MISIONES</h4>
+                        <p style="font-size:0.8rem; color:var(--text-muted); line-height:1.4;">Consulta el calendario interactivo, descarga el Intel Report y reserva tu plaza para el domingo.</p>
+                    </div>
+                    <div>
+                        <h4 style="color:var(--bronze); font-size:0.8rem; margin-bottom:10px;"><i class="fas fa-users"></i> 3. CUARTEL DE CLANES</h4>
+                        <p style="font-size:0.8rem; color:var(--text-muted); line-height:1.4;">Únete a una unidad o fúndala. Vuestra actividad conjunta os hará escalar en el Ranking Global.</p>
+                    </div>
+                    <div>
+                        <h4 style="color:var(--bronze); font-size:0.8rem; margin-bottom:10px;"><i class="fas fa-camera"></i> 4. COMUNIDAD</h4>
+                        <p style="font-size:0.8rem; color:var(--text-muted); line-height:1.4;">Sube tus reportes visuales tras el combate, gana "Respects" y conecta con otros operadores.</p>
+                    </div>
+                </div>
+            </div>
+            <div style="padding:20px; border-top:1px solid var(--border); text-align:center;">
+                <button id="closeOnboarding" class="btn btn--primary btn--full">ENTENDIDO, ESTOY LISTO</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script type="module" src="script.js"></script>

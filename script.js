@@ -331,6 +331,8 @@ const setupAuthUI = () => {
                 exp: 0, is_admin: false
             });
             ui.showToast('Reclutamiento OK', 'Verifica tu email para acceder.', 'success');
+            localStorage.setItem('show_onboarding', 'true');
+            els.authModal.classList.remove('is-open');
         }
     });
 
@@ -634,6 +636,26 @@ const setupUploadUI = () => {
             submitBtn.textContent = 'TRANSMITIR ARCHIVO';
         }
     });
+
+    // Onboarding close logic
+    const onboardingModal = document.getElementById('onboardingModal');
+    const onboardingClose = document.getElementById('closeOnboarding');
+    const onboardingOverlay = document.getElementById('onboardingOverlay');
+
+    const closeOnboarding = () => {
+        onboardingModal.classList.remove('is-open');
+        document.body.classList.remove('nav-open');
+    };
+
+    onboardingClose?.addEventListener('click', closeOnboarding);
+    onboardingOverlay?.addEventListener('click', closeOnboarding);
+
+    // Check for onboarding trigger
+    if (localStorage.getItem('show_onboarding') === 'true') {
+        localStorage.removeItem('show_onboarding');
+        onboardingModal.classList.add('is-open');
+        document.body.classList.add('nav-open');
+    }
 };
 
 const showMissionDetails = async (dateKey) => {
