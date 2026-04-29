@@ -394,6 +394,7 @@ const setupAuthUI = () => {
         gearRadios.forEach(r => {
             if (r.value === (userProfile.gear || 'own')) r.checked = true;
         });
+        document.getElementById('editArmeria').value = userProfile.armeria || '';
     });
 
     cancelEditBtn?.addEventListener('click', () => {
@@ -408,6 +409,7 @@ const setupAuthUI = () => {
             callsign: document.getElementById('editCallsign').value,
             specialty: document.getElementById('editSpecialty').value,
             faction: document.getElementById('editFaction').value,
+            armeria: document.getElementById('editArmeria').value,
             gear: Array.from(document.getElementsByName('editGear')).find(r => r.checked)?.value || 'own'
         };
 

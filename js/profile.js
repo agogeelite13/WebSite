@@ -85,6 +85,7 @@ export const updateProfileView = (userProfile, userLogs = []) => {
         profLevel: document.getElementById('profLevel'),
         profXPText: document.getElementById('profXPText'),
         profXPFill: document.getElementById('profXPFill'),
+        profArmory: document.getElementById('profArmory'),
         missionLogList: document.getElementById('missionLogList')
     };
 
@@ -212,6 +213,9 @@ export const updateProfileView = (userProfile, userLogs = []) => {
     }
 
     if (elements.profMissions) elements.profMissions.textContent = missions;
+    if (elements.profArmory) {
+        elements.profArmory.textContent = userProfile.armeria || 'No se ha registrado equipamiento en la armería.';
+    }
 
     // Tactical ID UUID Generation (Fixed based on user ID)
     const uuidDisplay = document.getElementById('operatorUUID');
@@ -436,6 +440,7 @@ export const renderFriends = async (api, currentUser) => {
             document.getElementById('opCardSpecialty').textContent = (user.specialty || 'Asalto').toUpperCase();
             document.getElementById('opCardMissions').textContent = user.exp || 0;
             document.getElementById('opCardXP').textContent = user.exp || 0;
+            document.getElementById('opCardArmory').textContent = user.armeria || 'No declarada.';
             
             const factionMap = { 'none': 'SIN FACCIÓN', 'taskforce': 'TASK FORCE', 'uprising': 'UPRISING' };
             document.getElementById('opCardFaction').textContent = factionMap[user.faction] || 'SIN FACCIÓN';
