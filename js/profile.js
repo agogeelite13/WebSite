@@ -130,7 +130,7 @@ export const updateProfileView = (userProfile, userLogs = []) => {
     if (userProfile.role === 'admin') {
         rank = 'COMANDANTE SUPREMO';
         tier = 'supreme';
-        frameClass = 'tier-comandante';
+        frameClass = 'tier-overlord';
         avatarSrc = 'avatars/avatar_operador.png';
         const profilePanel = document.getElementById('profilePanel');
         if (profilePanel) {
