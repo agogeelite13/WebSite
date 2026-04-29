@@ -236,7 +236,7 @@ export const initCountdown = () => {
     setInterval(updateTimer, 60000);
 };
 
-export const initCalendar = () => {
+export const initCalendar = (onDayClick) => {
     const container = document.getElementById('calendar');
     if (!container) return;
 
@@ -273,9 +273,10 @@ export const initCalendar = () => {
             const isSunday = date.getDay() === 0;
             const isToday = d === today.getDate() && viewMonth === today.getMonth() && viewYear === today.getFullYear();
             let cls = 'cal-cell';
+            const dateKey = `${viewYear}-${String(viewMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
             if (isSunday) cls += ' cal-cell--sunday';
             if (isToday) cls += ' cal-cell--today';
-            html += `<div class="${cls}" aria-label="${d} de ${MONTHS_ES[viewMonth]}${isSunday ? ' — Partida pública' : ''}">${d}</div>`;
+            html += `<div class="${cls}" data-date="${dateKey}" aria-label="${d} de ${MONTHS_ES[viewMonth]}${isSunday ? ' — Partida pública' : ''}">${d}</div>`;
         }
 
         const totalCells = startOffset + daysInMonth;
@@ -296,6 +297,12 @@ export const initCalendar = () => {
         document.getElementById('calNext').addEventListener('click', () => {
             viewMonth++; if (viewMonth > 11) { viewMonth = 0; viewYear++; }
             render();
+        });
+
+        container.querySelectorAll('.cal-cell--sunday').forEach(cell => {
+            cell.addEventListener('click', () => {
+                if (onDayClick) onDayClick(cell.dataset.date);
+            });
         });
     };
 

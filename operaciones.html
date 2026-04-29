@@ -351,6 +351,21 @@
         </div>
     </div>
 
+    <!-- Mission Modal -->
+    <div id="missionModal" class="modal">
+        <div class="modal__overlay" id="missionModalOverlay"></div>
+        <div class="modal__content" style="max-width:600px; padding:0; overflow:hidden; border:1px solid var(--border);">
+            <button class="modal__close" id="missionModalClose" style="z-index:10; top:15px; right:15px;">&times;</button>
+            <div id="missionModalBody">
+                <!-- Content injected via JS -->
+                <div style="padding:40px; text-align:center; color:var(--bronze);">
+                    <div class="scan-spinner" style="margin:0 auto 15px;"></div>
+                    <p>RECUPERANDO DATOS DE MISIÓN...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script type="module" src="script.js"></script>
 </body>
 </html>

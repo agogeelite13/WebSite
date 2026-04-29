@@ -633,6 +633,72 @@ const setupUploadUI = () => {
     });
 };
 
+const showMissionDetails = async (dateKey) => {
+    const modal = document.getElementById('missionModal');
+    const body = document.getElementById('missionModalBody');
+    const overlay = document.getElementById('missionModalOverlay');
+    const closeBtn = document.getElementById('missionModalClose');
+
+    if (!modal || !body) return;
+
+    modal.classList.add('is-open');
+    body.innerHTML = `
+        <div style="padding:40px; text-align:center; color:var(--bronze);">
+            <div class="scan-spinner" style="margin:0 auto 15px;"></div>
+            <p>ESTABLECIENDO ENLACE TÁCTICO...</p>
+        </div>
+    `;
+
+    const [mission, enrollments] = await Promise.all([
+        api.getMissionSettings(dateKey),
+        api.getEnrollments()
+    ]);
+
+    const usersEnrolled = enrollments[dateKey] || [];
+    const missionTitle = mission?.title_loc || 'OPERACIÓN ESTÁNDAR';
+    const missionObj = mission?.objective || 'Misión de reconocimiento y combate CQB.';
+    const missionGear = mission?.gear || 'Réplica 1J max, gafas homologadas.';
+    
+    body.innerHTML = `
+        <div class="mission-details">
+            <div class="mission-details__header" style="padding:30px; background:rgba(205, 127, 50, 0.1); border-bottom:1px solid var(--border);">
+                <span style="font-size:0.7rem; color:var(--bronze); font-weight:bold; letter-spacing:2px; text-transform:uppercase;">Intel Report — ${dateKey}</span>
+                <h2 style="font-family:var(--font-display); color:var(--white); margin:10px 0 0; font-size:1.8rem;">${missionTitle}</h2>
+            </div>
+            <div class="mission-details__content" style="padding:30px; display:grid; grid-template-columns: 1.5fr 1fr; gap:30px;">
+                <div class="mission-details__info">
+                    <h4 style="color:var(--bronze); text-transform:uppercase; font-size:0.8rem; margin-bottom:10px;">Objetivo de Misión</h4>
+                    <p style="font-size:0.9rem; line-height:1.6; color:var(--text-muted); margin-bottom:20px;">${missionObj}</p>
+                    
+                    <h4 style="color:var(--bronze); text-transform:uppercase; font-size:0.8rem; margin-bottom:10px;">Equipamiento Requerido</h4>
+                    <p style="font-size:0.8rem; color:var(--text-muted);">${missionGear}</p>
+                </div>
+                <div class="mission-details__enrollments" style="background:rgba(0,0,0,0.3); padding:20px; border-radius:8px; border:1px solid var(--border);">
+                    <h4 style="color:var(--white); text-transform:uppercase; font-size:0.75rem; margin-bottom:15px; display:flex; justify-content:space-between;">
+                        OPERADORES <span>${usersEnrolled.length}</span>
+                    </h4>
+                    <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:8px; max-height:200px; overflow-y:auto; padding-right:10px;">
+                        ${usersEnrolled.length > 0 ? 
+                            usersEnrolled.map(e => `
+                                <li style="font-size:0.8rem; color:var(--white); display:flex; justify-content:space-between; align-items:center;">
+                                    <span><i class="fas fa-user-shield" style="color:var(--bronze); margin-right:8px;"></i> ${e.user_email.split('@')[0].toUpperCase()}</span>
+                                    <span style="font-size:0.6rem; opacity:0.6;">${e.gear === 'rent' ? 'ALQUILER' : 'PROPIO'}</span>
+                                </li>
+                            `).join('') : 
+                            '<li style="font-size:0.8rem; color:var(--text-muted); text-align:center; padding:10px;">Nadie se ha apuntado todavía.</li>'
+                        }
+                    </ul>
+                </div>
+            </div>
+            <div style="padding:20px; background:rgba(0,0,0,0.2); border-top:1px solid var(--border); text-align:center;">
+                <button class="btn btn--primary btn--full" onclick="document.getElementById('missionModal').classList.remove('is-open')">CERRAR INFORME</button>
+            </div>
+        </div>
+    `;
+
+    [overlay, closeBtn].forEach(e => e?.addEventListener('click', () => modal.classList.remove('is-open')));
+};
+
 const setupVotingListeners = () => {
     document.querySelectorAll('.vote-btn').forEach(btn => {
         // Remove existing to avoid duplicates if re-rendered
@@ -664,7 +730,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     ui.initCountdown();
     ui.initParallax();
     ui.initStatsCounter();
-    ui.initCalendar();
+    ui.initCalendar((date) => showMissionDetails(date));
     ui.initLightbox();
 
     // b. Supabase & Data Logic

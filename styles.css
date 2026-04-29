@@ -2777,6 +2777,12 @@ select.form-input option {
     color: var(--white);
     font-weight: 700;
     background: rgba(139, 0, 0, 0.15);
+    cursor: pointer;
+}
+
+.cal-cell--sunday:hover {
+    background: rgba(139, 0, 0, 0.3);
+    color: var(--bronze);
 }
 
 .cal-cell--sunday::after {
