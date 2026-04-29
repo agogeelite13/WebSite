@@ -508,3 +508,59 @@ export const renderOperatorLeaderboard = async (api, allUsers) => {
         </tr>
     `).join('');
 };
+
+export const renderClanLeaderboard = async (api, allUsers) => {
+    const tbody = document.getElementById('clanLeaderboardBody');
+    if (!tbody) return;
+
+    const logs = await api.getAttendanceLogs();
+    const clans = await api.getClans();
+    const clanXPMap = {};
+
+    // Map users to clans for quick lookup
+    const userClanMap = {};
+    allUsers.forEach(u => {
+        if (u.clan) {
+            const key = (u.callsign || u.name || '').trim().toLowerCase();
+            if (key) userClanMap[key] = u.clan;
+        }
+    });
+
+    // Aggregate XP from logs
+    logs.forEach(log => {
+        if (!log.name) return;
+        const nameKey = log.name.trim().toLowerCase();
+        const clanName = userClanMap[nameKey];
+        if (clanName) {
+            clanXPMap[clanName] = (clanXPMap[clanName] || 0) + 1;
+        }
+    });
+
+    // Sort clans by XP
+    const sortedClans = clans.map(c => ({
+        ...c,
+        xp: clanXPMap[c.name] || 0
+    })).sort((a, b) => b.xp - a.xp).slice(0, 5);
+
+    tbody.innerHTML = sortedClans.map((c, index) => {
+        let rank = 'UNIDAD';
+        let rankClass = 'recluta';
+        if (c.xp >= 50) { rank = 'FUERZA DE ÉLITE'; rankClass = 'comandante'; }
+        else if (c.xp >= 25) { rank = 'ESCUADRÓN VETERANO'; rankClass = 'veterano'; }
+        else if (c.xp >= 10) { rank = 'GRUPO DE CHOQUE'; rankClass = 'operador'; }
+
+        return `
+            <tr>
+                <td style="color:var(--bronze); font-weight:bold;">#${index + 1}</td>
+                <td>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span style="background:var(--bronze); color:black; padding:2px 6px; font-weight:bold; border-radius:2px; font-size:0.7em;">[${c.name.substring(0,3).toUpperCase()}]</span>
+                        <span style="color:var(--white); font-weight:bold;">${c.name}</span>
+                    </div>
+                </td>
+                <td><span class="rank-pill" data-rank="${rankClass}" style="font-size:0.6rem; padding:2px 8px;">${rank}</span></td>
+                <td style="color:var(--bronze); font-weight:bold;">${c.xp} XP</td>
+            </tr>
+        `;
+    }).join('');
+};

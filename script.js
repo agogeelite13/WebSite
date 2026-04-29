@@ -142,6 +142,7 @@ const updateUI = async () => {
                 tfStatsId: 'tfStats',
                 upStatsId: 'upStats'
             });
+            profile.renderClanLeaderboard(api, allUsers);
             profile.renderOperatorLeaderboard(api, allUsers);
         }
 
