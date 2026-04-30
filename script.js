@@ -362,10 +362,9 @@ const setupAuthUI = () => {
         if (!waiver?.checked) return ui.showToast('Atención', 'Acepta la normativa de seguridad.', 'warning');
         
         const selectedRole = roleSelect?.value || 'assault';
-        
         const sunKey = getNextSundayKey();
         try {
-            const success = await api.enroll(sunKey, currentUser.id, userProfile.email, userProfile.gear || 'own', false);
+            const success = await api.enroll(sunKey, currentUser.id, userProfile.email, userProfile.gear || 'own');
             if (success) {
                 // Update profile with the role played this time
                 userProfile.exp = (userProfile.exp || 0) + 1;

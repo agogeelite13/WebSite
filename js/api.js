@@ -115,7 +115,7 @@ export const api = {
         });
         return transformed;
     },
-    async enroll(sunKey, userId, email, gear, attended = false) {
+    async enroll(sunKey, userId, email, gear) {
         // Check if already enrolled for this date (Safe check)
         const { data: existingRecords } = await supabase
             .from('enrollments')
@@ -131,8 +131,7 @@ export const api = {
                 .from('enrollments')
                 .update({ 
                     gear: gear, 
-                    user_email: email, 
-                    attended: attended
+                    user_email: email
                 })
                 .eq('id', existing.id);
             return !error;
@@ -142,8 +141,7 @@ export const api = {
                 sun_key: sunKey,
                 user_id: userId,
                 user_email: email,
-                gear: gear,
-                attended: attended
+                gear: gear
             });
             if (error) console.error('Supabase enroll Error:', error.message);
             return !error;
