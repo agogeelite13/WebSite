@@ -363,13 +363,22 @@ const setupAuthUI = () => {
         
         const selectedRole = roleSelect?.value || 'assault';
         
-        if (await api.enroll(getNextSundayKey(), currentUser.id, userProfile.email, userProfile.gear || 'own')) {
-            // Update profile with the role played this time
-            userProfile.exp = (userProfile.exp || 0) + 1;
-            userProfile.specialty = selectedRole;
-            await api.saveProfile(userProfile);
-            refreshData();
-            ui.showToast('Inscripción Confirmada', 'Te vemos en el campo, operador.', 'success');
+        const sunKey = getNextSundayKey();
+        try {
+            const success = await api.enroll(sunKey, currentUser.id, userProfile.email, userProfile.gear || 'own', false);
+            if (success) {
+                // Update profile with the role played this time
+                userProfile.exp = (userProfile.exp || 0) + 1;
+                userProfile.specialty = selectedRole;
+                await api.saveProfile(userProfile);
+                refreshData();
+                ui.showToast('Inscripción Confirmada', 'Te vemos en el campo, operador.', 'success');
+            } else {
+                ui.showToast('Error', 'No se pudo procesar la inscripción.', 'error');
+            }
+        } catch (err) {
+            console.error('Enrollment crash:', err);
+            ui.showToast('Error Crítico', 'Fallo en la comunicación con el Centro de Mando.', 'error');
         }
     });
 

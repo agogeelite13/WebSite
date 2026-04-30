@@ -116,13 +116,14 @@ export const api = {
         return transformed;
     },
     async enroll(sunKey, userId, email, gear, attended = false) {
-        // Check if already enrolled for this date
-        const { data: existing } = await supabase
+        // Check if already enrolled for this date (Safe check)
+        const { data: existingRecords } = await supabase
             .from('enrollments')
             .select('id')
             .eq('sun_key', sunKey)
-            .eq('user_id', userId)
-            .single();
+            .eq('user_id', userId);
+
+        const existing = existingRecords && existingRecords.length > 0 ? existingRecords[0] : null;
 
         if (existing) {
             // Update existing record
@@ -130,8 +131,8 @@ export const api = {
                 .from('enrollments')
                 .update({ 
                     gear: gear, 
-                    user_email: email, // ensure email is correct
-                    attended: attended // We assume the column exists or is handled gracefully
+                    user_email: email, 
+                    attended: attended
                 })
                 .eq('id', existing.id);
             return !error;
