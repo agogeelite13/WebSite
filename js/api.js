@@ -54,7 +54,16 @@ export const api = {
         return data || [];
     },
     async saveExpenseLog(log) {
+        // Try saving with payment_method
         const { error } = await supabase.from('expense_logs').upsert(log);
+        
+        if (error && (error.message?.includes('column "payment_method" does not exist') || error.code === '42703')) {
+            console.warn('Column payment_method not found, saving without it...');
+            const { payment_method, ...cleanLog } = log;
+            const { error: retryError } = await supabase.from('expense_logs').upsert(cleanLog);
+            return !retryError;
+        }
+        
         if (error) console.error('Supabase saveExpenseLog Error:', error);
         return !error;
     },
