@@ -439,6 +439,13 @@
                 </div>
 
                 <form id="attendanceForm" style="margin-top: 20px;">
+                    <div class="form-group">
+                        <label class="form-label">Método de Recaudación (Predeterminado)</label>
+                        <select id="attPaymentMethod" class="form-input">
+                            <option value="efectivo">💵 EFECTIVO (CAJA)</option>
+                            <option value="banco">🏦 BANCO (TRANSFERENCIA / BIZUM)</option>
+                        </select>
+                    </div>
                     <button type="submit" class="btn btn--primary btn--full">GUARDAR PARTIDA COMPLETA</button>
                 </form>
             </div>
@@ -468,6 +475,13 @@
                     <div class="form-group">
                         <label class="form-label">Importe Total (€)</label>
                         <input type="number" id="expAmount" class="form-input" step="0.01" placeholder="0.00" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Método de Pago</label>
+                        <select id="expPaymentMethod" class="form-input">
+                            <option value="efectivo">💵 EFECTIVO (CAJA)</option>
+                            <option value="banco">🏦 BANCO (TRANSFERENCIA / BIZUM)</option>
+                        </select>
                     </div>
                     <button type="submit" class="btn btn--primary btn--full">GUARDAR GASTO</button>
                 </form>

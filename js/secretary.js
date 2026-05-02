@@ -295,7 +295,8 @@ export const initSecretary = (api) => {
             date: document.getElementById('expDate').value,
             concept: document.getElementById('expConcept').value,
             category: document.getElementById('expCategory').value,
-            amount: parseFloat(document.getElementById('expAmount').value)
+            amount: parseFloat(document.getElementById('expAmount').value),
+            payment_method: document.getElementById('expPaymentMethod').value
         };
         if (await api.saveExpenseLog(data)) {
             await api.syncToSheets(data, 'expenses');
@@ -319,7 +320,6 @@ export const initSecretary = (api) => {
         const sess = parseInt(document.getElementById('bonusSessions').value);
         const price = parseFloat(document.getElementById('bonusPrice').value);
         const players = parseInt(document.getElementById('bonusPlayers')?.value) || 1;
-        const bonoPayment = document.getElementById('bonusPaymentMethod')?.value || 'banco';
         const groupName = document.getElementById('bonusName').value;
         const data = {
             group_name: groupName,
@@ -385,33 +385,31 @@ export const renderSecretaryDashboard = async (api, els) => {
     const incomeTotal = logs.reduce((sum, l) => sum + (l.total_price || 0), 0);
     const expenseTotal = expenses.reduce((sum, e) => sum + (e.amount || 0), 0);
 
-    // Cartera/Banco: Calcular por método de pago
-    // Registros antiguos sin payment_method se consideran efectivo
-    const incomeEfectivo = logs
-        .filter(l => !l.payment_method || l.payment_method === 'efectivo')
-        .reduce((sum, l) => sum + (l.total_price || 0), 0);
-    const incomeBanco = logs
-        .filter(l => l.payment_method === 'banco')
-        .reduce((sum, l) => sum + (l.total_price || 0), 0);
+    // Cálculos desglosados por método de pago (Efectivo vs Banco)
+    // Ingresos
+    const incomeEfectivo = logs.filter(l => !l.payment_method || l.payment_method === 'efectivo').reduce((sum, l) => sum + (l.total_price || 0), 0);
+    const incomeBanco = logs.filter(l => l.payment_method === 'banco').reduce((sum, l) => sum + (l.total_price || 0), 0);
+    
+    // Gastos
+    const expenseEfectivo = expenses.filter(e => !e.payment_method || e.payment_method === 'efectivo').reduce((sum, e) => sum + (e.amount || 0), 0);
+    const expenseBanco = expenses.filter(e => e.payment_method === 'banco').reduce((sum, e) => sum + (e.amount || 0), 0);
 
-    // Saldos = Inicial + ingresos digitales (los iniciales ya incluyen el histórico)
-    const walletBalance = INITIAL_BALANCE_EFECTIVO + incomeEfectivo - incomeTotal + incomeBanco > 0 
-        ? INITIAL_BALANCE_EFECTIVO + incomeEfectivo - (logs.filter(l => !l.payment_method || l.payment_method === 'efectivo').filter(l => l.created_at).reduce((s,l) => s + (l.total_price||0), 0))
-        : INITIAL_BALANCE_EFECTIVO;
-    const bankBalance = INITIAL_BALANCE_BANCO + incomeBanco - (logs.filter(l => l.payment_method === 'banco').filter(l => l.created_at).reduce((s,l) => s + (l.total_price||0), 0));
+    // Saldo Final por canal
+    const walletBalance = INITIAL_BALANCE_EFECTIVO + incomeEfectivo - expenseEfectivo;
+    const bankBalance = INITIAL_BALANCE_BANCO + incomeBanco - expenseBanco;
+    const netBalance = walletBalance + bankBalance;
 
-    // Mostrar solo los saldos base + nuevos ingresos digitales (con payment_method definido)
-    const newEfectivo = logs.filter(l => l.payment_method === 'efectivo').reduce((sum, l) => sum + (l.total_price || 0), 0);
-    const newBanco = logs.filter(l => l.payment_method === 'banco').reduce((sum, l) => sum + (l.total_price || 0), 0);
-
-    if (els.stats.day) els.stats.day.textContent = `${incomeDay.toFixed(2)} €`;
-    if (els.stats.incomeTotal) els.stats.incomeTotal.textContent = `${incomeTotal.toFixed(2)} €`;
+    if (els.stats.day) els.stats.day.textContent = incomeDay.toFixed(2) + ' €';
+    if (els.stats.incomeTotal) els.stats.incomeTotal.textContent = incomeTotal.toFixed(2) + ' €';
+    if (els.stats.expMonth) els.stats.expMonth.textContent = expenseTotal.toFixed(2) + ' €';
+    if (els.stats.netBalance) els.stats.netBalance.textContent = netBalance.toFixed(2) + ' €';
+    if (els.stats.walletTotal) els.stats.walletTotal.textContent = walletBalance.toFixed(2) + ' €';
+    if (els.stats.bankTotal) els.stats.bankTotal.textContent = bankBalance.toFixed(2) + ' €';
     if (els.stats.balanceTotal) {
         const net = incomeTotal - expenseTotal;
         els.stats.balanceTotal.textContent = `${net.toFixed(2)} €`;
         els.stats.balanceTotal.style.color = net >= 0 ? 'var(--gold)' : 'var(--blood-light)';
     }
-    if (els.stats.walletTotal) els.stats.walletTotal.textContent = `${(INITIAL_BALANCE_EFECTIVO + newEfectivo).toFixed(2)} €`;
     if (els.stats.bankTotal) els.stats.bankTotal.textContent = `${(INITIAL_BALANCE_BANCO + newBanco).toFixed(2)} €`;
 
     // Render Grouped Attendance
