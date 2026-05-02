@@ -54,18 +54,24 @@ export const api = {
         return data || [];
     },
     async saveExpenseLog(log) {
-        // Try saving with payment_method
-        const { error } = await supabase.from('expense_logs').upsert(log);
+        // Create a copy to avoid mutating the original
+        const dataToSave = { ...log };
         
-        if (error && (error.message?.includes('column "payment_method" does not exist') || error.code === '42703')) {
-            console.warn('Column payment_method not found, saving without it...');
-            const { payment_method, ...cleanLog } = log;
-            const { error: retryError } = await supabase.from('expense_logs').upsert(cleanLog);
-            return !retryError;
+        const { error } = await supabase.from('expense_logs').insert(dataToSave);
+        
+        if (error) {
+            console.error('Supabase saveExpenseLog Error:', error);
+            // If the error is about the missing column, retry without it
+            if (error.message?.includes('payment_method') || error.code === 'PGRST204' || error.code === '42703') {
+                console.warn('Retrying without payment_method...');
+                delete dataToSave.payment_method;
+                const { error: retryError } = await supabase.from('expense_logs').insert(dataToSave);
+                if (retryError) console.error('Final Retry Error:', retryError);
+                return !retryError;
+            }
+            return false;
         }
-        
-        if (error) console.error('Supabase saveExpenseLog Error:', error);
-        return !error;
+        return true;
     },
     async deleteExpenseLog(logId) {
         const { error } = await supabase.from('expense_logs').delete().eq('id', logId);
