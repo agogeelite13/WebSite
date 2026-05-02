@@ -299,10 +299,19 @@ export const initSecretary = (api) => {
             amount: parseFloat(document.getElementById('expAmount').value),
             payment_method: methodEl ? methodEl.value : 'efectivo'
         };
-        if (await api.saveExpenseLog(data)) {
-            await api.syncToSheets(data, 'expenses');
-            document.getElementById('authModal')?.classList.remove('is-open');
-            renderSecretaryDashboard(api, els);
+        try {
+            const success = await api.saveExpenseLog(data);
+            if (success) {
+                await api.syncToSheets(data, 'expenses');
+                document.getElementById('authModal')?.classList.remove('is-open');
+                renderSecretaryDashboard(api, els);
+                if (window.ui) window.ui.showToast('Gasto Guardado', 'El registro se ha sincronizado.', 'success');
+            } else {
+                alert('Error al guardar: La base de datos rechazó el gasto. Revisa la consola para más detalles.');
+            }
+        } catch (err) {
+            console.error('Fatal Expense Error:', err);
+            alert('Error Crítico: ' + err.message);
         }
     });
 
