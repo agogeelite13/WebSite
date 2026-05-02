@@ -385,18 +385,15 @@ export const renderSecretaryDashboard = async (api, els) => {
     const incomeTotal = logs.reduce((sum, l) => sum + (l.total_price || 0), 0);
     const expenseTotal = expenses.reduce((sum, e) => sum + (e.amount || 0), 0);
 
-    // Cálculos desglosados por método de pago (Efectivo vs Banco)
-    // Ingresos
-    const incomeEfectivo = logs.filter(l => !l.payment_method || l.payment_method === 'efectivo').reduce((sum, l) => sum + (l.total_price || 0), 0);
-    const incomeBanco = logs.filter(l => l.payment_method === 'banco').reduce((sum, l) => sum + (l.total_price || 0), 0);
+    // Cálculos desglosados (Ajustados para mantener coherencia histórica)
+    const newEfectivo = logs.filter(l => l.payment_method === 'efectivo').reduce((sum, l) => sum + (l.total_price || 0), 0);
+    const newBanco = logs.filter(l => l.payment_method === 'banco').reduce((sum, l) => sum + (l.total_price || 0), 0);
     
-    // Gastos
-    const expenseEfectivo = expenses.filter(e => !e.payment_method || e.payment_method === 'efectivo').reduce((sum, e) => sum + (e.amount || 0), 0);
+    const expenseEfectivo = expenses.filter(e => e.payment_method === 'efectivo').reduce((sum, e) => sum + (e.amount || 0), 0);
     const expenseBanco = expenses.filter(e => e.payment_method === 'banco').reduce((sum, e) => sum + (e.amount || 0), 0);
 
-    // Saldo Final por canal
-    const walletBalance = INITIAL_BALANCE_EFECTIVO + incomeEfectivo - expenseEfectivo;
-    const bankBalance = INITIAL_BALANCE_BANCO + incomeBanco - expenseBanco;
+    const walletBalance = INITIAL_BALANCE_EFECTIVO + newEfectivo - expenseEfectivo;
+    const bankBalance = INITIAL_BALANCE_BANCO + newBanco - expenseBanco;
     const netBalance = walletBalance + bankBalance;
 
     if (els.stats.day) els.stats.day.textContent = incomeDay.toFixed(2) + ' €';
