@@ -291,12 +291,13 @@ export const initSecretary = (api) => {
 
     els.expForm?.addEventListener('submit', async (e) => {
         e.preventDefault();
+        const methodEl = document.getElementById('expPaymentMethod');
         const data = {
             date: document.getElementById('expDate').value,
             concept: document.getElementById('expConcept').value,
             category: document.getElementById('expCategory').value,
             amount: parseFloat(document.getElementById('expAmount').value),
-            payment_method: document.getElementById('expPaymentMethod').value
+            payment_method: methodEl ? methodEl.value : 'efectivo'
         };
         if (await api.saveExpenseLog(data)) {
             await api.syncToSheets(data, 'expenses');
