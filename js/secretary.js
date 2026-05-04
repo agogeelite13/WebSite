@@ -393,19 +393,15 @@ export const renderSecretaryDashboard = async (api, els) => {
     const todayStr = now.toISOString().split('T')[0];
     const incomeDay = logs.filter(l => l.date === todayStr).reduce((sum, l) => sum + (l.total_price || 0), 0);
     const incomeTotal = logs.reduce((sum, l) => sum + (l.total_price || 0), 0);
-    const expenseTotal = expenses.reduce((sum, e) => sum + (e.amount || 0), 0);
-
-    // Cálculos desglosados (Ajustados para mantener coherencia histórica)
+    
+    // Cálculos simplificados (Todo resta de Cartera por ahora para evitar descuadres)
     const newEfectivo = logs.filter(l => l.payment_method === 'efectivo').reduce((sum, l) => sum + (l.total_price || 0), 0);
     const newBanco = logs.filter(l => l.payment_method === 'banco').reduce((sum, l) => sum + (l.total_price || 0), 0);
     
-    // Gastos desglosados (Solo restamos gastos que tengan método de pago definido, lo que indica que son "nuevos")
-    // Opcionalmente, podrías usar una fecha de corte. 
-    const expenseEfectivo = expenses.filter(e => e.payment_method === 'efectivo').reduce((sum, e) => sum + (e.amount || 0), 0);
-    const expenseBanco = expenses.filter(e => e.payment_method === 'banco').reduce((sum, e) => sum + (e.amount || 0), 0);
+    const expenseTotal = expenses.reduce((sum, e) => sum + (e.amount || 0), 0);
 
-    const walletBalance = INITIAL_BALANCE_EFECTIVO + newEfectivo - expenseEfectivo;
-    const bankBalance = INITIAL_BALANCE_BANCO + newBanco - expenseBanco;
+    const walletBalance = INITIAL_BALANCE_EFECTIVO + newEfectivo - expenseTotal; // Todo el gasto resta de aquí
+    const bankBalance = INITIAL_BALANCE_BANCO + newBanco; 
     const netBalance = walletBalance + bankBalance;
 
     if (els.stats.day) els.stats.day.textContent = incomeDay.toFixed(2) + ' €';
