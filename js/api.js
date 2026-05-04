@@ -54,23 +54,9 @@ export const api = {
         return data || [];
     },
     async saveExpenseLog(log) {
-        const { payment_method, ...cleanLog } = log;
-        
-        // Attempt 1: Full data
-        const { error: err1 } = await supabase.from('expense_logs').insert(log);
-        if (!err1) return true;
-
-        console.warn('First save attempt failed, retrying without payment_method...', err1);
-        
-        // Attempt 2: Minimal data (the one that used to work)
-        const { error: err2 } = await supabase.from('expense_logs').insert(cleanLog);
-        if (err2) {
-            console.error('Final Save Error:', err2);
-            alert('Error Supabase: ' + err2.message);
-            return false;
-        }
-        
-        return true;
+        const { error } = await supabase.from('expense_logs').insert(log);
+        if (error) console.error('Supabase saveExpenseLog Error:', error);
+        return !error;
     },
     async deleteExpenseLog(logId) {
         const { error } = await supabase.from('expense_logs').delete().eq('id', logId);
