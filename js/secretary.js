@@ -281,9 +281,12 @@ export const initSecretary = (api) => {
     els.addExpBtn?.addEventListener('click', () => {
         const authModal = document.getElementById('authModal');
         if (authModal) authModal.classList.add('is-open');
-        els.expModal.classList.remove('hidden');
+        // Hide other forms inside the modal
+        document.getElementById('loginFormWrap')?.classList.add('hidden');
         els.modal.classList.add('hidden');
         els.bonusModal?.classList.add('hidden');
+        
+        els.expModal.classList.remove('hidden');
         els.expForm.reset();
         const dateInput = document.getElementById('expDate');
         if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
