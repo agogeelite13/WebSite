@@ -54,23 +54,22 @@ export const api = {
         return data || [];
     },
     async saveExpenseLog(log) {
-        // Create a copy to avoid mutating the original
-        const dataToSave = { ...log };
+        const { payment_method, ...cleanLog } = log;
         
-        const { error } = await supabase.from('expense_logs').insert(dataToSave);
+        // Attempt 1: Full data
+        const { error: err1 } = await supabase.from('expense_logs').insert(log);
+        if (!err1) return true;
+
+        console.warn('First save attempt failed, retrying without payment_method...', err1);
         
-        if (error) {
-            console.error('Supabase saveExpenseLog Error:', error);
-            // If the error is about the missing column, retry without it
-            if (error.message?.includes('payment_method') || error.code === 'PGRST204' || error.code === '42703') {
-                console.warn('Retrying without payment_method...');
-                delete dataToSave.payment_method;
-                const { error: retryError } = await supabase.from('expense_logs').insert(dataToSave);
-                if (retryError) console.error('Final Retry Error:', retryError);
-                return !retryError;
-            }
+        // Attempt 2: Minimal data (the one that used to work)
+        const { error: err2 } = await supabase.from('expense_logs').insert(cleanLog);
+        if (err2) {
+            console.error('Final Save Error:', err2);
+            alert('Error Supabase: ' + err2.message);
             return false;
         }
+        
         return true;
     },
     async deleteExpenseLog(logId) {
