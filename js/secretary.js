@@ -423,13 +423,13 @@ export const renderSecretaryDashboard = async (api, els) => {
         const rowId = `details-${date.replace(/-/g, '')}`;
         return `
             <tr class="sec-grouped-row" onclick="document.getElementById('${rowId}').classList.toggle('hidden')" style="cursor:pointer; background: rgba(212,175,55,0.02);">
-                <td style="font-family:monospace; color:var(--gold); font-weight:bold;">${date}</td>
-                <td><span class="sec-type-badge sec-type-badge--grupo">PARTIDA</span></td>
-                <td style="text-align:left; font-weight:700;">RESUMEN JORNADA ${date}</td>
-                <td>${g.totalPax}</td>
-                <td style="color:var(--gold); font-weight:bold;">${g.totalPrice.toFixed(2)} €</td>
-                <td><span style="font-size:0.6rem; opacity:0.6;">[+] VER DETALLE</span></td>
-                <td>---</td>
+                <td data-label="Fecha" style="font-family:monospace; color:var(--gold); font-weight:bold;">${date}</td>
+                <td data-label="Tipo"><span class="sec-type-badge sec-type-badge--grupo">PARTIDA</span></td>
+                <td data-label="Concepto" style="text-align:left; font-weight:700;">RESUMEN JORNADA ${date}</td>
+                <td data-label="Pax">${g.totalPax}</td>
+                <td data-label="Total" style="color:var(--gold); font-weight:bold;">${g.totalPrice.toFixed(2)} €</td>
+                <td data-label="Info"><span style="font-size:0.6rem; opacity:0.6;">[+] VER DETALLE</span></td>
+                <td data-label="Acciones">---</td>
             </tr>
             <tr id="${rowId}" class="hidden" style="background: rgba(0,0,0,0.15);">
                 <td colspan="7" style="padding: 10px;">
@@ -467,12 +467,12 @@ export const renderSecretaryDashboard = async (api, els) => {
     // Render Expenses
     els.expList.innerHTML = expenses.length > 0 ? expenses.map(e => `
         <tr>
-            <td style="font-family:monospace; font-size:0.7rem;">${e.date}</td>
-            <td><span class="sec-type-badge sec-type-badge--${e.category.toLowerCase()}">${e.category.toUpperCase()}</span></td>
-            <td style="font-weight:bold;">${e.concept}</td>
-            <td style="color:var(--blood-light);">${e.amount.toFixed(2)} €</td>
-            <td style="font-size:0.8rem;">${e.payment_method === 'banco' ? '🏦' : '💰'}</td>
-            <td><button class="btn btn--outline btn--sm" onclick="adminDeleteExpense('${e.id}')">Borrar</button></td>
+            <td data-label="Fecha" style="font-family:monospace; font-size:0.7rem;">${e.date}</td>
+            <td data-label="Cat."><span class="sec-type-badge sec-type-badge--${e.category.toLowerCase()}">${e.category.toUpperCase()}</span></td>
+            <td data-label="Concepto" style="font-weight:bold;">${e.concept}</td>
+            <td data-label="Importe" style="color:var(--blood-light);">${e.amount.toFixed(2)} €</td>
+            <td data-label="Pago" style="font-size:0.8rem;">${e.payment_method === 'banco' ? '🏦' : '💰'}</td>
+            <td data-label="Acción"><button class="btn btn--outline btn--sm" onclick="adminDeleteExpense('${e.id}')">Borrar</button></td>
         </tr>
     `).join('') : '<tr><td colspan="5">No hay gastos.</td></tr>';
 

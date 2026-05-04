@@ -5495,3 +5495,74 @@ textarea.form-input {
     100% { border-color: #ffd700; box-shadow: 0 0 15px rgba(212, 175, 55, 0.4); }
 }
 /* FINAL SYNC: RANK EFFECTS & NOTIFICATIONS READY */
+
+/* =============================================
+   MOBILE ADMIN FIXES (iPhone Optimization)
+   ============================================= */
+@media (max-width: 768px) {
+    .admin-stats-grid {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 10px !important;
+    }
+
+    .sec-stat-card {
+        padding: 10px !important;
+    }
+
+    .sec-stat-card .stat-value {
+        font-size: 1.1rem !important;
+    }
+
+    /* Transform tables into cards */
+    .admin-table thead {
+        display: none;
+    }
+
+    .admin-table, .admin-table tbody, .admin-table tr, .admin-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .admin-table tr {
+        margin-bottom: 15px;
+        background: rgba(255,255,255,0.03);
+        border-radius: 8px;
+        padding: 10px;
+        border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .admin-table td {
+        text-align: right !important;
+        padding: 8px 5px !important;
+        border: none !important;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.85rem;
+    }
+
+    .admin-table td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        color: var(--gold);
+        text-transform: uppercase;
+        font-size: 0.7rem;
+    }
+
+    /* Fix Modals on Mobile */
+    #authModal .modal-content {
+        width: 95% !important;
+        padding: 15px !important;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .session-row {
+        flex-direction: column !important;
+        gap: 5px !important;
+    }
+
+    .form-input {
+        font-size: 16px !important; /* Prevents iPhone zoom on focus */
+    }
+}
