@@ -399,8 +399,9 @@ export const renderSecretaryDashboard = async (api, els) => {
     const newEfectivo = logs.filter(l => l.payment_method === 'efectivo').reduce((sum, l) => sum + (l.total_price || 0), 0);
     const newBanco = logs.filter(l => l.payment_method === 'banco').reduce((sum, l) => sum + (l.total_price || 0), 0);
     
-    // Gastos desglosados
-    const expenseEfectivo = expenses.filter(e => e.payment_method === 'efectivo' || !e.payment_method).reduce((sum, e) => sum + (e.amount || 0), 0);
+    // Gastos desglosados (Solo restamos gastos que tengan método de pago definido, lo que indica que son "nuevos")
+    // Opcionalmente, podrías usar una fecha de corte. 
+    const expenseEfectivo = expenses.filter(e => e.payment_method === 'efectivo').reduce((sum, e) => sum + (e.amount || 0), 0);
     const expenseBanco = expenses.filter(e => e.payment_method === 'banco').reduce((sum, e) => sum + (e.amount || 0), 0);
 
     const walletBalance = INITIAL_BALANCE_EFECTIVO + newEfectivo - expenseEfectivo;

@@ -54,8 +54,11 @@ export const api = {
         return data || [];
     },
     async saveExpenseLog(log) {
-        const { error } = await supabase.from('expense_logs').insert(log);
-        if (error) console.error('Supabase saveExpenseLog Error:', error);
+        const { error } = await supabase.from('expense_logs').upsert(log);
+        if (error) {
+            console.error('Supabase saveExpenseLog Error:', error);
+            alert('Error al guardar Gasto: ' + error.message);
+        }
         return !error;
     },
     async deleteExpenseLog(logId) {
