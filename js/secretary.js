@@ -475,6 +475,7 @@ export const renderSecretaryDashboard = async (api, els) => {
             <td><span class="sec-type-badge sec-type-badge--${e.category.toLowerCase()}">${e.category.toUpperCase()}</span></td>
             <td style="font-weight:bold;">${e.concept}</td>
             <td style="color:var(--blood-light);">${e.amount.toFixed(2)} €</td>
+            <td style="font-size:0.8rem;">${e.payment_method === 'banco' ? '🏦' : '💰'}</td>
             <td><button class="btn btn--outline btn--sm" onclick="adminDeleteExpense('${e.id}')">Borrar</button></td>
         </tr>
     `).join('') : '<tr><td colspan="5">No hay gastos.</td></tr>';
