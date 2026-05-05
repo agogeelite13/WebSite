@@ -50,7 +50,11 @@ export const initSecretary = (api) => {
         addBonoBtn: document.getElementById('addBonoBtn'),
         bonusModal: document.getElementById('bonusModalWrap'),
         bonusForm: document.getElementById('bonusForm'),
-        bonosList: document.getElementById('secretaryBonosList')
+        bonosList: document.getElementById('secretaryBonosList'),
+        // Transfer elements
+        transferBtn: document.getElementById('transferFundsBtn'),
+        transferModal: document.getElementById('transferModalWrap'),
+        transferForm: document.getElementById('transferForm')
     };
 
     if (!els.list) return;
@@ -277,6 +281,20 @@ export const initSecretary = (api) => {
         }
     });
 
+    // Transfer Funds Button
+    els.transferBtn?.addEventListener('click', () => {
+        const authModal = document.getElementById('authModal');
+        if (authModal) authModal.classList.add('is-open');
+        // Hide other forms inside the modal
+        document.getElementById('loginFormWrap')?.classList.add('hidden');
+        els.modal.classList.add('hidden');
+        els.bonusModal?.classList.add('hidden');
+        els.expModal?.classList.add('hidden');
+        
+        els.transferModal.classList.remove('hidden');
+        els.transferForm.reset();
+    });
+
     // Add Expense Button
     els.addExpBtn?.addEventListener('click', () => {
         const authModal = document.getElementById('authModal');
@@ -314,6 +332,28 @@ export const initSecretary = (api) => {
             }
         } catch (err) {
             console.error('Fatal Expense Error:', err);
+            alert('Error Crítico: ' + err.message);
+        }
+    });
+
+    els.transferForm?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const data = {
+            direction: document.getElementById('transferDirection').value,
+            amount: parseFloat(document.getElementById('transferAmount').value),
+            note: document.getElementById('transferNote').value || null
+        };
+        try {
+            const success = await api.saveFundTransfer(data);
+            if (success) {
+                document.getElementById('authModal')?.classList.remove('is-open');
+                renderSecretaryDashboard(api, els);
+                if (window.ui) window.ui.showToast('Transferencia Completada', 'Los fondos han sido movidos.', 'success');
+            } else {
+                alert('Error al guardar: La base de datos rechazó la transferencia.');
+            }
+        } catch (err) {
+            console.error('Fatal Transfer Error:', err);
             alert('Error Crítico: ' + err.message);
         }
     });
@@ -422,13 +462,19 @@ export const renderSecretaryDashboard = async (api, els) => {
     const newEfectivo = logs.filter(l => l.payment_method === 'efectivo').reduce((sum, l) => sum + (l.total_price || 0), 0);
     const newBanco = logs.filter(l => l.payment_method === 'banco').reduce((sum, l) => sum + (l.total_price || 0), 0);
     
+    const transfers = await api.getFundTransfers ? await api.getFundTransfers() : [];
+    
     // Gastos: solo restamos los NUEVOS (con payment_method definido). Los antiguos ya están incluidos en el saldo inicial.
     const expenseTotal = expenses.reduce((sum, e) => sum + (e.amount || 0), 0);
     const newExpenseEfectivo = expenses.filter(e => e.payment_method === 'efectivo').reduce((sum, e) => sum + (e.amount || 0), 0);
     const newExpenseBanco = expenses.filter(e => e.payment_method === 'banco').reduce((sum, e) => sum + (e.amount || 0), 0);
 
-    const walletBalance = INITIAL_BALANCE_EFECTIVO + newEfectivo - newExpenseEfectivo;
-    const bankBalance = INITIAL_BALANCE_BANCO + newBanco - newExpenseBanco;
+    // Transferencias
+    const transferToEfectivo = transfers.filter(t => t.direction === 'banco_to_efectivo').reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0);
+    const transferToBanco = transfers.filter(t => t.direction === 'efectivo_to_banco').reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0);
+
+    const walletBalance = INITIAL_BALANCE_EFECTIVO + newEfectivo - newExpenseEfectivo + transferToEfectivo - transferToBanco;
+    const bankBalance = INITIAL_BALANCE_BANCO + newBanco - newExpenseBanco + transferToBanco - transferToEfectivo;
     const netBalance = walletBalance + bankBalance;
 
     if (els.stats.day) els.stats.day.textContent = incomeDay.toFixed(2) + ' €';

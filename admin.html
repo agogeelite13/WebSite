@@ -9,8 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Oswald:wght@400;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=113">
-    <link rel="stylesheet" href="layout-system.css?v=113">
+    <link rel="stylesheet" href="styles.css?v=114">
+    <link rel="stylesheet" href="layout-system.css?v=114">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
@@ -282,6 +282,9 @@
                             <span class="sec-stat-card__label">🏦 BANCO</span>
                             <span id="statBankTotal" class="sec-stat-card__value" style="color:#2196F3;">0 €</span>
                         </div>
+                        <div style="grid-column: 1 / -1; text-align: center; padding: 5px 0;">
+                            <button id="transferFundsBtn" class="btn btn--outline btn--sm" style="border-color: rgba(255,193,7,0.4); color: var(--gold); font-size: 0.75rem; padding: 8px 20px;">🔄 TRANSFERIR FONDOS</button>
+                        </div>
                     </div>
 
                     <!-- Toggle View -->
@@ -480,6 +483,29 @@
                 </form>
             </div>
 
+            <!-- TRANSFER MODAL -->
+            <div id="transferModalWrap" class="hidden">
+                <h3 class="modal__title">🔄 TRANSFERIR FONDOS</h3>
+                <form id="transferForm">
+                    <div class="form-group">
+                        <label class="form-label">Dirección</label>
+                        <select id="transferDirection" class="form-input">
+                            <option value="banco_to_efectivo">🏦 BANCO → 💰 EFECTIVO</option>
+                            <option value="efectivo_to_banco">💰 EFECTIVO → 🏦 BANCO</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Cantidad (€)</label>
+                        <input type="number" id="transferAmount" class="form-input" step="0.01" placeholder="0.00" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Nota (opcional)</label>
+                        <input type="text" id="transferNote" class="form-input" placeholder="Ej: Retirada cajero">
+                    </div>
+                    <button type="submit" class="btn btn--primary btn--full">CONFIRMAR TRANSFERENCIA</button>
+                </form>
+            </div>
+
             <!-- BONUS MODAL (SECRETARY) -->
             <div id="bonusModalWrap" class="hidden">
                 <h3 class="modal__title">ALTA DE NUEVO BONO</h3>
@@ -557,6 +583,6 @@
         </div>
     </footer>
 
-    <script type="module" src="script.js?v=113"></script>
+    <script type="module" src="script.js?v=114"></script>
 </body>
 </html>

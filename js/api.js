@@ -65,6 +65,23 @@ export const api = {
         const { error } = await supabase.from('expense_logs').delete().eq('id', logId);
         return !error;
     },
+    // --- FUND TRANSFERS ---
+    async getFundTransfers() {
+        const { data } = await supabase.from('fund_transfers').select('*').order('created_at', { ascending: false });
+        return data || [];
+    },
+    async saveFundTransfer(transfer) {
+        const { error } = await supabase.from('fund_transfers').insert(transfer);
+        if (error) {
+            console.error('Supabase saveFundTransfer Error:', error);
+            alert('Error al guardar transferencia: ' + error.message);
+        }
+        return !error;
+    },
+    async deleteFundTransfer(id) {
+        const { error } = await supabase.from('fund_transfers').delete().eq('id', id);
+        return !error;
+    },
     // --- GROUP BONUSES ---
     async getGroupBonuses() {
         const { data } = await supabase.from('group_bonuses').select('*').order('created_at', { ascending: false });
