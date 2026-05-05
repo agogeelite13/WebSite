@@ -125,8 +125,8 @@ export const initSecretary = (api) => {
                 </div>
                 <div style="display: flex; align-items: center; gap: 5px;">
                     <select class="form-input row-payment" style="font-size: 0.65rem; height: 30px; padding: 0 3px;">
-                        <option value="efectivo">💰 EFECTIVO</option>
-                        <option value="banco">🏦 BANCO</option>
+                        <option value="efectivo">[ CASH ] EFECTIVO</option>
+                        <option value="banco">[ BANK ] BANCO</option>
                     </select>
                 </div>
             </div>
@@ -525,7 +525,7 @@ export const renderSecretaryDashboard = async (api, els) => {
                                         <td style="text-align:left;">${item.name}</td>
                                         <td>${item.players}</td>
                                         <td>${item.total_price.toFixed(2)} €</td>
-                                        <td><span style="font-size:0.6rem;">${item.payment_method === 'banco' ? '🏦' : '💰'}</span></td>
+                                        <td><span style="font-size:0.6rem;">${item.payment_method === 'banco' ? '[BANK]' : '[CASH]'}</span></td>
                                         <td><button class="btn btn--outline btn--sm" style="font-size:0.55rem; padding: 2px 6px; border-color:var(--red); color:var(--red);" onclick="event.stopPropagation(); adminDeleteAttendance('${item.id}')">Borrar</button></td>
                                     </tr>
                                 `).join('')}
@@ -544,7 +544,7 @@ export const renderSecretaryDashboard = async (api, els) => {
             <td data-label="Cat."><span class="sec-type-badge sec-type-badge--${e.category.toLowerCase()}">${e.category.toUpperCase()}</span></td>
             <td data-label="Concepto" style="font-weight:bold;">${e.concept}</td>
             <td data-label="Importe" style="color:var(--blood-light);">${e.amount.toFixed(2)} €</td>
-            <td data-label="Pago" style="font-size:0.8rem;">${e.payment_method === 'banco' ? '🏦' : '💰'}</td>
+            <td data-label="Pago" style="font-size:0.8rem;">${e.payment_method === 'banco' ? '[BANK]' : '[CASH]'}</td>
             <td data-label="Acción"><button class="btn btn--outline btn--sm" onclick="adminDeleteExpense('${e.id}')">Borrar</button></td>
         </tr>
     `).join('') : '<tr><td colspan="5">No hay gastos.</td></tr>';
