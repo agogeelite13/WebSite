@@ -356,9 +356,30 @@ export const initSecretary = (api) => {
 
     // Global Deletes
     window.adminDeleteAttendance = async (id) => {
-        if (confirm('¿Eliminar este registro de asistencia?')) {
-            if (await api.deleteAttendanceLog(id)) renderSecretaryDashboard(api, els);
+        if (!confirm('¿Eliminar este registro de asistencia?')) return;
+        
+        // Check if this attendance was a bono session
+        const logs = await api.getAttendanceLogs();
+        const logToDelete = logs.find(l => l.id === id);
+        
+        if (logToDelete && logToDelete.name && logToDelete.name.includes('[BONO')) {
+            // Extract group name (everything before " [BONO")
+            const groupName = logToDelete.name.split(' [BONO')[0].trim();
+            
+            // Find matching bonus
+            const bonos = await api.getGroupBonuses();
+            const matchingBono = bonos.find(b => b.group_name === groupName);
+            
+            if (matchingBono && matchingBono.sessions_used > 0) {
+                const newUsed = matchingBono.sessions_used - 1;
+                await api.updateGroupBonus(matchingBono.id, {
+                    sessions_used: newUsed,
+                    is_active: true // Reactivar si estaba agotado
+                });
+            }
         }
+        
+        if (await api.deleteAttendanceLog(id)) renderSecretaryDashboard(api, els);
     };
     window.adminDeleteExpense = async (id) => {
         if (confirm('¿Eliminar este gasto?')) {
