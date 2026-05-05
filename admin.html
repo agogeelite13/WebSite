@@ -9,8 +9,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Oswald:wght@400;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=114">
-    <link rel="stylesheet" href="layout-system.css?v=114">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css?v=115">
+    <link rel="stylesheet" href="layout-system.css?v=115">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
@@ -275,15 +276,15 @@
                             <span id="statBalanceTotal" class="sec-stat-card__value" style="color:var(--gold);">0 €</span>
                         </div>
                         <div class="sec-stat-card" style="border-color: rgba(76,175,80,0.3); background: rgba(76,175,80,0.05);">
-                            <span class="sec-stat-card__label">[ CASH ] CARTERA</span>
+                            <span class="sec-stat-card__label"><i class="fas fa-wallet"></i> CARTERA</span>
                             <span id="statWalletTotal" class="sec-stat-card__value" style="color:#4CAF50;">0 €</span>
                         </div>
                         <div class="sec-stat-card" style="border-color: rgba(33,150,243,0.3); background: rgba(33,150,243,0.05);">
-                            <span class="sec-stat-card__label">[ BANK ] BANCO</span>
+                            <span class="sec-stat-card__label"><i class="fas fa-university"></i> BANCO</span>
                             <span id="statBankTotal" class="sec-stat-card__value" style="color:#2196F3;">0 €</span>
                         </div>
                         <div style="grid-column: 1 / -1; text-align: center; padding: 5px 0;">
-                            <button id="transferFundsBtn" class="btn btn--outline btn--sm" style="border-color: rgba(255,193,7,0.4); color: var(--gold); font-size: 0.75rem; padding: 8px 20px;">[ &gt; ] TRANSFERIR FONDOS</button>
+                            <button id="transferFundsBtn" class="btn btn--outline btn--sm" style="border-color: rgba(255,193,7,0.4); color: var(--gold); font-size: 0.75rem; padding: 8px 20px;"><i class="fas fa-exchange-alt"></i> TRANSFERIR FONDOS</button>
                         </div>
                     </div>
 
@@ -475,8 +476,8 @@
                     <div class="form-group">
                         <label class="form-label">Método de Pago</label>
                         <select id="expPaymentMethod" class="form-input">
-                            <option value="efectivo">[ CASH ] EFECTIVO (CAJA)</option>
-                            <option value="banco">[ BANK ] BANCO (TRANSFERENCIA / BIZUM)</option>
+                            <option value="efectivo">EFECTIVO (CAJA)</option>
+                            <option value="banco">BANCO (TRANSFERENCIA / BIZUM)</option>
                         </select>
                     </div>
                     <button type="submit" class="btn btn--primary btn--full">GUARDAR GASTO</button>
@@ -485,13 +486,13 @@
 
             <!-- TRANSFER MODAL -->
             <div id="transferModalWrap" class="hidden">
-                <h3 class="modal__title">[ &gt; ] TRANSFERIR FONDOS</h3>
+                <h3 class="modal__title"><i class="fas fa-exchange-alt"></i> TRANSFERIR FONDOS</h3>
                 <form id="transferForm">
                     <div class="form-group">
                         <label class="form-label">Dirección</label>
                         <select id="transferDirection" class="form-input">
-                            <option value="banco_to_efectivo">[ BANK ] &rarr; [ CASH ]</option>
-                            <option value="efectivo_to_banco">[ CASH ] &rarr; [ BANK ]</option>
+                            <option value="banco_to_efectivo">BANCO &rarr; EFECTIVO</option>
+                            <option value="efectivo_to_banco">EFECTIVO &rarr; BANCO</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -531,8 +532,8 @@
                     <div class="form-group">
                         <label class="form-label">Método de Pago</label>
                         <select id="bonusPaymentMethod" class="form-input">
-                            <option value="banco">[ BANK ] BANCO</option>
-                            <option value="efectivo">[ CASH ] EFECTIVO</option>
+                            <option value="banco">BANCO</option>
+                            <option value="efectivo">EFECTIVO</option>
                         </select>
                     </div>
                     <div class="form-group" style="margin-top:10px; text-align:center;">

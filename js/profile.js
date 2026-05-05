@@ -318,7 +318,7 @@ export const renderWeeklyChallenges = async (api, userProfile, userLogs = []) =>
                 <i class="fas ${c.icon}"></i>
             </div>
             <div style="flex:1;">
-                <h5 style="font-size:0.75rem; color:${c.completed ? 'var(--bronze)' : 'var(--white)'}; margin:0; letter-spacing:1px;">${c.title} ${c.completed ? '[ OK ]' : ''}</h5>
+                <h5 style="font-size:0.75rem; color:${c.completed ? 'var(--bronze)' : 'var(--white)'}; margin:0; letter-spacing:1px;">${c.title} ${c.completed ? '<i class="fas fa-check-circle" style="color:var(--bronze);"></i>' : ''}</h5>
                 <p style="font-size:0.65rem; color:var(--text-muted); margin:2px 0 0 0;">${c.desc}</p>
             </div>
             <div style="text-align:right;">

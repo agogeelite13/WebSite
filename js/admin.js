@@ -575,7 +575,8 @@ export const setupAIConfig = (api, nextSundayKey) => {
                 if (aiMapUrlInput) aiMapUrlInput.value = finalMapUrl;
                 
                 const mapStatus = document.getElementById('confMapStatus');
-                if (mapStatus) mapStatus.textContent = 'MAPA IA LISTO [ OK ]';
+                if (mapStatus) mapStatus.textContent = '';
+                if (mapStatus) mapStatus.innerHTML = 'MAPA IA LISTO <i class="fas fa-check-circle" style="color:var(--bronze);"></i>';
             }
             
             const isFallback = mission.is_fallback;
