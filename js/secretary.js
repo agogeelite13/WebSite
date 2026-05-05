@@ -421,7 +421,7 @@ export const renderSecretaryDashboard = async (api, els) => {
         els.stats.balanceTotal.textContent = `${net.toFixed(2)} €`;
         els.stats.balanceTotal.style.color = net >= 0 ? 'var(--gold)' : 'var(--blood-light)';
     }
-    if (els.stats.bankTotal) els.stats.bankTotal.textContent = `${(INITIAL_BALANCE_BANCO + newBanco).toFixed(2)} €`;
+    // (duplicate bankTotal removed - was overwriting the correct calculation above)
 
     // Render Grouped Attendance
     els.list.innerHTML = sortedDates.length > 0 ? sortedDates.map(date => {
