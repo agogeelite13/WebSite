@@ -397,14 +397,17 @@ export const renderSecretaryDashboard = async (api, els) => {
     const incomeDay = logs.filter(l => l.date === todayStr).reduce((sum, l) => sum + (l.total_price || 0), 0);
     const incomeTotal = logs.reduce((sum, l) => sum + (l.total_price || 0), 0);
     
-    // Cálculos simplificados (Todo resta de Cartera por ahora para evitar descuadres)
+    // Ingresos nuevos (solo los que tienen método de pago marcado)
     const newEfectivo = logs.filter(l => l.payment_method === 'efectivo').reduce((sum, l) => sum + (l.total_price || 0), 0);
     const newBanco = logs.filter(l => l.payment_method === 'banco').reduce((sum, l) => sum + (l.total_price || 0), 0);
     
+    // Gastos: solo restamos los NUEVOS (con payment_method definido). Los antiguos ya están incluidos en el saldo inicial.
     const expenseTotal = expenses.reduce((sum, e) => sum + (e.amount || 0), 0);
+    const newExpenseEfectivo = expenses.filter(e => e.payment_method === 'efectivo').reduce((sum, e) => sum + (e.amount || 0), 0);
+    const newExpenseBanco = expenses.filter(e => e.payment_method === 'banco').reduce((sum, e) => sum + (e.amount || 0), 0);
 
-    const walletBalance = INITIAL_BALANCE_EFECTIVO + newEfectivo - expenseTotal; // Todo el gasto resta de aquí
-    const bankBalance = INITIAL_BALANCE_BANCO + newBanco; 
+    const walletBalance = INITIAL_BALANCE_EFECTIVO + newEfectivo - newExpenseEfectivo;
+    const bankBalance = INITIAL_BALANCE_BANCO + newBanco - newExpenseBanco;
     const netBalance = walletBalance + bankBalance;
 
     if (els.stats.day) els.stats.day.textContent = incomeDay.toFixed(2) + ' €';
