@@ -43,9 +43,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
 
-<body class="portal-loading">
-    <div id="portal-reveal-container">
-        <div id="portal-reveal-content">
+<body>
+    <div id="portal-overlay"></div>
+    <div id="portal-ring"></div>
+    <div id="site-wrapper">
     <canvas id="bg-canvas"></canvas>
 
     <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
@@ -515,9 +516,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script type="module" src="script.js"></script>
     <script type="module" src="js/portal.js"></script>
-        </div>
     </div>
-    <div id="portal-ring"></div>
 </body>
 
 </html>

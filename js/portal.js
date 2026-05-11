@@ -1,22 +1,23 @@
 /**
  * PORTAL REVEAL ANIMATION MODULE
- * Powered by GSAP for AAA Performance
+ * Inverted Mask Approach for Maximum Performance & Zero Flicker
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-    const container = document.getElementById('portal-reveal-container');
+    const overlay = document.getElementById('portal-overlay');
     const ring = document.getElementById('portal-ring');
+    const siteWrapper = document.getElementById('site-wrapper');
     
-    if (!container || !ring || typeof gsap === 'undefined') {
-        console.warn('Portal Reveal: Dependencies missing or elements not found.');
+    if (!overlay || !ring || typeof gsap === 'undefined') {
         document.body.classList.remove('portal-loading');
         return;
     }
 
     // 1. Initial State Setup
-    gsap.set(container, { clipPath: 'circle(0% at 50% 50%)' });
+    document.body.classList.add('portal-loading');
+    gsap.set(overlay, { width: 0, height: 0 });
     gsap.set(ring, { width: 0, height: 0, opacity: 0 });
-    gsap.set("#portal-reveal-content", { scale: 1.1 });
+    if (siteWrapper) gsap.set(siteWrapper, { scale: 1.08, opacity: 0 });
 
     // 2. The Timeline
     const tl = gsap.timeline({
@@ -28,32 +29,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Start delay for cinematic tension
     tl.to(ring, {
-        duration: 1.2,
-        opacity: 0.8,
-        width: '40px',
-        height: '40px',
+        duration: 1.0,
+        opacity: 1,
+        width: '60px',
+        height: '60px',
         ease: "power2.out"
-    }, "+=0.3");
+    }, "+=0.2");
 
-    // The Expansion
-    tl.to(container, {
-        duration: 2.5,
-        clipPath: 'circle(150% at 50% 50%)',
-        ease: "power4.inOut"
-    }, "-=0.6");
+    tl.to(siteWrapper, {
+        duration: 0.8,
+        opacity: 1,
+        ease: "power1.inOut"
+    }, "-=0.5");
 
-    tl.to("#portal-reveal-content", {
-        duration: 2.8,
-        scale: 1,
-        ease: "power4.out"
-    }, "-=2.5");
+    // The Expansion (Opening the hole)
+    const expansionDuration = 2.4;
+    const finalSize = Math.max(window.innerWidth, window.innerHeight) * 3;
 
+    tl.to([overlay, ring], {
+        duration: expansionDuration,
+        width: finalSize,
+        height: finalSize,
+        ease: "expo.inOut" // Heavy, cinematic curve
+    }, "-=0.3");
+
+    // Smooth reveal of site content
+    if (siteWrapper) {
+        tl.to(siteWrapper, {
+            duration: expansionDuration + 0.5,
+            scale: 1,
+            ease: "power4.out"
+        }, "-=" + expansionDuration);
+    }
+
+    // Fade out the ring at the end
     tl.to(ring, {
-        duration: 2.5,
-        width: '300vw',
-        height: '300vw',
+        duration: 0.8,
         opacity: 0,
-        ease: "power4.inOut"
-    }, "-=2.5");
+        ease: "power2.out"
+    }, "-=0.8");
 
 });

@@ -1,42 +1,23 @@
 /* 
    PORTAL REVEAL ANIMATION — AGOGE ELITE
-   Inspired by Kling.ai / AAA Cinematic Web Transitions
+   Inverted Mask Approach (Flicker-free)
 */
 
-:root {
-    --portal-ease: cubic-bezier(0.77, 0, 0.175, 1); /* Custom cinematic easing */
-    --portal-glow: rgba(255, 255, 255, 0.3);
-}
-
-/* Initial state: Hide everything behind a black void */
-#portal-reveal-container {
+#portal-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    background: #000;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    /* The magic: an enormous box-shadow that creates a black void with a hole in the middle */
+    box-shadow: 0 0 0 250vmax #000; 
     z-index: 99999;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    pointer-events: none; /* Let clicks pass through once opened */
-    clip-path: circle(0% at 50% 50%);
-    will-change: clip-path;
+    pointer-events: none;
+    will-change: width, height;
 }
 
-/* The actual site content inside the portal */
-#portal-reveal-content {
-    width: 100vw;
-    height: 100vh;
-    position: fixed;
-    top: 0;
-    left: 0;
-    overflow-y: auto;
-    background: var(--bg); /* Match site background */
-}
-
-/* Glowing ring border */
 #portal-ring {
     position: absolute;
     top: 50%;
@@ -45,11 +26,11 @@
     width: 0;
     height: 0;
     border-radius: 50%;
-    border: 2px solid rgba(255, 255, 255, 0.8);
+    border: 2px solid rgba(255, 255, 255, 0.9);
     box-shadow: 
-        0 0 20px rgba(255, 255, 255, 0.5),
-        0 0 60px rgba(255, 255, 255, 0.3),
-        0 0 100px rgba(255, 255, 255, 0.1);
+        0 0 20px rgba(255, 255, 255, 0.6),
+        0 0 60px rgba(255, 255, 255, 0.4),
+        0 0 100px rgba(255, 255, 255, 0.2);
     z-index: 100000;
     pointer-events: none;
     opacity: 0;
@@ -57,13 +38,13 @@
     filter: blur(1px);
 }
 
-/* Transition to clean up once finished */
-.portal-finished #portal-reveal-container {
-    display: none;
+/* Ensure no scrolling during intro */
+body.portal-loading {
+    overflow: hidden !important;
 }
 
-/* Ensure body starts black */
-body.portal-loading {
-    background: #000 !important;
-    overflow: hidden !important;
+/* Smooth cleanup */
+.portal-finished #portal-overlay,
+.portal-finished #portal-ring {
+    display: none;
 }
