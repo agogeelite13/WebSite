@@ -537,15 +537,17 @@ export const renderFriends = async (api, currentUser) => {
             rankPill.textContent = rank.toUpperCase();
             rankPill.setAttribute('data-rank', rank);
             
-            modal.classList.remove('hidden');
+            modal.classList.add('is-open');
             const closeFn = () => {
+                modal.classList.remove('is-open');
                 modal.classList.add('hidden');
-                modal.style.display = 'none';
             };
             
             document.getElementById('closeOpCard').onclick = closeFn;
             const closeBtn = document.getElementById('closeOpCardBtn');
             if (closeBtn) closeBtn.onclick = closeFn;
+            const overlay = document.getElementById('opCardOverlay');
+            if (overlay) overlay.onclick = closeFn;
         }
     };
 };
