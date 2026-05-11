@@ -513,42 +513,6 @@ export const renderFriends = async (api, currentUser) => {
             if (await api.deleteFriendship(id)) renderFriends(api, currentUser);
         }
     };
-    window.viewFriendProfile = async (userId) => {
-        const user = await api.getProfile(userId);
-        if (user) {
-            const modal = document.getElementById('operatorCardModal');
-            document.getElementById('opCardCallsign').textContent = user.callsign || '-';
-            document.getElementById('opCardAvatar').src = user.avatar || 'avatars/avatar_recluta.png';
-            document.getElementById('opCardSpecialty').textContent = (user.specialty || 'Asalto').toUpperCase();
-            document.getElementById('opCardMissions').textContent = user.exp || 0;
-            document.getElementById('opCardXP').textContent = user.exp || 0;
-            document.getElementById('opCardArmory').textContent = user.armeria || 'No declarada.';
-            
-            const factionMap = { 'none': 'SIN FACCIÓN', 'taskforce': 'TASK FORCE', 'uprising': 'UPRISING' };
-            document.getElementById('opCardFaction').textContent = factionMap[user.faction] || 'SIN FACCIÓN';
-            
-            const rankPill = document.getElementById('opCardRank');
-            const exp = user.exp || 0;
-            let rank = 'recluta';
-            if (exp >= 30) rank = 'comandante';
-            else if (exp >= 20) rank = 'veterano';
-            else if (exp >= 10) rank = 'operador';
-            
-            rankPill.textContent = rank.toUpperCase();
-            rankPill.setAttribute('data-rank', rank);
-            
-            modal.classList.add('is-open');
-            const closeFn = () => {
-                modal.classList.remove('is-open');
-                modal.classList.add('hidden');
-            };
-            
-            document.getElementById('closeOpCard').onclick = closeFn;
-            const closeBtn = document.getElementById('closeOpCardBtn');
-            if (closeBtn) closeBtn.onclick = closeFn;
-            const overlay = document.getElementById('opCardOverlay');
-            if (overlay) overlay.onclick = closeFn;
-        }
     };
 };
 
@@ -654,4 +618,118 @@ export const renderClanLeaderboard = async (api, allUsers) => {
             </tr>
         `;
     }).join('');
+};
+
+export const initSocial = async (api, currentUser) => {
+    const searchInput = document.getElementById('userSearchInput');
+    const searchBtn = document.getElementById('userSearchBtn');
+    const searchResults = document.getElementById('userSearchResults');
+    const viewMyProfileBtn = document.getElementById('viewMyProfileBtn');
+    const viewCommunityBtn = document.getElementById('viewCommunityBtn');
+    const communityView = document.getElementById('communityView');
+    const profileViewMode = document.getElementById('profileViewMode');
+
+    if (!searchInput || !currentUser) return;
+
+    // Toggle Views
+    viewMyProfileBtn?.addEventListener('click', () => {
+        viewMyProfileBtn.classList.add('active');
+        viewCommunityBtn.classList.remove('active');
+        communityView.classList.add('hidden');
+        profileViewMode.classList.remove('hidden');
+    });
+
+    viewCommunityBtn?.addEventListener('click', () => {
+        viewCommunityBtn.classList.add('active');
+        viewMyProfileBtn.classList.remove('active');
+        communityView.classList.remove('hidden');
+        profileViewMode.classList.add('hidden');
+        renderFriends(api, currentUser);
+    });
+
+    // Search Operators
+    const handleSearch = async () => {
+        const query = searchInput.value.trim();
+        if (query.length < 3) {
+            showToast('Búsqueda', 'Introduce al menos 3 caracteres.', 'info');
+            return;
+        }
+
+        searchBtn.disabled = true;
+        searchBtn.textContent = '...';
+        
+        const users = await api.searchUsers(query);
+        searchBtn.disabled = false;
+        searchBtn.textContent = 'BUSCAR';
+
+        if (users.length === 0) {
+            searchResults.innerHTML = '<p class="u-text-muted u-small">No se encontraron operadores.</p>';
+            return;
+        }
+
+        searchResults.innerHTML = users.map(u => {
+            if (u.id === currentUser.id) return '';
+            return `
+                <div class="user-card">
+                    <img src="${u.avatar || 'avatars/avatar_recluta.png'}" class="user-card__avatar">
+                    <h5 class="user-card__name">${u.callsign || u.name}</h5>
+                    <div class="user-card__actions">
+                        <button class="btn btn--primary btn--sm" onclick="sendFriendRequest('${u.id}')">AGREGAR</button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    };
+
+    searchBtn?.addEventListener('click', handleSearch);
+    searchInput?.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSearch(); });
+
+    window.sendFriendRequest = async (friendId) => {
+        const success = await api.createFriendship(currentUser.id, friendId);
+        if (success) {
+            showToast('Social', 'Solicitud enviada.', 'success');
+            handleSearch();
+        }
+    };
+
+    window.viewFriendProfile = async (userId) => {
+        const user = await api.getProfile(userId);
+        if (user) {
+            const modal = document.getElementById('operatorCardModal');
+            document.getElementById('opCardCallsign').textContent = user.callsign || '-';
+            document.getElementById('opCardAvatar').src = user.avatar || 'avatars/avatar_recluta.png';
+            
+            const specMap = { assault: 'Asalto', medic: 'Médico', support: 'Apoyo', sniper: 'Tirador', leader: 'Líder' };
+            document.getElementById('opCardSpecialty').textContent = (specMap[user.specialty] || user.specialty || 'Asalto').toUpperCase();
+            
+            document.getElementById('opCardMissions').textContent = user.exp || 0;
+            document.getElementById('opCardXP').textContent = user.exp || 0;
+            document.getElementById('opCardArmory').textContent = user.armeria || 'No declarada.';
+            
+            const factionMap = { 'none': 'SIN FACCIÓN', 'taskforce': 'TASK FORCE', 'uprising': 'UPRISING' };
+            document.getElementById('opCardFaction').textContent = factionMap[user.faction] || 'SIN FACCIÓN';
+            
+            const rankPill = document.getElementById('opCardRank');
+            const exp = user.exp || 0;
+            let rank = 'recluta';
+            if (exp >= 30) rank = 'comandante';
+            else if (exp >= 20) rank = 'veterano';
+            else if (exp >= 10) rank = 'operador';
+            
+            rankPill.textContent = rank.toUpperCase();
+            rankPill.setAttribute('data-rank', rank);
+            
+            modal.classList.add('is-open');
+            modal.classList.remove('hidden');
+
+            const closeFn = () => {
+                modal.classList.remove('is-open');
+                modal.classList.add('hidden');
+            };
+            
+            document.getElementById('closeOpCard').onclick = closeFn;
+        }
+    };
+
+    renderFriends(api, currentUser);
 };
