@@ -64,11 +64,13 @@
     background: transparent;
     clip-path: none !important;
     display: block;
+    pointer-events: none; /* Let clicks pass to content */
 }
 .portal-finished #portal-reveal-content {
     position: relative;
     overflow: visible;
     height: auto;
+    pointer-events: all; /* Ensure content is clickable */
 }
 .portal-finished #portal-ring {
     display: none;
