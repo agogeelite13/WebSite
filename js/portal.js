@@ -1,73 +1,59 @@
 /**
  * PORTAL REVEAL ANIMATION MODULE
- * GPU-ACCELERATED VERSION (Zero Reflow / Maximum Smoothness)
+ * Powered by GSAP for AAA Performance
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-    const overlay = document.getElementById('portal-overlay');
+    const container = document.getElementById('portal-reveal-container');
     const ring = document.getElementById('portal-ring');
-    const siteWrapper = document.getElementById('site-wrapper');
     
-    if (!overlay || !ring || typeof gsap === 'undefined') {
+    if (!container || !ring || typeof gsap === 'undefined') {
+        console.warn('Portal Reveal: Dependencies missing or elements not found.');
         document.body.classList.remove('portal-loading');
         return;
     }
 
-    // 1. Initial State Setup (Instant)
-    document.body.classList.add('portal-loading');
-    gsap.set([overlay, ring], { 
-        scale: 0, 
-        xPercent: -50, 
-        yPercent: -50, 
-        top: "50%", 
-        left: "50%",
-        force3D: true 
-    });
-    
-    // El sitio ya debe estar visible detrás, el overlay negro se encarga de taparlo
-    if (siteWrapper) gsap.set(siteWrapper, { scale: 1.04, opacity: 1 });
+    // 1. Initial State Setup
+    gsap.set(container, { clipPath: 'circle(0% at 50% 50%)' });
+    gsap.set(ring, { width: 0, height: 0, opacity: 0 });
+    gsap.set("#portal-reveal-content", { scale: 1.1 });
 
     // 2. The Timeline
     const tl = gsap.timeline({
-        delay: 0.3, 
         onComplete: () => {
             document.body.classList.remove('portal-loading');
             document.body.classList.add('portal-finished');
         }
     });
 
-    // Anillo inicial (aparición sutil)
+    // Start delay for cinematic tension
     tl.to(ring, {
-        duration: 0.7,
-        opacity: 1,
-        scale: 4, // El anillo crece un poco para marcar el inicio
-        ease: "back.out(1.7)"
-    });
-
-    // Expansión del Portal (Hole)
-    // Calculamos el factor de escala necesario para cubrir cualquier pantalla
-    const expansionScale = Math.max(window.innerWidth, window.innerHeight) / 2;
-
-    tl.to([overlay, ring], {
-        duration: 2.2,
-        scale: expansionScale,
-        ease: "expo.inOut" // Curva premium pesada
-    }, "-=0.2");
-
-    // Efecto Zoom-Out del contenido (Sincronizado)
-    if (siteWrapper) {
-        tl.to(siteWrapper, {
-            duration: 2.5,
-            scale: 1,
-            ease: "power3.out"
-        }, "-=2.2");
-    }
-
-    // Desvanecimiento final del anillo
-    tl.to(ring, {
-        duration: 1,
-        opacity: 0,
+        duration: 1.2,
+        opacity: 0.8,
+        width: '40px',
+        height: '40px',
         ease: "power2.out"
-    }, "-=0.8");
+    }, "+=0.3");
+
+    // The Expansion
+    tl.to(container, {
+        duration: 2.5,
+        clipPath: 'circle(150% at 50% 50%)',
+        ease: "power4.inOut"
+    }, "-=0.6");
+
+    tl.to("#portal-reveal-content", {
+        duration: 2.8,
+        scale: 1,
+        ease: "power4.out"
+    }, "-=2.5");
+
+    tl.to(ring, {
+        duration: 2.5,
+        width: '300vw',
+        height: '300vw',
+        opacity: 0,
+        ease: "power4.inOut"
+    }, "-=2.5");
 
 });

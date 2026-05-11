@@ -1,62 +1,81 @@
 /* 
    PORTAL REVEAL ANIMATION — AGOGE ELITE
-   Ultra-Performance Scale Version (GPU Accelerated)
+   Inspired by Kling.ai / AAA Cinematic Web Transitions
 */
 
-#portal-overlay {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    /* Start centered and scaled to 0 (hole closed) */
-    transform: translate(-50%, -50%) scale(0);
-    width: 10px; 
-    height: 10px;
-    border-radius: 50%;
-    /* Enormous border to fill the screen void */
-    border: 200vmax solid #000;
-    box-sizing: content-box;
-    z-index: 99999;
-    pointer-events: none;
-    will-change: transform;
-    /* Hardware acceleration */
-    backface-visibility: hidden;
-    transform-style: preserve-3d;
+:root {
+    --portal-ease: cubic-bezier(0.77, 0, 0.175, 1); /* Custom cinematic easing */
+    --portal-glow: rgba(255, 255, 255, 0.3);
 }
 
-#portal-ring {
+/* Initial state: Hide everything behind a black void */
+#portal-reveal-container {
     position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: #000;
+    z-index: 99999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none; /* Let clicks pass through once opened */
+    clip-path: circle(0% at 50% 50%);
+    will-change: clip-path;
+}
+
+/* The actual site content inside the portal */
+#portal-reveal-content {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
+    background: var(--bg); /* Match site background */
+}
+
+/* Glowing ring border */
+#portal-ring {
+    position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) scale(0);
-    width: 10px;
-    height: 10px;
+    transform: translate(-50%, -50%);
+    width: 0;
+    height: 0;
     border-radius: 50%;
-    border: 2px solid rgba(255, 255, 255, 0.9);
+    border: 2px solid rgba(255, 255, 255, 0.8);
     box-shadow: 
-        0 0 20px rgba(255, 255, 255, 0.6),
-        0 0 60px rgba(255, 255, 255, 0.4),
-        0 0 100px rgba(255, 255, 255, 0.2);
+        0 0 20px rgba(255, 255, 255, 0.5),
+        0 0 60px rgba(255, 255, 255, 0.3),
+        0 0 100px rgba(255, 255, 255, 0.1);
     z-index: 100000;
     pointer-events: none;
     opacity: 0;
-    will-change: transform, opacity;
+    will-change: width, height, opacity;
     filter: blur(1px);
 }
 
-/* Ensure no scrolling during intro */
-body.portal-loading {
-    overflow: hidden !important;
-    background: #000 !important;
+/* Transition to clean up once finished */
+.portal-finished #portal-reveal-container {
+    position: relative;
+    z-index: auto;
+    background: transparent;
+    clip-path: none !important;
+    display: block;
 }
-
-/* Smooth cleanup */
-.portal-finished #portal-overlay,
+.portal-finished #portal-reveal-content {
+    position: relative;
+    overflow: visible;
+    height: auto;
+}
 .portal-finished #portal-ring {
     display: none;
 }
 
-/* Site wrapper stability */
-#site-wrapper {
-    will-change: transform, opacity;
-    transform-origin: center center;
+/* Ensure body starts black */
+body.portal-loading {
+    background: #000 !important;
+    overflow: hidden !important;
 }
