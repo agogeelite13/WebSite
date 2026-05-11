@@ -448,8 +448,50 @@
         </div>
     </div>
 
+    <!-- OPERATOR CARD MODAL (FOR FRIENDS) -->
+    <div id="operatorCardModal" class="modal hidden">
+        <div class="modal__overlay" id="opCardOverlay"></div>
+        <div class="modal__content" style="max-width:500px; padding:0; overflow:hidden; background:var(--bg); border:1px solid var(--bronze);">
+            <div style="background:var(--bronze); padding:20px; text-align:center; position:relative;">
+                <button class="modal__close" id="closeOpCard" style="color:black; top:10px; right:10px;">&times;</button>
+                <img id="opCardAvatar" src="avatars/avatar_recluta.png" alt="Avatar" style="width:100px; height:100px; border-radius:50%; border:3px solid black; margin-bottom:10px; background:#000;">
+                <h3 id="opCardCallsign" style="color:black; font-family:var(--font-display); margin:0; font-size:1.6rem;">-</h3>
+                <span id="opCardRank" class="rank-pill" data-rank="recluta" style="margin-top:5px; display:inline-block;">RECLUTA</span>
+            </div>
+            <div style="padding:30px;">
+                <div class="grid-2" style="margin-bottom:20px; gap:15px;">
+                    <div style="background:rgba(255,255,255,0.03); padding:15px; border:1px solid rgba(212,175,55,0.1); border-radius:8px; text-align:center;">
+                        <span style="font-size:0.7rem; color:var(--bronze); display:block; margin-bottom:5px;">ESPECIALIDAD</span>
+                        <strong id="opCardSpecialty" style="font-family:var(--font-display);">-</strong>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.03); padding:15px; border:1px solid rgba(212,175,55,0.1); border-radius:8px; text-align:center;">
+                        <span style="font-size:0.7rem; color:var(--bronze); display:block; margin-bottom:5px;">FACCIÓN</span>
+                        <strong id="opCardFaction" style="font-family:var(--font-display);">-</strong>
+                    </div>
+                </div>
+                <div class="grid-2" style="margin-bottom:20px; gap:15px;">
+                    <div style="background:rgba(255,255,255,0.03); padding:15px; border:1px solid rgba(212,175,55,0.1); border-radius:8px; text-align:center;">
+                        <span style="font-size:0.7rem; color:var(--bronze); display:block; margin-bottom:5px;">MISIONES</span>
+                        <strong id="opCardMissions" style="font-size:1.2rem;">0</strong>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.03); padding:15px; border:1px solid rgba(212,175,55,0.1); border-radius:8px; text-align:center;">
+                        <span style="font-size:0.7rem; color:var(--bronze); display:block; margin-bottom:5px;">EXPERIENCIA (XP)</span>
+                        <strong id="opCardXP" style="font-size:1.2rem;">0</strong>
+                    </div>
+                </div>
+                <div style="background:rgba(255,255,255,0.03); padding:15px; border:1px solid rgba(212,175,55,0.1); border-radius:8px;">
+                    <span style="font-size:0.7rem; color:var(--bronze); display:block; margin-bottom:10px;">EQUIPAMIENTO / ARMERÍA</span>
+                    <p id="opCardArmory" style="font-size:0.85rem; color:var(--text-muted); line-height:1.5; margin:0;">-</p>
+                </div>
+            </div>
+            <div style="padding:20px; text-align:center; border-top:1px solid rgba(255,255,255,0.05);">
+                <button class="btn btn--outline btn--full" id="closeOpCardBtn">CERRAR EXPEDIENTE</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script type="module" src="script.js"></script>
+    <script type="module" src="script.js?v=116"></script>
 </body>
 </html>

@@ -538,12 +538,14 @@ export const renderFriends = async (api, currentUser) => {
             rankPill.setAttribute('data-rank', rank);
             
             modal.classList.remove('hidden');
-            modal.style.display = 'flex';
-            
-            document.getElementById('closeOpCard').onclick = () => {
+            const closeFn = () => {
                 modal.classList.add('hidden');
                 modal.style.display = 'none';
             };
+            
+            document.getElementById('closeOpCard').onclick = closeFn;
+            const closeBtn = document.getElementById('closeOpCardBtn');
+            if (closeBtn) closeBtn.onclick = closeFn;
         }
     };
 };
