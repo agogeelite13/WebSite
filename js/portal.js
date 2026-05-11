@@ -15,12 +15,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 1. Initial State Setup
     document.body.classList.add('portal-loading');
-    gsap.set(overlay, { width: 0, height: 0 });
-    gsap.set(ring, { width: 0, height: 0, opacity: 0 });
-    if (siteWrapper) gsap.set(siteWrapper, { scale: 1.08, opacity: 0 });
+    gsap.set(overlay, { width: 0, height: 0, force3D: true });
+    gsap.set(ring, { width: 0, height: 0, opacity: 0, force3D: true });
+    if (siteWrapper) gsap.set(siteWrapper, { scale: 1.05, opacity: 0 });
 
     // 2. The Timeline
     const tl = gsap.timeline({
+        delay: 0.5, // Give browser some time to settle
         onComplete: () => {
             document.body.classList.remove('portal-loading');
             document.body.classList.add('portal-finished');
@@ -29,18 +30,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Start delay for cinematic tension
     tl.to(ring, {
-        duration: 1.0,
-        opacity: 1,
-        width: '60px',
-        height: '60px',
-        ease: "power2.out"
-    }, "+=0.2");
-
-    tl.to(siteWrapper, {
         duration: 0.8,
         opacity: 1,
+        width: '50px',
+        height: '50px',
+        ease: "power2.out"
+    });
+
+    tl.to(siteWrapper, {
+        duration: 0.6,
+        opacity: 1,
         ease: "power1.inOut"
-    }, "-=0.5");
+    }, "-=0.3");
 
     // The Expansion (Opening the hole)
     const expansionDuration = 2.4;

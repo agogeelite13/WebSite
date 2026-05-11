@@ -11,11 +11,13 @@
     width: 0;
     height: 0;
     border-radius: 50%;
-    /* The magic: an enormous box-shadow that creates a black void with a hole in the middle */
-    box-shadow: 0 0 0 250vmax #000; 
+    /* Border is often more performant than huge box-shadow for scaling */
+    border: 250vmax solid #000;
+    box-sizing: content-box;
     z-index: 99999;
     pointer-events: none;
     will-change: width, height;
+    backface-visibility: hidden;
 }
 
 #portal-ring {
