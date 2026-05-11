@@ -1,59 +1,68 @@
 /**
  * PORTAL REVEAL ANIMATION MODULE
- * Powered by GSAP for AAA Performance
+ * SVG Mask Version — Maximum Stability & Zero Displacement
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-    const container = document.getElementById('portal-reveal-container');
+    const hole = document.getElementById('portal-hole');
     const ring = document.getElementById('portal-ring');
+    const svgOverlay = document.getElementById('portal-svg');
     
-    if (!container || !ring || typeof gsap === 'undefined') {
-        console.warn('Portal Reveal: Dependencies missing or elements not found.');
+    if (!hole || !ring || typeof gsap === 'undefined') {
         document.body.classList.remove('portal-loading');
         return;
     }
 
     // 1. Initial State Setup
-    gsap.set(container, { clipPath: 'circle(0% at 50% 50%)' });
+    document.body.classList.add('portal-loading');
+    gsap.set(hole, { attr: { r: 0 } });
     gsap.set(ring, { width: 0, height: 0, opacity: 0 });
-    gsap.set("#portal-reveal-content", { scale: 1.1 });
 
     // 2. The Timeline
     const tl = gsap.timeline({
+        delay: 0.4, // Stabilization delay
         onComplete: () => {
             document.body.classList.remove('portal-loading');
             document.body.classList.add('portal-finished');
         }
     });
 
-    // Start delay for cinematic tension
+    // Anillo inicial
     tl.to(ring, {
-        duration: 1.2,
-        opacity: 0.8,
-        width: '40px',
-        height: '40px',
+        duration: 0.8,
+        opacity: 1,
+        width: '60px',
+        height: '60px',
         ease: "power2.out"
-    }, "+=0.3");
+    });
 
-    // The Expansion
-    tl.to(container, {
-        duration: 2.5,
-        clipPath: 'circle(150% at 50% 50%)',
-        ease: "power4.inOut"
-    }, "-=0.6");
+    // Expansión del Hueco (Portal)
+    // El radio 150 en un viewBox de 100 garantiza cubrir las esquinas
+    tl.to(hole, {
+        duration: 2.2,
+        attr: { r: 150 },
+        ease: "expo.inOut"
+    }, "-=0.2");
 
-    tl.to("#portal-reveal-content", {
-        duration: 2.8,
-        scale: 1,
-        ease: "power4.out"
-    }, "-=2.5");
-
+    // Sincronización del anillo
     tl.to(ring, {
-        duration: 2.5,
+        duration: 2.2,
         width: '300vw',
         height: '300vw',
+        ease: "expo.inOut"
+    }, "-=2.2");
+
+    // Desvanecimiento del overlay e interacción
+    tl.to(svgOverlay, {
+        duration: 0.5,
         opacity: 0,
-        ease: "power4.inOut"
-    }, "-=2.5");
+        ease: "power2.out"
+    }, "-=0.5");
+
+    tl.to(ring, {
+        duration: 0.8,
+        opacity: 0,
+        ease: "power2.out"
+    }, "-=0.8");
 
 });

@@ -44,8 +44,19 @@
 </head>
 
 <body class="portal-loading">
-    <div id="portal-reveal-container">
-        <div id="portal-reveal-content">
+    <!-- PORTAL REVEAL OVERLAY -->
+    <div id="portal-overlay-wrap">
+        <svg id="portal-svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
+            <defs>
+                <mask id="portal-mask">
+                    <rect width="100" height="100" fill="white" />
+                    <circle id="portal-hole" cx="50" cy="50" r="0" fill="black" />
+                </mask>
+            </defs>
+            <rect width="100" height="100" fill="black" mask="url(#portal-mask)" />
+        </svg>
+        <div id="portal-ring"></div>
+    </div>
     <canvas id="bg-canvas"></canvas>
 
     <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
@@ -515,9 +526,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script type="module" src="script.js"></script>
     <script type="module" src="js/portal.js"></script>
-        </div>
-    </div>
-    <div id="portal-ring"></div>
 </body>
 
 </html>
