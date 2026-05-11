@@ -451,9 +451,9 @@ export const initSecretary = (api) => {
             total_price: parseFloat(newTotal) || 0
         };
 
-        const { error } = await supabase.from('attendance_logs').update(updates).eq('id', id);
-        if (!error) renderSecretaryDashboard(api, els);
-        else alert('Error al actualizar: ' + error.message);
+        if (await api.updateAttendanceLog(id, updates)) {
+            renderSecretaryDashboard(api, els);
+        }
     };
 
     window.adminEditExpense = async (id) => {
@@ -471,9 +471,9 @@ export const initSecretary = (api) => {
             amount: parseFloat(newAmount) || 0
         };
 
-        const { error } = await supabase.from('expense_logs').update(updates).eq('id', id);
-        if (!error) renderSecretaryDashboard(api, els);
-        else alert('Error al actualizar: ' + error.message);
+        if (await api.updateExpenseLog(id, updates)) {
+            renderSecretaryDashboard(api, els);
+        }
     };
 
     window.adminEditBonus = async (id) => {
@@ -498,9 +498,9 @@ export const initSecretary = (api) => {
             is_active: (parseInt(newUsed) || 0) < (parseInt(newTotal) || 1)
         };
 
-        const { error } = await supabase.from('group_bonuses').update(updates).eq('id', id);
-        if (!error) renderSecretaryDashboard(api, els);
-        else alert('Error al actualizar: ' + error.message);
+        if (await api.updateGroupBonus(id, updates)) {
+            renderSecretaryDashboard(api, els);
+        }
     };
 };
 

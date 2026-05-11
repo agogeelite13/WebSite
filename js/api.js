@@ -48,6 +48,11 @@ export const api = {
         const { error } = await supabase.from('attendance_logs').delete().eq('id', logId);
         return !error;
     },
+    async updateAttendanceLog(logId, updates) {
+        const { error } = await supabase.from('attendance_logs').update(updates).eq('id', logId);
+        if (error) console.error('Supabase updateAttendanceLog Error:', error);
+        return !error;
+    },
     // --- EXPENSES ---
     async getExpenseLogs() {
         const { data } = await supabase.from('expense_logs').select('*').order('date', { ascending: false });
@@ -63,6 +68,11 @@ export const api = {
     },
     async deleteExpenseLog(logId) {
         const { error } = await supabase.from('expense_logs').delete().eq('id', logId);
+        return !error;
+    },
+    async updateExpenseLog(logId, updates) {
+        const { error } = await supabase.from('expense_logs').update(updates).eq('id', logId);
+        if (error) console.error('Supabase updateExpenseLog Error:', error);
         return !error;
     },
     // --- FUND TRANSFERS ---
