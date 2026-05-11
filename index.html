@@ -37,11 +37,15 @@
         rel="stylesheet">
     <link rel="stylesheet" href="styles.css?v=100">
     <link rel="stylesheet" href="layout-system.css?v=100">
+    <link rel="stylesheet" href="portal-reveal.css?v=116">
     <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
 
-<body>
+<body class="portal-loading">
+    <div id="portal-reveal-container">
+        <div id="portal-reveal-content">
     <canvas id="bg-canvas"></canvas>
 
     <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
@@ -510,6 +514,10 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script type="module" src="script.js"></script>
+    <script type="module" src="js/portal.js"></script>
+        </div>
+    </div>
+    <div id="portal-ring"></div>
 </body>
 
 </html>

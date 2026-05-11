@@ -1,0 +1,69 @@
+/* 
+   PORTAL REVEAL ANIMATION — AGOGE ELITE
+   Inspired by Kling.ai / AAA Cinematic Web Transitions
+*/
+
+:root {
+    --portal-ease: cubic-bezier(0.77, 0, 0.175, 1); /* Custom cinematic easing */
+    --portal-glow: rgba(255, 255, 255, 0.3);
+}
+
+/* Initial state: Hide everything behind a black void */
+#portal-reveal-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: #000;
+    z-index: 99999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none; /* Let clicks pass through once opened */
+    clip-path: circle(0% at 50% 50%);
+    will-change: clip-path;
+}
+
+/* The actual site content inside the portal */
+#portal-reveal-content {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
+    background: var(--bg); /* Match site background */
+}
+
+/* Glowing ring border */
+#portal-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 
+        0 0 20px rgba(255, 255, 255, 0.5),
+        0 0 60px rgba(255, 255, 255, 0.3),
+        0 0 100px rgba(255, 255, 255, 0.1);
+    z-index: 100000;
+    pointer-events: none;
+    opacity: 0;
+    will-change: width, height, opacity;
+    filter: blur(1px);
+}
+
+/* Transition to clean up once finished */
+.portal-finished #portal-reveal-container {
+    display: none;
+}
+
+/* Ensure body starts black */
+body.portal-loading {
+    background: #000 !important;
+    overflow: hidden !important;
+}
