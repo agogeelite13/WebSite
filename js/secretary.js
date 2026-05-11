@@ -431,6 +431,77 @@ export const initSecretary = (api) => {
             if (await api.deleteGroupBonus(id)) renderSecretaryDashboard(api, els);
         }
     };
+
+    // Global Edits
+    window.adminEditAttendance = async (id) => {
+        const logs = await api.getAttendanceLogs();
+        const item = logs.find(l => l.id === id);
+        if (!item) return;
+
+        const newName = prompt('Nuevo Nombre / Concepto:', item.name);
+        if (newName === null) return;
+        const newPax = prompt('Número de Personas:', item.players);
+        if (newPax === null) return;
+        const newTotal = prompt('Importe Total (€):', item.total_price);
+        if (newTotal === null) return;
+
+        const updates = {
+            name: newName,
+            players: parseInt(newPax) || 0,
+            total_price: parseFloat(newTotal) || 0
+        };
+
+        const { error } = await supabase.from('attendance_logs').update(updates).eq('id', id);
+        if (!error) renderSecretaryDashboard(api, els);
+        else alert('Error al actualizar: ' + error.message);
+    };
+
+    window.adminEditExpense = async (id) => {
+        const expenses = await api.getExpenseLogs();
+        const item = expenses.find(e => e.id === id);
+        if (!item) return;
+
+        const newConcept = prompt('Nuevo Concepto:', item.concept);
+        if (newConcept === null) return;
+        const newAmount = prompt('Nuevo Importe (€):', item.amount);
+        if (newAmount === null) return;
+
+        const updates = {
+            concept: newConcept,
+            amount: parseFloat(newAmount) || 0
+        };
+
+        const { error } = await supabase.from('expense_logs').update(updates).eq('id', id);
+        if (!error) renderSecretaryDashboard(api, els);
+        else alert('Error al actualizar: ' + error.message);
+    };
+
+    window.adminEditBonus = async (id) => {
+        const bonos = await api.getGroupBonuses();
+        const item = bonos.find(b => b.id === id);
+        if (!item) return;
+
+        const newName = prompt('Nombre del Grupo:', item.group_name);
+        if (newName === null) return;
+        const newUsed = prompt('Sesiones Consumidas:', item.sessions_used);
+        if (newUsed === null) return;
+        const newTotal = prompt('Total Sesiones del Bono:', item.total_sessions);
+        if (newTotal === null) return;
+        const newPax = prompt('Nº Personas por defecto:', item.players || 1);
+        if (newPax === null) return;
+
+        const updates = {
+            group_name: newName,
+            sessions_used: parseInt(newUsed) || 0,
+            total_sessions: parseInt(newTotal) || 1,
+            players: parseInt(newPax) || 1,
+            is_active: (parseInt(newUsed) || 0) < (parseInt(newTotal) || 1)
+        };
+
+        const { error } = await supabase.from('group_bonuses').update(updates).eq('id', id);
+        if (!error) renderSecretaryDashboard(api, els);
+        else alert('Error al actualizar: ' + error.message);
+    };
 };
 
 export const renderSecretaryDashboard = async (api, els) => {
@@ -526,7 +597,10 @@ export const renderSecretaryDashboard = async (api, els) => {
                                         <td>${item.players}</td>
                                         <td>${item.total_price.toFixed(2)} €</td>
                                         <td><span style="font-size:0.6rem; color:var(--text-muted);">${item.payment_method === 'banco' ? '<i class="fas fa-university"></i>' : '<i class="fas fa-money-bill-wave"></i>'}</span></td>
-                                        <td><button class="btn btn--outline btn--sm" style="font-size:0.55rem; padding: 2px 6px; border-color:var(--red); color:var(--red);" onclick="event.stopPropagation(); adminDeleteAttendance('${item.id}')">Borrar</button></td>
+                                        <td>
+                                            <button class="btn btn--outline btn--sm" style="font-size:0.55rem; padding: 2px 6px; border-color:var(--gold); color:var(--gold); margin-right:5px;" onclick="event.stopPropagation(); adminEditAttendance('${item.id}')">Editar</button>
+                                            <button class="btn btn--outline btn--sm" style="font-size:0.55rem; padding: 2px 6px; border-color:var(--red); color:var(--red);" onclick="event.stopPropagation(); adminDeleteAttendance('${item.id}')">Borrar</button>
+                                        </td>
                                     </tr>
                                 `).join('')}
                             </tbody>
@@ -545,7 +619,10 @@ export const renderSecretaryDashboard = async (api, els) => {
             <td data-label="Concepto" style="font-weight:bold;">${e.concept}</td>
             <td data-label="Importe" style="color:var(--blood-light);">${e.amount.toFixed(2)} €</td>
             <td data-label="Pago" style="font-size:0.8rem; color:var(--text-muted);">${e.payment_method === 'banco' ? '<i class="fas fa-university"></i>' : '<i class="fas fa-money-bill-wave"></i>'}</td>
-            <td data-label="Acción"><button class="btn btn--outline btn--sm" onclick="adminDeleteExpense('${e.id}')">Borrar</button></td>
+            <td data-label="Acción">
+                <button class="btn btn--outline btn--sm" style="border-color:var(--gold); color:var(--gold); margin-right:5px;" onclick="adminEditExpense('${e.id}')">Editar</button>
+                <button class="btn btn--outline btn--sm" onclick="adminDeleteExpense('${e.id}')">Borrar</button>
+            </td>
         </tr>
     `).join('') : '<tr><td colspan="5">No hay gastos.</td></tr>';
 
@@ -557,7 +634,10 @@ export const renderSecretaryDashboard = async (api, els) => {
                 <td style="font-family:monospace; font-weight:bold; color:${b.is_active ? 'var(--bronze-light)' : '#888'};">${b.sessions_used} / ${b.total_sessions}</td>
                 <td>${b.price_total.toFixed(2)} € <span style="font-size:0.7rem; color:var(--bronze-light);">(${b.price_per_session.toFixed(2)}€/s)</span></td>
                 <td><span class="sec-type-badge ${b.is_active ? 'sec-type-badge--grupo' : 'sec-type-badge--individual'}">${b.is_active ? 'ACTIVO' : 'AGOTADO'}</span></td>
-                <td><button class="btn btn--outline btn--sm" onclick="adminDeleteBonus('${b.id}')">Borrar</button></td>
+                <td>
+                    <button class="btn btn--outline btn--sm" style="border-color:var(--gold); color:var(--gold); margin-right:5px;" onclick="adminEditBonus('${b.id}')">Editar</button>
+                    <button class="btn btn--outline btn--sm" onclick="adminDeleteBonus('${b.id}')">Borrar</button>
+                </td>
             </tr>
         `).join('') : '<tr><td colspan="5">No hay bonos.</td></tr>';
     }
