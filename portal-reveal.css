@@ -1,32 +1,35 @@
 /* 
    PORTAL REVEAL ANIMATION — AGOGE ELITE
-   Inverted Mask Approach (Flicker-free)
+   Ultra-Performance Scale Version (GPU Accelerated)
 */
 
 #portal-overlay {
     position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
-    width: 0;
-    height: 0;
+    /* Start centered and scaled to 0 (hole closed) */
+    transform: translate(-50%, -50%) scale(0);
+    width: 10px; 
+    height: 10px;
     border-radius: 50%;
-    /* Border is often more performant than huge box-shadow for scaling */
-    border: 250vmax solid #000;
+    /* Enormous border to fill the screen void */
+    border: 200vmax solid #000;
     box-sizing: content-box;
     z-index: 99999;
     pointer-events: none;
-    will-change: width, height;
+    will-change: transform;
+    /* Hardware acceleration */
     backface-visibility: hidden;
+    transform-style: preserve-3d;
 }
 
 #portal-ring {
-    position: absolute;
+    position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
-    width: 0;
-    height: 0;
+    transform: translate(-50%, -50%) scale(0);
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
     border: 2px solid rgba(255, 255, 255, 0.9);
     box-shadow: 
@@ -36,17 +39,24 @@
     z-index: 100000;
     pointer-events: none;
     opacity: 0;
-    will-change: width, height, opacity;
+    will-change: transform, opacity;
     filter: blur(1px);
 }
 
 /* Ensure no scrolling during intro */
 body.portal-loading {
     overflow: hidden !important;
+    background: #000 !important;
 }
 
 /* Smooth cleanup */
 .portal-finished #portal-overlay,
 .portal-finished #portal-ring {
     display: none;
+}
+
+/* Site wrapper stability */
+#site-wrapper {
+    will-change: transform, opacity;
+    transform-origin: center center;
 }

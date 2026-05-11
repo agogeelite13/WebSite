@@ -1,6 +1,6 @@
 /**
  * PORTAL REVEAL ANIMATION MODULE
- * Inverted Mask Approach for Maximum Performance & Zero Flicker
+ * GPU-ACCELERATED VERSION (Zero Reflow / Maximum Smoothness)
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -13,59 +13,59 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    // 1. Initial State Setup
+    // 1. Initial State Setup (Instant)
     document.body.classList.add('portal-loading');
-    gsap.set(overlay, { width: 0, height: 0, force3D: true });
-    gsap.set(ring, { width: 0, height: 0, opacity: 0, force3D: true });
-    if (siteWrapper) gsap.set(siteWrapper, { scale: 1.05, opacity: 0 });
+    gsap.set([overlay, ring], { 
+        scale: 0, 
+        xPercent: -50, 
+        yPercent: -50, 
+        top: "50%", 
+        left: "50%",
+        force3D: true 
+    });
+    
+    // El sitio ya debe estar visible detrás, el overlay negro se encarga de taparlo
+    if (siteWrapper) gsap.set(siteWrapper, { scale: 1.04, opacity: 1 });
 
     // 2. The Timeline
     const tl = gsap.timeline({
-        delay: 0.5, // Give browser some time to settle
+        delay: 0.3, 
         onComplete: () => {
             document.body.classList.remove('portal-loading');
             document.body.classList.add('portal-finished');
         }
     });
 
-    // Start delay for cinematic tension
+    // Anillo inicial (aparición sutil)
     tl.to(ring, {
-        duration: 0.8,
+        duration: 0.7,
         opacity: 1,
-        width: '50px',
-        height: '50px',
-        ease: "power2.out"
+        scale: 4, // El anillo crece un poco para marcar el inicio
+        ease: "back.out(1.7)"
     });
 
-    tl.to(siteWrapper, {
-        duration: 0.6,
-        opacity: 1,
-        ease: "power1.inOut"
-    }, "-=0.3");
-
-    // The Expansion (Opening the hole)
-    const expansionDuration = 2.4;
-    const finalSize = Math.max(window.innerWidth, window.innerHeight) * 3;
+    // Expansión del Portal (Hole)
+    // Calculamos el factor de escala necesario para cubrir cualquier pantalla
+    const expansionScale = Math.max(window.innerWidth, window.innerHeight) / 2;
 
     tl.to([overlay, ring], {
-        duration: expansionDuration,
-        width: finalSize,
-        height: finalSize,
-        ease: "expo.inOut" // Heavy, cinematic curve
-    }, "-=0.3");
+        duration: 2.2,
+        scale: expansionScale,
+        ease: "expo.inOut" // Curva premium pesada
+    }, "-=0.2");
 
-    // Smooth reveal of site content
+    // Efecto Zoom-Out del contenido (Sincronizado)
     if (siteWrapper) {
         tl.to(siteWrapper, {
-            duration: expansionDuration + 0.5,
+            duration: 2.5,
             scale: 1,
-            ease: "power4.out"
-        }, "-=" + expansionDuration);
+            ease: "power3.out"
+        }, "-=2.2");
     }
 
-    // Fade out the ring at the end
+    // Desvanecimiento final del anillo
     tl.to(ring, {
-        duration: 0.8,
+        duration: 1,
         opacity: 0,
         ease: "power2.out"
     }, "-=0.8");
