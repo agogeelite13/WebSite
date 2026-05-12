@@ -5,7 +5,8 @@ const initPortal = () => {
     
     if (!hole || !ring || typeof gsap === 'undefined') {
         document.body.classList.remove('portal-loading');
-        document.body.style.background = ''; // Fallback
+        document.body.classList.add('portal-finished');
+        document.body.style.background = ''; 
         return;
     }
 
