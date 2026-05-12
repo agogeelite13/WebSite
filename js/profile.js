@@ -530,7 +530,6 @@ export const renderFriends = async (api, currentUser) => {
             if (await api.deleteFriendship(id)) renderFriends(api, currentUser);
         }
     };
-    };
 };
 
 export const renderOperatorLeaderboard = async (api, allUsers) => {
