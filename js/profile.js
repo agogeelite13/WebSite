@@ -151,12 +151,12 @@ export const updateProfileView = (userProfile, userLogs = []) => {
         if (level >= 10) {
             rank = 'COMANDANTE';
             tier = 'elite';
-            frameClass = 'tier-comandante';
+            frameClass = 'custom-frame frame-marco2';
             avatarSrc = 'avatars/avatar_operador.png';
         } else if (level >= 6) {
             rank = 'VETERANO';
             tier = 'standard';
-            frameClass = 'tier-veterano';
+            frameClass = 'custom-frame frame-marco1';
             avatarSrc = 'avatars/avatar_operador.png';
         } else if (level >= 3) {
             rank = 'SOLDADO';
@@ -201,6 +201,23 @@ export const updateProfileView = (userProfile, userLogs = []) => {
             tag.className = 'overlord-tag';
             tag.textContent = 'SUPREMO';
             avatarFrame.appendChild(tag);
+        }
+
+        // Add Premium Particles for Marco 1 & 2
+        if (frameClass.includes('frame-marco')) {
+            const hub = document.createElement('div');
+            hub.className = 'frame-particles';
+            const count = frameClass.includes('marco2') ? 12 : 8;
+            for (let i = 0; i < count; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.left = Math.random() * 100 + '%';
+                p.style.top = Math.random() * 100 + '%';
+                p.style.animationDelay = Math.random() * 2 + 's';
+                p.style.animationDuration = (2 + Math.random() * 2) + 's';
+                hub.appendChild(p);
+            }
+            avatarFrame.appendChild(hub);
         }
     }
 
