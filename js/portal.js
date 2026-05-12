@@ -1,15 +1,11 @@
-/**
- * PORTAL REVEAL ANIMATION MODULE
- * SVG Mask Version — Maximum Stability & Zero Displacement
- */
-
-document.addEventListener('DOMContentLoaded', () => {
+const initPortal = () => {
     const hole = document.getElementById('portal-hole');
     const ring = document.getElementById('portal-ring');
     const svgOverlay = document.getElementById('portal-svg');
     
     if (!hole || !ring || typeof gsap === 'undefined') {
         document.body.classList.remove('portal-loading');
+        document.body.style.background = ''; // Fallback
         return;
     }
 
@@ -20,10 +16,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 2. The Timeline
     const tl = gsap.timeline({
-        delay: 0.4, // Stabilization delay
+        delay: 0.2, 
         onComplete: () => {
             document.body.classList.remove('portal-loading');
             document.body.classList.add('portal-finished');
+            document.body.style.background = ''; // Safety
         }
     });
 
@@ -37,7 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Expansión del Hueco (Portal)
-    // El radio 150 en un viewBox de 100 garantiza cubrir las esquinas
     tl.to(hole, {
         duration: 2.2,
         attr: { r: 150 },
@@ -64,5 +60,10 @@ document.addEventListener('DOMContentLoaded', () => {
         opacity: 0,
         ease: "power2.out"
     }, "-=0.8");
+};
 
-});
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPortal);
+} else {
+    initPortal();
+}
