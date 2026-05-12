@@ -1976,6 +1976,17 @@ h4,
     transition-delay: 0.3s;
 }
 
+/* FAILSAFE: If JS never loads, reveal content after 3s */
+@keyframes revealFallback {
+    to { opacity: 1; transform: translateY(0); }
+}
+.reveal {
+    animation: revealFallback 0.5s ease 3s forwards;
+}
+.reveal.is-visible {
+    animation: none;
+}
+
 /* =============================================
    RESPONSIVE
    ============================================= */
