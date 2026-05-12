@@ -7,7 +7,7 @@
     position: fixed;
     inset: 0;
     z-index: 999999;
-    pointer-events: none; /* Let clicks pass through once mask is open */
+    pointer-events: none;
     background: transparent;
 }
 
@@ -18,7 +18,7 @@
     width: 100%;
     height: 100%;
     display: block;
-    pointer-events: all; /* Blocks clicks until hole is large */
+    pointer-events: none; /* NEVER block clicks */
 }
 
 #portal-ring {
@@ -41,13 +41,12 @@
     filter: blur(1px);
 }
 
-/* Ensure body starts black behind the overlay */
+/* Body starts dark behind the overlay — purely visual */
 body.portal-loading {
     background: #000 !important;
-    overflow: hidden !important;
 }
 
-/* Cleanup */
+/* Cleanup — remove overlay entirely */
 .portal-finished #portal-overlay-wrap {
-    display: none;
+    display: none !important;
 }
