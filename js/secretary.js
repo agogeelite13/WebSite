@@ -210,7 +210,7 @@ export const initSecretary = (api) => {
         row.innerHTML = `
             <div style="display: flex; gap: 8px; margin-bottom: 8px;">
                 <input type="text" class="form-input row-concept" placeholder="Concepto / Artículo" style="flex: 2; font-size: 0.7rem; height: 35px;">
-                <select class="form-input row-category" style="flex: 1; font-size: 0.7rem; height: 35px; padding: 0 5px;">
+                <select class="form-input row-category" style="flex: 1.2; font-size: 0.7rem; height: 35px; padding: 0 5px;">
                     <option value="material">MATERIAL</option>
                     <option value="reparacion">REPARAC.</option>
                     <option value="marketing">MARKET.</option>
@@ -219,25 +219,41 @@ export const initSecretary = (api) => {
                 </select>
                 <button type="button" class="btn btn--outline remove-row-btn" style="padding: 0 10px; border-color: rgba(229,57,53,0.3); color: var(--red); height: 35px;">&times;</button>
             </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <div style="display: grid; grid-template-columns: 0.7fr 1fr 1fr; gap: 8px;">
                 <div style="display: flex; align-items: center; gap: 5px;">
-                    <span style="font-size: 0.6rem; color: #666;">IMPORTE:</span>
-                    <input type="number" class="form-input row-amount" value="0.00" step="0.01" style="font-size: 0.7rem; height: 30px; padding: 0 5px;">
+                    <span style="font-size: 0.6rem; color: #666;">UD:</span>
+                    <input type="number" class="form-input row-qty" value="1" min="1" style="font-size: 0.7rem; height: 30px; padding: 0 5px;">
                 </div>
                 <div style="display: flex; align-items: center; gap: 5px;">
-                    <span style="font-size: 0.6rem; color: #666;">PAGO:</span>
+                    <span style="font-size: 0.6rem; color: #666;">P.UD:</span>
+                    <input type="number" class="form-input row-price" value="0.00" step="0.01" style="font-size: 0.7rem; height: 30px; padding: 0 5px;">
+                </div>
+                <div style="display: flex; align-items: center; gap: 5px;">
                     <select class="form-input row-payment" style="font-size: 0.65rem; height: 30px; padding: 0 3px; flex:1;">
                         <option value="efectivo">EFECTIVO</option>
                         <option value="banco">BANCO</option>
                     </select>
                 </div>
             </div>
+            <div style="text-align: right; margin-top: 5px; font-size: 0.65rem; color: var(--gold); opacity: 0.8;">
+                TOTAL FILA: <span class="row-total-display">0.00</span> €
+            </div>
         `;
 
         container.appendChild(row);
 
-        const amountInput = row.querySelector('.row-amount');
-        amountInput.addEventListener('input', updateExpenseTotals);
+        const qtyInput = row.querySelector('.row-qty');
+        const priceInput = row.querySelector('.row-price');
+        const totalDisplay = row.querySelector('.row-total-display');
+
+        const updateRowTotal = () => {
+            const q = parseFloat(qtyInput.value) || 0;
+            const p = parseFloat(priceInput.value) || 0;
+            totalDisplay.textContent = (q * p).toFixed(2);
+            updateExpenseTotals();
+        };
+
+        [qtyInput, priceInput].forEach(el => el.addEventListener('input', updateRowTotal));
         
         row.querySelector('.remove-row-btn').addEventListener('click', () => {
             row.remove();
@@ -247,15 +263,19 @@ export const initSecretary = (api) => {
         if (data) {
             row.querySelector('.row-concept').value = data.concept || '';
             row.querySelector('.row-category').value = data.category || 'material';
-            row.querySelector('.row-amount').value = data.amount || 0;
+            row.querySelector('.row-qty').value = data.qty || 1;
+            row.querySelector('.row-price').value = data.amount || 0;
             row.querySelector('.row-payment').value = data.payment || 'efectivo';
+            updateRowTotal();
         }
     };
 
     const updateExpenseTotals = () => {
         let total = 0;
         document.querySelectorAll('.expense-row').forEach(row => {
-            total += parseFloat(row.querySelector('.row-amount').value) || 0;
+            const q = parseFloat(row.querySelector('.row-qty').value) || 0;
+            const p = parseFloat(row.querySelector('.row-price').value) || 0;
+            total += (q * p);
         });
         const display = document.getElementById('expenseTotalAmount');
         if (display) display.textContent = total.toFixed(2) + ' €';
@@ -273,6 +293,8 @@ export const initSecretary = (api) => {
         els.modal.classList.remove('hidden');
         els.expModal.classList.add('hidden');
         els.bonusModal?.classList.add('hidden');
+        els.editModal?.classList.add('hidden');
+        els.transferModal?.classList.add('hidden');
         
         document.getElementById('sessionItemsContainer').innerHTML = '';
         addSessionRow();
@@ -372,6 +394,8 @@ export const initSecretary = (api) => {
         document.getElementById('loginFormWrap')?.classList.add('hidden');
         els.modal.classList.add('hidden');
         els.bonusModal?.classList.add('hidden');
+        els.editModal?.classList.add('hidden');
+        els.transferModal?.classList.add('hidden');
         
         els.expModal.classList.remove('hidden');
         document.getElementById('expenseItemsContainer').innerHTML = '';
@@ -389,11 +413,13 @@ export const initSecretary = (api) => {
 
         let successCount = 0;
         for (const row of rows) {
+            const q = parseFloat(row.querySelector('.row-qty').value) || 0;
+            const p = parseFloat(row.querySelector('.row-price').value) || 0;
             const data = {
                 date: date,
                 concept: row.querySelector('.row-concept').value,
                 category: row.querySelector('.row-category').value,
-                amount: parseFloat(row.querySelector('.row-amount').value) || 0,
+                amount: q * p,
                 payment_method: row.querySelector('.row-payment').value
             };
 
