@@ -534,6 +534,50 @@
                     <button type="submit" class="btn btn--primary btn--full" style="background:var(--gold); color:#000;">REGISTRAR BONO</button>
                 </form>
             </div>
+
+            <!-- UNIVERSAL EDIT MODAL -->
+            <div id="editModalWrap" class="hidden">
+                <h3 class="modal__title" id="editModalTitle">EDITAR REGISTRO</h3>
+                <form id="editForm" class="auth-form">
+                    <input type="hidden" id="editItemId">
+                    <input type="hidden" id="editItemType">
+                    
+                    <div class="form-group">
+                        <label class="form-label">Fecha</label>
+                        <input type="date" id="editDate" class="form-input">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" id="editLabelName">Nombre / Concepto</label>
+                        <input type="text" id="editName" class="form-input" required>
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label class="form-label" id="editLabelValue1">Pax / Sesiones</label>
+                            <input type="number" id="editValue1" class="form-input" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" id="editLabelValue2">Importe / Total</label>
+                            <input type="number" id="editValue2" class="form-input" step="0.01">
+                        </div>
+                    </div>
+
+                    <div id="editExtraFieldWrap" class="form-group hidden">
+                        <label class="form-label">Sesiones Consumidas</label>
+                        <input type="number" id="editValue3" class="form-input" step="1">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" id="editLabelOption">Opción</label>
+                        <select id="editOption" class="form-input">
+                            <!-- Options injected via JS -->
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn--primary btn--full" style="background:var(--gold); color:#000;">GUARDAR CAMBIOS</button>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -575,6 +619,6 @@
         </div>
     </footer>
 
-    <script type="module" src="script.js?v=121"></script>
+    <script type="module" src="script.js?v=122"></script>
 </body>
 </html>

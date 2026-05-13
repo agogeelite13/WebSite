@@ -54,7 +54,10 @@ export const initSecretary = (api) => {
         // Transfer elements
         transferBtn: document.getElementById('transferFundsBtn'),
         transferModal: document.getElementById('transferModalWrap'),
-        transferForm: document.getElementById('transferForm')
+        transferForm: document.getElementById('transferForm'),
+        // Edit elements
+        editModal: document.getElementById('editModalWrap'),
+        editForm: document.getElementById('editForm')
     };
 
     if (!els.list) return;
@@ -469,6 +472,45 @@ export const initSecretary = (api) => {
         }
     });
 
+    // Edit Form Submit
+    els.editForm?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('editItemId').value;
+        const type = document.getElementById('editItemType').value;
+        
+        const date = document.getElementById('editDate').value;
+        const name = document.getElementById('editName').value;
+        const v1 = parseFloat(document.getElementById('editValue1').value);
+        const v2 = parseFloat(document.getElementById('editValue2').value);
+        const option = document.getElementById('editOption').value;
+
+        if (type === 'attendance') {
+            const updates = { date, name, players: parseInt(v1), total_price: v2, payment_method: option };
+            if (await api.updateAttendanceLog(id, updates)) _closeEdit();
+        } else if (type === 'expense') {
+            const updates = { date, concept: name, category: option, amount: v2, payment_method: document.getElementById('editValue1').dataset.extra || 'efectivo' };
+            // Note: Since category and payment are separate in original, we handle them carefully
+            if (await api.updateExpenseLog(id, updates)) _closeEdit();
+        } else if (type === 'bonus') {
+            const v3 = parseInt(document.getElementById('editValue3').value) || 0;
+            const updates = { 
+                group_name: name, 
+                total_sessions: parseInt(v1), 
+                price_total: v2, 
+                sessions_used: v3,
+                players: parseInt(option),
+                price_per_session: v2 / (parseInt(v1) || 1),
+                is_active: v3 < parseInt(v1)
+            };
+            if (await api.updateGroupBonus(id, updates)) _closeEdit();
+        }
+    });
+
+    const _closeEdit = () => {
+        document.getElementById('authModal')?.classList.remove('is-open');
+        renderSecretaryDashboard(api, els);
+    };
+
     // Modal Close
     document.getElementById('modalClose')?.addEventListener('click', () => {
         document.getElementById('authModal')?.classList.remove('is-open');
@@ -518,22 +560,34 @@ export const initSecretary = (api) => {
         const item = logs.find(l => l.id === id);
         if (!item) return;
 
-        const newName = prompt('Nuevo Nombre / Concepto:', item.name);
-        if (newName === null) return;
-        const newPax = prompt('Número de Personas:', item.players);
-        if (newPax === null) return;
-        const newTotal = prompt('Importe Total (€):', item.total_price);
-        if (newTotal === null) return;
+        const authModal = document.getElementById('authModal');
+        if (authModal) authModal.classList.add('is-open');
+        els.modal.classList.add('hidden');
+        els.expModal.classList.add('hidden');
+        els.bonusModal.classList.add('hidden');
+        els.transferModal.classList.add('hidden');
+        els.editModal.classList.remove('hidden');
 
-        const updates = {
-            name: newName,
-            players: parseInt(newPax) || 0,
-            total_price: parseFloat(newTotal) || 0
-        };
-
-        if (await api.updateAttendanceLog(id, updates)) {
-            renderSecretaryDashboard(api, els);
-        }
+        document.getElementById('editModalTitle').textContent = 'EDITAR ASISTENCIA';
+        document.getElementById('editItemId').value = id;
+        document.getElementById('editItemType').value = 'attendance';
+        document.getElementById('editDate').value = item.date;
+        document.getElementById('editName').value = item.name;
+        
+        document.getElementById('editLabelName').textContent = 'Nombre / Concepto';
+        document.getElementById('editLabelValue1').textContent = 'Nº Personas';
+        document.getElementById('editValue1').value = item.players;
+        document.getElementById('editLabelValue2').textContent = 'Importe Total (€)';
+        document.getElementById('editValue2').value = item.total_price;
+        
+        document.getElementById('editExtraFieldWrap').classList.add('hidden');
+        document.getElementById('editLabelOption').textContent = 'Método de Pago';
+        
+        const optSelect = document.getElementById('editOption');
+        optSelect.innerHTML = `
+            <option value="efectivo" ${item.payment_method === 'efectivo' ? 'selected' : ''}>EFECTIVO</option>
+            <option value="banco" ${item.payment_method === 'banco' ? 'selected' : ''}>BANCO</option>
+        `;
     };
 
     window.adminEditExpense = async (id) => {
@@ -541,19 +595,32 @@ export const initSecretary = (api) => {
         const item = expenses.find(e => e.id === id);
         if (!item) return;
 
-        const newConcept = prompt('Nuevo Concepto:', item.concept);
-        if (newConcept === null) return;
-        const newAmount = prompt('Nuevo Importe (€):', item.amount);
-        if (newAmount === null) return;
+        const authModal = document.getElementById('authModal');
+        if (authModal) authModal.classList.add('is-open');
+        els.editModal.classList.remove('hidden');
+        els.modal.classList.add('hidden');
+        els.expModal.classList.add('hidden');
+        els.bonusModal.classList.add('hidden');
 
-        const updates = {
-            concept: newConcept,
-            amount: parseFloat(newAmount) || 0
-        };
-
-        if (await api.updateExpenseLog(id, updates)) {
-            renderSecretaryDashboard(api, els);
-        }
+        document.getElementById('editModalTitle').textContent = 'EDITAR GASTO';
+        document.getElementById('editItemId').value = id;
+        document.getElementById('editItemType').value = 'expense';
+        document.getElementById('editDate').value = item.date;
+        document.getElementById('editName').value = item.concept;
+        
+        document.getElementById('editLabelName').textContent = 'Concepto';
+        document.getElementById('editLabelValue1').textContent = '---'; // No usado para gasto simple
+        document.getElementById('editValue1').value = 0;
+        document.getElementById('editValue1').dataset.extra = item.payment_method; // Pass through payment method
+        document.getElementById('editLabelValue2').textContent = 'Importe (€)';
+        document.getElementById('editValue2').value = item.amount;
+        
+        document.getElementById('editExtraFieldWrap').classList.add('hidden');
+        document.getElementById('editLabelOption').textContent = 'Categoría';
+        
+        const optSelect = document.getElementById('editOption');
+        const cats = ['material', 'reparacion', 'marketing', 'logistica', 'otros'];
+        optSelect.innerHTML = cats.map(c => `<option value="${c}" ${item.category === c ? 'selected' : ''}>${c.toUpperCase()}</option>`).join('');
     };
 
     window.adminEditBonus = async (id) => {
@@ -561,34 +628,31 @@ export const initSecretary = (api) => {
         const item = bonos.find(b => b.id === id);
         if (!item) return;
 
-        const newName = prompt('Nombre del Grupo:', item.group_name);
-        if (newName === null) return;
-        const newUsed = prompt('Sesiones Consumidas:', item.sessions_used);
-        if (newUsed === null) return;
-        const newTotal = prompt('Total Sesiones del Bono:', item.total_sessions);
-        if (newTotal === null) return;
-        const newPax = prompt('Nº Personas en el Bono:', item.players || 1);
-        if (newPax === null) return;
-        const newPrice = prompt('Precio Total del Bono (€):', item.price_total || 0);
-        if (newPrice === null) return;
+        const authModal = document.getElementById('authModal');
+        if (authModal) authModal.classList.add('is-open');
+        els.editModal.classList.remove('hidden');
+        els.modal.classList.add('hidden');
+        els.expModal.classList.add('hidden');
+        els.bonusModal.classList.add('hidden');
 
-        const used = parseInt(newUsed) || 0;
-        const total = parseInt(newTotal) || 1;
-        const price = parseFloat(newPrice) || 0;
+        document.getElementById('editModalTitle').textContent = 'EDITAR BONO';
+        document.getElementById('editItemId').value = id;
+        document.getElementById('editItemType').value = 'bonus';
+        document.getElementById('editDate').value = new Date().toISOString().split('T')[0]; // Bonos don't have date, just use today
+        document.getElementById('editName').value = item.group_name;
+        
+        document.getElementById('editLabelName').textContent = 'Nombre del Grupo';
+        document.getElementById('editLabelValue1').textContent = 'Total Sesiones';
+        document.getElementById('editValue1').value = item.total_sessions;
+        document.getElementById('editLabelValue2').textContent = 'Precio Total (€)';
+        document.getElementById('editValue2').value = item.price_total;
+        
+        document.getElementById('editExtraFieldWrap').classList.remove('hidden');
+        document.getElementById('editValue3').value = item.sessions_used;
 
-        const updates = {
-            group_name: newName,
-            sessions_used: used,
-            total_sessions: total,
-            players: parseInt(newPax) || 1,
-            price_total: price,
-            price_per_session: price / total,
-            is_active: used < total
-        };
-
-        if (await api.updateGroupBonus(id, updates)) {
-            renderSecretaryDashboard(api, els);
-        }
+        document.getElementById('editLabelOption').textContent = 'Nº Personas en Bono';
+        const optSelect = document.getElementById('editOption');
+        optSelect.innerHTML = [1,2,3,4,5,6,7,8,9,10].map(n => `<option value="${n}" ${item.players === n ? 'selected' : ''}>${n} PERSONAS</option>`).join('');
     };
 };
 
