@@ -396,79 +396,7 @@ export const renderClanView = async (userProfile, clans, allUsers, actions) => {
 
 /** --- SOCIAL & COMMUNITY LOGIC --- **/
 
-export const initSocial = async (api, currentUser) => {
-    const viewMyProfileBtn = document.getElementById('viewMyProfileBtn');
-    const viewCommunityBtn = document.getElementById('viewCommunityBtn');
-    const communityView = document.getElementById('communityView');
-    const profileMain = document.querySelector('.profile-card--premium'); // The main profile content
 
-    const userSearchInput = document.getElementById('userSearchInput');
-    const userSearchBtn = document.getElementById('userSearchBtn');
-    const userSearchResults = document.getElementById('userSearchResults');
-
-    if (!viewCommunityBtn || !currentUser) return;
-
-    // View Toggles
-    viewMyProfileBtn?.addEventListener('click', () => {
-        viewMyProfileBtn.classList.add('active');
-        viewCommunityBtn.classList.remove('active');
-        communityView.classList.add('hidden');
-        profileMain.classList.remove('hidden');
-    });
-
-    viewCommunityBtn?.addEventListener('click', () => {
-        viewCommunityBtn.classList.add('active');
-        viewMyProfileBtn.classList.remove('active');
-        communityView.classList.remove('hidden');
-        profileMain.classList.add('hidden');
-        renderFriends(api, currentUser);
-    });
-
-    // Search Logic
-    const handleSearch = async () => {
-        const query = userSearchInput.value.trim();
-        if (query.length < 1) {
-            userSearchResults.innerHTML = '<p class="u-text-center u-small u-text-muted">Escribe un nombre para buscar...</p>';
-            return;
-        }
-        console.log('Iniciando búsqueda de:', query);
-        userSearchResults.innerHTML = '<p class="u-text-center u-small" style="color:var(--gold);">Buscando en la base de datos...</p>';
-        const users = await api.searchUsers(query);
-        console.log('Usuarios encontrados:', users.length);
-        renderSearchResults(users, api, currentUser);
-    };
-
-    userSearchBtn?.addEventListener('click', handleSearch);
-    userSearchInput?.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSearch(); });
-};
-
-const renderSearchResults = (users, api, currentUser) => {
-    const container = document.getElementById('userSearchResults');
-    if (!container) return;
-
-    if (users.length === 0) {
-        container.innerHTML = '<p class="u-text-center u-small">No se encontraron operadores.</p>';
-        return;
-    }
-
-    container.innerHTML = users.filter(u => u.id !== currentUser.id).map(user => `
-        <div class="user-card">
-            <img src="${user.avatar || 'avatars/avatar_recluta.png'}" class="user-card__avatar">
-            <h5 class="user-card__name">${user.callsign || user.name}</h5>
-            <p class="user-card__meta">${user.specialty || 'RECLUTA'} | LVL ${Math.floor(user.exp || 0)}</p>
-            <div class="user-card__actions">
-                <button class="btn btn--primary btn--sm user-card__btn" onclick="sendFriendRequest('${user.id}')">AGREGAR</button>
-            </div>
-        </div>
-    `).join('');
-
-    window.sendFriendRequest = async (friendId) => {
-        if (await api.sendFriendRequest(currentUser.id, friendId)) {
-            showToast('Social', '¡Solicitud de amistad enviada!', 'success');
-            handleSearch(); // Refresh results to hide or show status
-        }
-    };
-};
 
 export const renderFriends = async (api, currentUser) => {
     const friendsList = document.getElementById('friendsList');
@@ -712,6 +640,8 @@ export const initSocial = async (api, currentUser) => {
         const user = await api.getProfile(userId);
         if (user) {
             const modal = document.getElementById('operatorCardModal');
+            if (!modal) return;
+            
             document.getElementById('opCardCallsign').textContent = user.callsign || '-';
             document.getElementById('opCardAvatar').src = user.avatar || 'avatars/avatar_recluta.png';
             
@@ -743,7 +673,8 @@ export const initSocial = async (api, currentUser) => {
                 modal.classList.add('hidden');
             };
             
-            document.getElementById('closeOpCard').onclick = closeFn;
+            const closeBtn = document.getElementById('closeOpCard');
+            if (closeBtn) closeBtn.onclick = closeFn;
         }
     };
 
