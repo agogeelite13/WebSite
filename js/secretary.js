@@ -487,15 +487,23 @@ export const initSecretary = (api) => {
         if (newUsed === null) return;
         const newTotal = prompt('Total Sesiones del Bono:', item.total_sessions);
         if (newTotal === null) return;
-        const newPax = prompt('Nº Personas por defecto:', item.players || 1);
+        const newPax = prompt('Nº Personas en el Bono:', item.players || 1);
         if (newPax === null) return;
+        const newPrice = prompt('Precio Total del Bono (€):', item.price_total || 0);
+        if (newPrice === null) return;
+
+        const used = parseInt(newUsed) || 0;
+        const total = parseInt(newTotal) || 1;
+        const price = parseFloat(newPrice) || 0;
 
         const updates = {
             group_name: newName,
-            sessions_used: parseInt(newUsed) || 0,
-            total_sessions: parseInt(newTotal) || 1,
+            sessions_used: used,
+            total_sessions: total,
             players: parseInt(newPax) || 1,
-            is_active: (parseInt(newUsed) || 0) < (parseInt(newTotal) || 1)
+            price_total: price,
+            price_per_session: price / total,
+            is_active: used < total
         };
 
         if (await api.updateGroupBonus(id, updates)) {
