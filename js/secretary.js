@@ -509,13 +509,19 @@ export const initSecretary = (api) => {
         const v1 = parseFloat(document.getElementById('editValue1').value);
         const v2 = parseFloat(document.getElementById('editValue2').value);
         const option = document.getElementById('editOption').value;
+        const option2 = document.getElementById('editOption2').value;
 
         if (type === 'attendance') {
             const updates = { date, name, players: parseInt(v1), total_price: v2, payment_method: option };
             if (await api.updateAttendanceLog(id, updates)) _closeEdit();
         } else if (type === 'expense') {
-            const updates = { date, concept: name, category: option, amount: v2, payment_method: document.getElementById('editValue1').dataset.extra || 'efectivo' };
-            // Note: Since category and payment are separate in original, we handle them carefully
+            const updates = { 
+                date, 
+                concept: name, 
+                category: option, 
+                amount: v2, 
+                payment_method: option2 
+            };
             if (await api.updateExpenseLog(id, updates)) _closeEdit();
         } else if (type === 'bonus') {
             const v3 = parseInt(document.getElementById('editValue3').value) || 0;
@@ -607,6 +613,7 @@ export const initSecretary = (api) => {
         document.getElementById('editValue2').value = item.total_price;
         
         document.getElementById('editExtraFieldWrap').classList.add('hidden');
+        document.getElementById('editOption2Wrap').classList.add('hidden');
         document.getElementById('editLabelOption').textContent = 'Método de Pago';
         
         const optSelect = document.getElementById('editOption');
@@ -642,11 +649,19 @@ export const initSecretary = (api) => {
         document.getElementById('editValue2').value = item.amount;
         
         document.getElementById('editExtraFieldWrap').classList.add('hidden');
-        document.getElementById('editLabelOption').textContent = 'Categoría';
+        document.getElementById('editOption2Wrap').classList.remove('hidden');
         
+        document.getElementById('editLabelOption').textContent = 'Categoría';
         const optSelect = document.getElementById('editOption');
         const cats = ['material', 'reparacion', 'marketing', 'logistica', 'otros'];
         optSelect.innerHTML = cats.map(c => `<option value="${c}" ${item.category === c ? 'selected' : ''}>${c.toUpperCase()}</option>`).join('');
+
+        document.getElementById('editLabelOption2').textContent = 'Método de Pago';
+        const optSelect2 = document.getElementById('editOption2');
+        optSelect2.innerHTML = `
+            <option value="efectivo" ${item.payment_method === 'efectivo' ? 'selected' : ''}>EFECTIVO (CAJA)</option>
+            <option value="banco" ${item.payment_method === 'banco' ? 'selected' : ''}>BANCO (TRANSF.)</option>
+        `;
     };
 
     window.adminEditBonus = async (id) => {
@@ -674,6 +689,7 @@ export const initSecretary = (api) => {
         document.getElementById('editValue2').value = item.price_total;
         
         document.getElementById('editExtraFieldWrap').classList.remove('hidden');
+        document.getElementById('editOption2Wrap').classList.add('hidden');
         document.getElementById('editValue3').value = item.sessions_used;
 
         document.getElementById('editLabelOption').textContent = 'Nº Personas en Bono';
