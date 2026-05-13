@@ -449,38 +449,29 @@
 
             <!-- EXPENSE MODAL (SECRETARY) -->
             <div id="expenseModalWrap" class="hidden">
-                <h3 class="modal__title">REGISTRAR GASTO OPERATIVO</h3>
-                <form id="expenseForm">
-                    <div class="form-group">
-                        <label class="form-label">Fecha</label>
-                        <input type="date" id="expDate" class="form-input" required>
+                <h3 class="modal__title">REGISTRAR GASTOS OPERATIVOS</h3>
+                <div class="form-group">
+                    <label class="form-label">Fecha de los Gastos</label>
+                    <input type="date" id="expDate" class="form-input" required>
+                </div>
+
+                <div id="expenseItemsContainer" style="margin-top: 20px; max-height: 400px; overflow-y: auto; padding-right: 5px;">
+                    <!-- Line items will be injected here via JS -->
+                </div>
+
+                <div style="margin-top: 15px; text-align: center;">
+                    <button type="button" id="addExpRowBtn" class="btn btn--outline btn--sm" style="width: 100%; border-style: dashed; opacity: 0.8; font-size: 0.7rem;">+ AÑADIR OTRO GASTO</button>
+                </div>
+
+                <div class="sec-session-summary" style="margin-top: 25px; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 8px; border: 1px solid var(--border); font-size: 0.8rem;">
+                    <div style="display: flex; justify-content: space-between;">
+                        <span>TOTAL GASTOS:</span>
+                        <strong id="expenseTotalAmount" style="color:var(--blood-light);">0.00 €</strong>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Concepto / Descripción</label>
-                        <input type="text" id="expConcept" class="form-input" placeholder="Ej: Nuevas bolas 0.25g" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Categoría</label>
-                        <select id="expCategory" class="form-input">
-                            <option value="material">MATERIAL / CONSUMIBLES</option>
-                            <option value="reparacion">REPARACIONES</option>
-                            <option value="marketing">MARKETING / RRSS</option>
-                            <option value="logistica">LOGÍSTICA / TRANSPORTE</option>
-                            <option value="otros">OTROS GASTOS</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Importe Total (€)</label>
-                        <input type="number" id="expAmount" class="form-input" step="0.01" placeholder="0.00" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Método de Pago</label>
-                        <select id="expPaymentMethod" class="form-input">
-                            <option value="efectivo">EFECTIVO (CAJA)</option>
-                            <option value="banco">BANCO (TRANSFERENCIA / BIZUM)</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="btn btn--primary btn--full">GUARDAR GASTO</button>
+                </div>
+
+                <form id="expenseForm" style="margin-top: 20px;">
+                    <button type="submit" class="btn btn--primary btn--full">GUARDAR TODOS LOS GASTOS</button>
                 </form>
             </div>
 
@@ -584,6 +575,6 @@
         </div>
     </footer>
 
-    <script type="module" src="script.js?v=120"></script>
+    <script type="module" src="script.js?v=121"></script>
 </body>
 </html>

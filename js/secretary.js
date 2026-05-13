@@ -194,6 +194,72 @@ export const initSecretary = (api) => {
 
     document.getElementById('addRowBtn')?.addEventListener('click', () => addSessionRow());
 
+    // --- EXPENSE BUILDER LOGIC ---
+
+    const addExpenseRow = (data = null) => {
+        const container = document.getElementById('expenseItemsContainer');
+        if (!container) return;
+
+        const row = document.createElement('div');
+        row.className = 'expense-row';
+        row.style.cssText = 'background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.05);';
+        
+        row.innerHTML = `
+            <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                <input type="text" class="form-input row-concept" placeholder="Concepto / Artículo" style="flex: 2; font-size: 0.7rem; height: 35px;">
+                <select class="form-input row-category" style="flex: 1; font-size: 0.7rem; height: 35px; padding: 0 5px;">
+                    <option value="material">MATERIAL</option>
+                    <option value="reparacion">REPARAC.</option>
+                    <option value="marketing">MARKET.</option>
+                    <option value="logistica">LOGÍST.</option>
+                    <option value="otros">OTROS</option>
+                </select>
+                <button type="button" class="btn btn--outline remove-row-btn" style="padding: 0 10px; border-color: rgba(229,57,53,0.3); color: var(--red); height: 35px;">&times;</button>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <div style="display: flex; align-items: center; gap: 5px;">
+                    <span style="font-size: 0.6rem; color: #666;">IMPORTE:</span>
+                    <input type="number" class="form-input row-amount" value="0.00" step="0.01" style="font-size: 0.7rem; height: 30px; padding: 0 5px;">
+                </div>
+                <div style="display: flex; align-items: center; gap: 5px;">
+                    <span style="font-size: 0.6rem; color: #666;">PAGO:</span>
+                    <select class="form-input row-payment" style="font-size: 0.65rem; height: 30px; padding: 0 3px; flex:1;">
+                        <option value="efectivo">EFECTIVO</option>
+                        <option value="banco">BANCO</option>
+                    </select>
+                </div>
+            </div>
+        `;
+
+        container.appendChild(row);
+
+        const amountInput = row.querySelector('.row-amount');
+        amountInput.addEventListener('input', updateExpenseTotals);
+        
+        row.querySelector('.remove-row-btn').addEventListener('click', () => {
+            row.remove();
+            updateExpenseTotals();
+        });
+
+        if (data) {
+            row.querySelector('.row-concept').value = data.concept || '';
+            row.querySelector('.row-category').value = data.category || 'material';
+            row.querySelector('.row-amount').value = data.amount || 0;
+            row.querySelector('.row-payment').value = data.payment || 'efectivo';
+        }
+    };
+
+    const updateExpenseTotals = () => {
+        let total = 0;
+        document.querySelectorAll('.expense-row').forEach(row => {
+            total += parseFloat(row.querySelector('.row-amount').value) || 0;
+        });
+        const display = document.getElementById('expenseTotalAmount');
+        if (display) display.textContent = total.toFixed(2) + ' €';
+    };
+
+    document.getElementById('addExpRowBtn')?.addEventListener('click', () => addExpenseRow());
+
     // Add Attendance Button (Now "Match" button)
     els.addBtn?.addEventListener('click', () => {
         const authModal = document.getElementById('authModal');
@@ -305,34 +371,48 @@ export const initSecretary = (api) => {
         els.bonusModal?.classList.add('hidden');
         
         els.expModal.classList.remove('hidden');
-        els.expForm.reset();
+        document.getElementById('expenseItemsContainer').innerHTML = '';
+        addExpenseRow();
         const dateInput = document.getElementById('expDate');
         if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
+        updateExpenseTotals();
     });
 
     els.expForm?.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const methodEl = document.getElementById('expPaymentMethod');
-        const data = {
-            date: document.getElementById('expDate').value,
-            concept: document.getElementById('expConcept').value,
-            category: document.getElementById('expCategory').value,
-            amount: parseFloat(document.getElementById('expAmount').value),
-            payment_method: methodEl ? methodEl.value : 'efectivo'
-        };
-        try {
-            const success = await api.saveExpenseLog(data);
-            if (success) {
-                await api.syncToSheets(data, 'expenses');
-                document.getElementById('authModal')?.classList.remove('is-open');
-                renderSecretaryDashboard(api, els);
-                if (window.ui) window.ui.showToast('Gasto Guardado', 'El registro se ha sincronizado.', 'success');
-            } else {
-                alert('Error al guardar: La base de datos rechazó el gasto. Revisa la consola para más detalles.');
+        const date = document.getElementById('expDate').value;
+        const rows = document.querySelectorAll('.expense-row');
+        if (rows.length === 0) return alert('Añade al menos una fila de gasto.');
+
+        let successCount = 0;
+        for (const row of rows) {
+            const data = {
+                date: date,
+                concept: row.querySelector('.row-concept').value,
+                category: row.querySelector('.row-category').value,
+                amount: parseFloat(row.querySelector('.row-amount').value) || 0,
+                payment_method: row.querySelector('.row-payment').value
+            };
+
+            if (data.concept.trim() === '') continue;
+
+            try {
+                const success = await api.saveExpenseLog(data);
+                if (success) {
+                    await api.syncToSheets(data, 'expenses');
+                    successCount++;
+                }
+            } catch (err) {
+                console.error('Expense Save Error:', err);
             }
-        } catch (err) {
-            console.error('Fatal Expense Error:', err);
-            alert('Error Crítico: ' + err.message);
+        }
+
+        if (successCount > 0) {
+            document.getElementById('authModal')?.classList.remove('is-open');
+            renderSecretaryDashboard(api, els);
+            if (window.ui) window.ui.showToast('Gastos Guardados', `${successCount} registros procesados.`, 'success');
+        } else {
+            alert('No se pudo guardar ningún gasto. Revisa que el concepto no esté vacío.');
         }
     });
 
