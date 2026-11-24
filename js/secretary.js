@@ -28,6 +28,7 @@ export const initSecretary = (api) => {
             day: document.getElementById('statIncomeDay'),
             month: document.getElementById('statIncomeMonth'),
             expMonth: document.getElementById('statExpenseMonth'),
+            expTotal: document.getElementById('statExpenseTotal'),
             netBalance: document.getElementById('statNetBalance'),
             incomeTotal: document.getElementById('statIncomeTotal'),
             balanceTotal: document.getElementById('statBalanceTotal'),
@@ -91,6 +92,11 @@ export const initSecretary = (api) => {
         });
     };
     setupToggles();
+
+    // Filters for lists
+    [els.search, els.filterDate, els.filterType].forEach(el => {
+        el?.addEventListener('input', () => renderSecretaryDashboard(api, els));
+    });
 
     // --- SESSION BUILDER LOGIC ---
 
@@ -706,8 +712,20 @@ export const renderSecretaryDashboard = async (api, els) => {
 
     if (!logs || !expenses) return;
 
+    // Filters for attendance logs table
+    const searchTerm = els.search ? els.search.value.toLowerCase().trim() : '';
+    const filterDate = els.filterDate ? els.filterDate.value : '';
+    const filterType = els.filterType ? els.filterType.value : 'all';
+
+    const displayLogs = logs.filter(l => {
+        const matchesSearch = !searchTerm || (l.name || '').toLowerCase().includes(searchTerm);
+        const matchesDate = !filterDate || l.date === filterDate;
+        const matchesType = filterType === 'all' || l.type === filterType;
+        return matchesSearch && matchesDate && matchesType;
+    });
+
     // Group logs by Date
-    const groupedLogs = logs.reduce((acc, log) => {
+    const groupedLogs = displayLogs.reduce((acc, log) => {
         if (!acc[log.date]) acc[log.date] = { date: log.date, items: [], totalPax: 0, totalPrice: 0 };
         acc[log.date].items.push(log);
         acc[log.date].totalPax += (log.players || 0);
@@ -717,22 +735,71 @@ export const renderSecretaryDashboard = async (api, els) => {
 
     const sortedDates = Object.keys(groupedLogs).sort((a, b) => new Date(b) - new Date(a));
 
-    // Stats
+    // Stats calculations
     const now = new Date();
-    const todayStr = now.toISOString().split('T')[0];
-    const incomeDay = logs.filter(l => l.date === todayStr).reduce((sum, l) => sum + (l.total_price || 0), 0);
-    const incomeTotal = logs.reduce((sum, l) => sum + (l.total_price || 0), 0);
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth();
+    const currentDay = now.getDate();
+
+    const isThisMonth = (dateVal) => {
+        if (!dateVal) return false;
+        if (typeof dateVal === 'string') {
+            const clean = dateVal.trim();
+            const matchYMD = clean.match(/^(\d{4})[-/](\d{1,2})/);
+            if (matchYMD) {
+                const y = parseInt(matchYMD[1], 10);
+                const m = parseInt(matchYMD[2], 10) - 1;
+                return y === currentYear && m === currentMonth;
+            }
+            const matchDMY = clean.match(/^\d{1,2}[-/](\d{1,2})[-/](\d{4})/);
+            if (matchDMY) {
+                const m = parseInt(matchDMY[1], 10) - 1;
+                const y = parseInt(matchDMY[2], 10);
+                return y === currentYear && m === currentMonth;
+            }
+        }
+        const d = new Date(dateVal);
+        return !isNaN(d.getTime()) && d.getFullYear() === currentYear && d.getMonth() === currentMonth;
+    };
+
+    const isToday = (dateVal) => {
+        if (!dateVal) return false;
+        if (typeof dateVal === 'string') {
+            const clean = dateVal.trim();
+            const matchYMD = clean.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})/);
+            if (matchYMD) {
+                const y = parseInt(matchYMD[1], 10);
+                const m = parseInt(matchYMD[2], 10) - 1;
+                const d = parseInt(matchYMD[3], 10);
+                return y === currentYear && m === currentMonth && d === currentDay;
+            }
+        }
+        const d = new Date(dateVal);
+        return !isNaN(d.getTime()) && d.getFullYear() === currentYear && d.getMonth() === currentMonth && d.getDate() === currentDay;
+    };
+
+    // Ingresos
+    const incomeDay = logs.filter(l => isToday(l.date)).reduce((sum, l) => sum + (parseFloat(l.total_price) || 0), 0);
+    const incomeMonth = logs.filter(l => isThisMonth(l.date)).reduce((sum, l) => sum + (parseFloat(l.total_price) || 0), 0);
+    const incomeTotal = logs.reduce((sum, l) => sum + (parseFloat(l.total_price) || 0), 0);
+
+    // Gastos
+    const expenseMonth = expenses.filter(e => isThisMonth(e.date)).reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0);
+    const expenseTotal = expenses.reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0);
+
+    // Balances
+    const netMonth = incomeMonth - expenseMonth;
+    const netGlobal = incomeTotal - expenseTotal;
     
     // Ingresos nuevos (solo los que tienen método de pago marcado)
-    const newEfectivo = logs.filter(l => l.payment_method === 'efectivo').reduce((sum, l) => sum + (l.total_price || 0), 0);
-    const newBanco = logs.filter(l => l.payment_method === 'banco').reduce((sum, l) => sum + (l.total_price || 0), 0);
+    const newEfectivo = logs.filter(l => l.payment_method === 'efectivo').reduce((sum, l) => sum + (parseFloat(l.total_price) || 0), 0);
+    const newBanco = logs.filter(l => l.payment_method === 'banco').reduce((sum, l) => sum + (parseFloat(l.total_price) || 0), 0);
     
     const transfers = await api.getFundTransfers ? await api.getFundTransfers() : [];
     
-    // Gastos: solo restamos los NUEVOS (con payment_method definido). Los antiguos ya están incluidos en el saldo inicial.
-    const expenseTotal = expenses.reduce((sum, e) => sum + (e.amount || 0), 0);
-    const newExpenseEfectivo = expenses.filter(e => e.payment_method === 'efectivo').reduce((sum, e) => sum + (e.amount || 0), 0);
-    const newExpenseBanco = expenses.filter(e => e.payment_method === 'banco').reduce((sum, e) => sum + (e.amount || 0), 0);
+    // Gastos nuevos por método de pago para saldos de cartera y banco
+    const newExpenseEfectivo = expenses.filter(e => e.payment_method === 'efectivo').reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0);
+    const newExpenseBanco = expenses.filter(e => e.payment_method === 'banco').reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0);
 
     // Transferencias
     const transferToEfectivo = transfers.filter(t => t.direction === 'banco_to_efectivo').reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0);
@@ -740,20 +807,23 @@ export const renderSecretaryDashboard = async (api, els) => {
 
     const walletBalance = INITIAL_BALANCE_EFECTIVO + newEfectivo - newExpenseEfectivo + transferToEfectivo - transferToBanco;
     const bankBalance = INITIAL_BALANCE_BANCO + newBanco - newExpenseBanco + transferToBanco - transferToEfectivo;
-    const netBalance = walletBalance + bankBalance;
 
+    // Actualizar elementos en UI
     if (els.stats.day) els.stats.day.textContent = incomeDay.toFixed(2) + ' €';
+    if (els.stats.month) els.stats.month.textContent = incomeMonth.toFixed(2) + ' €';
+    if (els.stats.expMonth) els.stats.expMonth.textContent = expenseMonth.toFixed(2) + ' €';
+    if (els.stats.expTotal) els.stats.expTotal.textContent = expenseTotal.toFixed(2) + ' €';
+    if (els.stats.netBalance) {
+        els.stats.netBalance.textContent = `${netMonth.toFixed(2)} €`;
+        els.stats.netBalance.style.color = netMonth >= 0 ? 'var(--gold)' : 'var(--blood-light)';
+    }
     if (els.stats.incomeTotal) els.stats.incomeTotal.textContent = incomeTotal.toFixed(2) + ' €';
-    if (els.stats.expMonth) els.stats.expMonth.textContent = expenseTotal.toFixed(2) + ' €';
-    if (els.stats.netBalance) els.stats.netBalance.textContent = netBalance.toFixed(2) + ' €';
+    if (els.stats.balanceTotal) {
+        els.stats.balanceTotal.textContent = `${netGlobal.toFixed(2)} €`;
+        els.stats.balanceTotal.style.color = netGlobal >= 0 ? 'var(--gold)' : 'var(--blood-light)';
+    }
     if (els.stats.walletTotal) els.stats.walletTotal.textContent = walletBalance.toFixed(2) + ' €';
     if (els.stats.bankTotal) els.stats.bankTotal.textContent = bankBalance.toFixed(2) + ' €';
-    if (els.stats.balanceTotal) {
-        const net = incomeTotal - expenseTotal;
-        els.stats.balanceTotal.textContent = `${net.toFixed(2)} €`;
-        els.stats.balanceTotal.style.color = net >= 0 ? 'var(--gold)' : 'var(--blood-light)';
-    }
-    // (duplicate bankTotal removed - was overwriting the correct calculation above)
 
     // Render Grouped Attendance
     els.list.innerHTML = sortedDates.length > 0 ? sortedDates.map(date => {
@@ -806,19 +876,25 @@ export const renderSecretaryDashboard = async (api, els) => {
     }).join('') : '<tr><td colspan="7">No hay partidas.</td></tr>';
 
     // Render Expenses
-    els.expList.innerHTML = expenses.length > 0 ? expenses.map(e => `
+    els.expList.innerHTML = expenses.length > 0 ? expenses.map(e => {
+        const cat = (e.category || 'otros').toLowerCase();
+        const amt = parseFloat(e.amount) || 0;
+        const concept = e.concept || 'Gasto';
+        const date = e.date || '';
+        return `
         <tr>
-            <td data-label="Fecha" style="font-family:monospace; font-size:0.7rem;">${e.date}</td>
-            <td data-label="Cat."><span class="sec-type-badge sec-type-badge--${e.category.toLowerCase()}">${e.category.toUpperCase()}</span></td>
-            <td data-label="Concepto" style="font-weight:bold;">${e.concept}</td>
-            <td data-label="Importe" style="color:var(--blood-light);">${e.amount.toFixed(2)} €</td>
+            <td data-label="Fecha" style="font-family:monospace; font-size:0.7rem;">${date}</td>
+            <td data-label="Cat."><span class="sec-type-badge sec-type-badge--${cat}">${cat.toUpperCase()}</span></td>
+            <td data-label="Concepto" style="font-weight:bold;">${concept}</td>
+            <td data-label="Importe" style="color:var(--blood-light);">${amt.toFixed(2)} €</td>
             <td data-label="Pago" style="font-size:0.8rem; color:var(--text-muted);">${e.payment_method === 'banco' ? '<i class="fas fa-university"></i>' : '<i class="fas fa-money-bill-wave"></i>'}</td>
             <td data-label="Acción">
                 <button class="btn btn--outline btn--sm" style="border-color:var(--gold); color:var(--gold); margin-right:5px;" onclick="adminEditExpense('${e.id}')">Editar</button>
                 <button class="btn btn--outline btn--sm" onclick="adminDeleteExpense('${e.id}')">Borrar</button>
             </td>
         </tr>
-    `).join('') : '<tr><td colspan="5">No hay gastos.</td></tr>';
+    `;
+    }).join('') : '<tr><td colspan="6">No hay gastos.</td></tr>';
 
     // Render Bonos (CON CONTADOR CORRECTO)
     if (els.bonosList) {

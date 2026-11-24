@@ -1,4 +1,4 @@
-const CACHE_NAME = 'agoge-elite-v3';
+const CACHE_NAME = 'agoge-elite-v4';
 
 self.addEventListener('install', (event) => {
     self.skipWaiting();
