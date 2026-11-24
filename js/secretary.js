@@ -359,7 +359,7 @@ export const initSecretary = (api) => {
             // Bonos: el precio por sesión se cuenta como ingreso al aplicar
             const logData = { 
                 date, 
-                type: type === 'bono' ? 'grupo' : type, 
+                type: type, 
                 name, 
                 players: pax, 
                 total_price: price, 

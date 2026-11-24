@@ -107,9 +107,13 @@ const updateUI = async () => {
             const userCallsign = userProfile.callsign ? userProfile.callsign.toLowerCase() : '';
             const userRealName = userProfile.name ? userProfile.name.toLowerCase() : '';
             const userLogs = allLogs.filter(log => {
-                const logName = log.name ? log.name.toLowerCase() : '';
-                return (userCallsign && logName.includes(userCallsign)) || 
-                       (userRealName && logName.includes(userRealName));
+                if (!log || !log.name) return false;
+                if (log.type === 'inyeccion' || log.type === 'bono') return false;
+                const logName = log.name.toLowerCase().trim();
+                if (logName.includes('[bono') || logName.includes('bono')) return false;
+                if (logName.includes('ingreso') || logName.includes('pago') || logName.includes('extra') || logName.includes('transferencia')) return false;
+                return (userCallsign && (logName === userCallsign || logName.startsWith(userCallsign + ' '))) || 
+                       (userRealName && (logName === userRealName || logName.startsWith(userRealName + ' ')));
             });
 
             profile.updateProfileView(userProfile, userLogs);

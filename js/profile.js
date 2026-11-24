@@ -464,29 +464,49 @@ export const renderOperatorLeaderboard = async (api, allUsers) => {
     const tbody = document.getElementById('operatorLeaderboardBody');
     if (!tbody) return;
 
-    const logs = await api.getAttendanceLogs();
-    const xpMap = {};
-
-    // Aggregate XP based on attendance logs
-    logs.forEach(log => {
-        if (!log.name) return;
-        const nameKey = log.name.trim().toLowerCase();
-        xpMap[nameKey] = (xpMap[nameKey] || 0) + 1;
-    });
-
-    // Create operator list mapping to allUsers to get faction if possible
-    const operators = [];
-    for (const [nameKey, xp] of Object.entries(xpMap)) {
-        // Try to find a matching user in allUsers
-        const matchedUser = allUsers.find(u => (u.callsign && u.callsign.toLowerCase() === nameKey) || (u.name && u.name.toLowerCase() === nameKey));
-        operators.push({
-            callsign: matchedUser ? matchedUser.callsign : nameKey.toUpperCase(),
-            faction: matchedUser ? matchedUser.faction : 'none',
-            xp: xp
-        });
+    if (!Array.isArray(allUsers) || allUsers.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding:15px;">No hay operadores registrados.</td></tr>';
+        return;
     }
 
-    // Sort by XP descending
+    const logs = await api.getAttendanceLogs();
+
+    // Filtro estricto: excluir transacciones financieras, inyecciones de ingresos y bonos
+    const isValidPlayerLog = (log) => {
+        if (!log || !log.name) return false;
+        if (log.type === 'inyeccion' || log.type === 'bono') return false;
+        const nameLower = log.name.toLowerCase().trim();
+        if (nameLower.includes('[bono') || nameLower.includes('bono')) return false;
+        if (nameLower.includes('ingreso') || nameLower.includes('pago') || nameLower.includes('extra') || nameLower.includes('transferencia')) return false;
+        return true;
+    };
+
+    const validLogs = (logs || []).filter(isValidPlayerLog);
+
+    // El ranking SOLO incluye usuarios reales registrados en el sistema (allUsers)
+    const operators = allUsers.map(u => {
+        const callsignLower = (u.callsign || '').trim().toLowerCase();
+        const nameLower = (u.name || '').trim().toLowerCase();
+
+        // Contar únicamente partidas válidas que coincidan estrictamente con este jugador
+        const matchesAttended = validLogs.filter(log => {
+            const logNameLower = log.name.trim().toLowerCase();
+            return (callsignLower && (logNameLower === callsignLower || logNameLower.startsWith(callsignLower + ' '))) ||
+                   (nameLower && (logNameLower === nameLower || logNameLower.startsWith(nameLower + ' ')));
+        }).length;
+
+        const baseExp = parseFloat(u.exp) || 0;
+        const totalXp = baseExp + matchesAttended;
+
+        return {
+            id: u.id,
+            callsign: u.callsign || u.name || 'OPERADOR',
+            faction: u.faction || 'none',
+            xp: totalXp
+        };
+    });
+
+    // Ordenar por XP descendente
     operators.sort((a, b) => b.xp - a.xp);
 
     const factionLabels = {
@@ -495,17 +515,17 @@ export const renderOperatorLeaderboard = async (api, allUsers) => {
         'none': '<span style="color:#95a5a6; font-size:0.75rem; font-weight:bold;">NEUTRAL</span>'
     };
 
-    // Get top 10
+    // Mostrar Top 10
     const top10 = operators.slice(0, 10);
 
-    tbody.innerHTML = top10.map((op, i) => `
+    tbody.innerHTML = top10.length > 0 ? top10.map((op, i) => `
         <tr>
             <td style="color:var(--bronze); font-weight:bold;">#${i + 1}</td>
             <td style="font-weight:bold; color:var(--white);">${op.callsign}</td>
             <td>${factionLabels[op.faction] || factionLabels['none']}</td>
             <td style="color:var(--bronze); font-weight:bold;">${op.xp} XP</td>
         </tr>
-    `).join('');
+    `).join('') : '<tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding:15px;">Sin datos de clasificación.</td></tr>';
 };
 
 export const renderClanLeaderboard = async (api, allUsers) => {
@@ -513,21 +533,38 @@ export const renderClanLeaderboard = async (api, allUsers) => {
     if (!tbody) return;
 
     const logs = await api.getAttendanceLogs();
-    const clans = await api.getClans();
-    const clanXPMap = {};
+    const clans = await api.getClans ? await api.getClans() : [];
+    if (!clans || clans.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding:15px;">No hay clanes registrados.</td></tr>';
+        return;
+    }
 
-    // Map users to clans for quick lookup
+    // Filtro estricto: excluir ingresos extra, bonos y pagos
+    const isValidPlayerLog = (log) => {
+        if (!log || !log.name) return false;
+        if (log.type === 'inyeccion' || log.type === 'bono') return false;
+        const nameLower = log.name.toLowerCase().trim();
+        if (nameLower.includes('[bono') || nameLower.includes('bono')) return false;
+        if (nameLower.includes('ingreso') || nameLower.includes('pago') || nameLower.includes('extra') || nameLower.includes('transferencia')) return false;
+        return true;
+    };
+
+    const validLogs = (logs || []).filter(isValidPlayerLog);
+
+    // Mapear jugadores registrados a sus clanes
     const userClanMap = {};
-    allUsers.forEach(u => {
+    (allUsers || []).forEach(u => {
         if (u.clan) {
-            const key = (u.callsign || u.name || '').trim().toLowerCase();
-            if (key) userClanMap[key] = u.clan;
+            const callsignKey = (u.callsign || '').trim().toLowerCase();
+            const nameKey = (u.name || '').trim().toLowerCase();
+            if (callsignKey) userClanMap[callsignKey] = u.clan;
+            if (nameKey) userClanMap[nameKey] = u.clan;
         }
     });
 
-    // Aggregate XP from logs
-    logs.forEach(log => {
-        if (!log.name) return;
+    // Sumar XP únicamente de partidas válidas de miembros del clan
+    const clanXPMap = {};
+    validLogs.forEach(log => {
         const nameKey = log.name.trim().toLowerCase();
         const clanName = userClanMap[nameKey];
         if (clanName) {
@@ -535,7 +572,7 @@ export const renderClanLeaderboard = async (api, allUsers) => {
         }
     });
 
-    // Sort clans by XP
+    // Ordenar clanes por XP
     const sortedClans = clans.map(c => ({
         ...c,
         xp: clanXPMap[c.name] || 0
